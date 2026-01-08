@@ -29,17 +29,17 @@ iframe {
 /* RUNNING TEXT BAR */
 #running-text {
   position: absolute;
-  top: 34px;
+  top: 0; /* langsung di top iframe */
   width: 100%;
-  height: 28px;
+  height: 25px;
   z-index: 10000;
   pointer-events: none;
 }
 
-/* INNER BAR (kasih space kiri-kanan) */
+/* INNER BAR (background dengan space lebih lebar) */
 .running-inner-bar {
   height: 100%;
-  margin: 0 80px; /* space kiri-kanan untuk background */
+  margin: 0 150px; /* space kiri-kanan lebih lega */
   background: rgba(18, 52, 88, 0.85);
   box-shadow: inset 0 -1px 0 rgba(255,255,255,0.15);
   overflow: hidden;
@@ -50,7 +50,7 @@ iframe {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
-/* AREA TEKS */
+/* AREA TEKS (masih ada margin internal untuk teks) */
 .running-inner {
   height: 100%;
   margin: 0 10px; /* space kiri-kanan untuk teks */
@@ -65,7 +65,7 @@ iframe {
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
-  animation: marquee 15s linear infinite;
+  animation: marquee 20s linear infinite; /* agak lebih lambat untuk space lebih lebar */
 }
 
 @keyframes marquee {
@@ -76,7 +76,7 @@ iframe {
 /* JAM PALING DEPAN */
 #digital-clock {
   position: absolute;
-  top: 34px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10001;
@@ -132,7 +132,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-/* RUNNING TEXT RANDOM */
+/* RUNNING TEXT RANDOM ISTILAH REFINERY */
 const messages = [
   "🔥 Flash Point – Titik suhu saat bahan bakar mulai menguap dan bisa menyala sebentar saat terkena api",
   "🔥 Fire Point – Suhu minimum saat bahan bakar terbakar terus menerus setelah mencapai flash point",
@@ -156,15 +156,14 @@ const messages = [
   "🛢️ Viscosity Index – Ukuran perubahan kekentalan minyak terhadap perubahan suhu; semakin tinggi semakin stabil"
 ];
 
-
 function updateRunningText() {
   const span = document.getElementById("running-content");
   const text = messages[Math.floor(Math.random() * messages.length)];
 
   span.style.animation = "none";
-  span.offsetHeight;
+  span.offsetHeight; // trigger reflow
   span.textContent = text;
-  span.style.animation = "marquee 15s linear infinite";
+  span.style.animation = "marquee 20s linear infinite";
 }
 
 updateRunningText();
