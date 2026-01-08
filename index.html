@@ -1,91 +1,175 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Tabel Kalkulasi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Tabel Kalkulasi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-    }
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
 
-    /* Styling Jam Digital Mentok Atas */
-    #digital-clock {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      
-      /* Warna Biru Sesuai Permintaan */
-      background-color: rgba(0, 123, 255, 1);
-      color: white;
-      padding: 8px 25px;
-      font-weight: bold;
-      font-size: 1.1rem;
-      letter-spacing: 1px;
-      
-      /* Estetika */
-      border-radius: 0 0 12px 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      min-width: 100px;
-      text-align: center;
-    }
-  </style>
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* RUNNING TEXT BAR */
+#running-text {
+  position: absolute;
+  top: 34px;
+  width: 100%;
+  height: 28px;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* INNER BAR (kasih space kiri-kanan) */
+.running-inner-bar {
+  height: 100%;
+  margin: 0 80px; /* space kiri-kanan untuk background */
+  background: rgba(18, 52, 88, 0.85);
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.15);
+  overflow: hidden;
+  position: relative;
+
+  /* efek fade kiri-kanan */
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* AREA TEKS */
+.running-inner {
+  height: 100%;
+  margin: 0 10px; /* space kiri-kanan untuk teks */
+  overflow: hidden;
+}
+
+/* TEKS */
+#running-text span {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* JAM PALING DEPAN */
+#digital-clock {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+
+  background-color: #123458;
+  color: white;
+  padding: 8px 26px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  min-width: 120px;
+  text-align: center;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
+
+  <!-- RUNNING TEXT BAR -->
+  <div id="running-text">
+    <div class="running-inner-bar">
+      <div class="running-inner">
+        <span id="running-content">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAM -->
   <div id="digital-clock">00:00:00</div>
 
+  <!-- IFRAME -->
   <iframe 
     src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"
     allowfullscreen>
   </iframe>
+
 </div>
 
 <script>
-  function updateClock() {
-    const now = new Date();
-    
-    // Ambil Jam, Menit, dan Detik
-    let h = now.getHours();
-    let m = now.getMinutes();
-    let s = now.getSeconds();
-    
-    // Tambahkan angka 0 di depan jika angka < 10 (contoh: 09:05:01)
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-    
-    const timeString = h + ":" + m + ":" + s;
-    document.getElementById("digital-clock").innerText = timeString;
-  }
+/* JAM */
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  document.getElementById("digital-clock").innerText = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-  // Jalankan fungsi setiap 1 detik
-  setInterval(updateClock, 1000);
+/* RUNNING TEXT RANDOM */
+const messages = [
+  "🔥 Flash Point – Titik suhu saat bahan bakar mulai menguap dan bisa menyala sebentar saat terkena api",
+  "🔥 Fire Point – Suhu minimum saat bahan bakar terbakar terus menerus setelah mencapai flash point",
+  "⛽ Cetane Number – Angka yang menunjukkan kualitas pembakaran diesel; nilai tinggi = efisien",
+  "💧 Sulfur Content – Kandungan sulfur dalam bahan bakar; rendah lebih ramah lingkungan dan anti korosi",
+  "🛢️ Viscosity – Kekentalan produk minyak; menentukan aliran, pompa, dan performa mesin",
+  "🌡️ Aromatics – Persentase senyawa aromatik; mempengaruhi kualitas pembakaran & feedstock petrokimia",
+  "🔥 Boiling Point – Suhu di mana produk mulai menguap; digunakan untuk fraksionasi & pemisahan",
+  "⚖️ API Gravity – Berat jenis minyak relatif terhadap air; menentukan ringan atau berat crude oil",
+  "💡 Hydrogen Purity – Kemurnian hidrogen untuk proses hidrogenasi, desulfurisasi, atau chemical refinery",
+  "🛢️ Bitumen Softening Point – Suhu saat bitumen mulai melunak; penting untuk paving & konstruksi",
+  "💨 Reid Vapor Pressure (RVP) – Tekanan uap bensin pada suhu tertentu; mempengaruhi volatilitas & penguapan",
+  "⛽ Octane Number – Ukuran kemampuan bensin menahan detonasi atau knocking di mesin bensin",
+  "🔥 Distillation Range – Rentang suhu fraksi produk minyak mulai & selesai menguap dalam distilasi",
+  "❄️ Pour Point – Suhu minimum dimana produk minyak masih bisa mengalir; penting untuk transportasi",
+  "☁️ Cloud Point – Suhu saat parafin mulai mengendap di diesel, bisa menyumbat filter",
+  "⛽ Cetane Index – Perkiraan kualitas pembakaran diesel berdasarkan densitas & distilasi",
+  "⚠️ Flash/Fire Safety Limit – Batas aman suhu & konsentrasi uap agar tidak terjadi kebakaran",
+  "🌟 Reforming Octane Number – Nilai oktan setelah proses reforming untuk meningkatkan kualitas bensin",
+  "❄️ Pour Point Depressant – Additive menurunkan pour point agar bahan bakar tetap mengalir di suhu rendah",
+  "🛢️ Viscosity Index – Ukuran perubahan kekentalan minyak terhadap perubahan suhu; semakin tinggi semakin stabil"
+];
 
-  // Panggil langsung agar jam tidak menunggu 1 detik saat pertama kali load
-  updateClock();
+
+function updateRunningText() {
+  const span = document.getElementById("running-content");
+  const text = messages[Math.floor(Math.random() * messages.length)];
+
+  span.style.animation = "none";
+  span.offsetHeight;
+  span.textContent = text;
+  span.style.animation = "marquee 15s linear infinite";
+}
+
+updateRunningText();
+setInterval(updateRunningText, 15000);
 </script>
 
 </body>
-
 </html>
