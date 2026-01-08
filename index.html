@@ -9,20 +9,82 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    iframe {
+
+    .container {
+      position: relative;
       width: 100%;
       height: 100vh;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
       border: none;
+      display: block;
+    }
+
+    /* Styling Jam Digital Mentok Atas */
+    #digital-clock {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      
+      /* Warna Biru Sesuai Permintaan */
+      background-color:#123458;
+      color: white;
+      padding: 8px 25px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      
+      /* Estetika */
+      border-radius: 0 0 12px 12px;
+      box-shadow:0 4px 8px rgba(0,0,0,0.3)
+      min-width: 100px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-<iframe 
-  src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"
-  allowfullscreen>
-</iframe>
+<div class="container">
+  <div id="digital-clock">00:00:00</div>
+
+  <iframe 
+    src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    
+    // Ambil Jam, Menit, dan Detik
+    let h = now.getHours();
+    let m = now.getMinutes();
+    let s = now.getSeconds();
+    
+    // Tambahkan angka 0 di depan jika angka < 10 (contoh: 09:05:01)
+    h = h < 10 ? "0" + h : h;
+    m = m < 10 ? "0" + m : m;
+    s = s < 10 ? "0" + s : s;
+    
+    const timeString = h + ":" + m + ":" + s;
+    document.getElementById("digital-clock").innerText = timeString;
+  }
+
+  // Jalankan fungsi setiap 1 detik
+  setInterval(updateClock, 1000);
+
+  // Panggil langsung agar jam tidak menunggu 1 detik saat pertama kali load
+  updateClock();
+</script>
 
 </body>
 </html>
