@@ -26,72 +26,133 @@ iframe {
   border: none;
 }
 
-/* RUNNING TEXT BAR */
+/* RUNNING TEXT */
 #running-text {
   position: absolute;
-  top: 0; /* langsung di top iframe */
+  top: 0;
   width: 100%;
   height: 25px;
   z-index: 10000;
   pointer-events: none;
 }
 
-/* INNER BAR (background dengan space lebih lebar) */
 .running-inner-bar {
   height: 100%;
-  margin: 0 250px; /* space kiri-kanan lebih lega */
+  margin: 0 250px;
   background: rgba(18, 52, 88, 0.85);
-  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.15);
   overflow: hidden;
-  position: relative;
-
-  /* efek fade kiri-kanan */
   mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
-/* AREA TEKS (masih ada margin internal untuk teks) */
 .running-inner {
-  height: 100%;
-  margin: 0 10px; /* space kiri-kanan untuk teks */
+  margin: 0 10px;
   overflow: hidden;
 }
 
-/* TEKS */
 #running-text span {
   display: inline-block;
   white-space: nowrap;
   padding-left: 100%;
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
-  animation: marquee 20s linear infinite; /* agak lebih lambat untuk space lebih lebar */
+  color: #fff;
+  animation: marquee 20s linear infinite;
 }
 
 @keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
 }
 
-/* JAM PALING DEPAN */
+/* JAM */
 #digital-clock {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10001;
-
-  background-color: #123458;
+  background: #123458;
   color: white;
   padding: 8px 26px;
   font-weight: bold;
   font-size: 1.1rem;
-  letter-spacing: 1px;
-
   border-radius: 0 0 12px 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  min-width: 120px;
+  cursor: pointer;
+}
+
+/* MODAL */
+.rt-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  z-index: 20000;
+}
+
+.rt-box {
+  background: #fff;
+  width: 90%;
+  max-width: 520px;
+  margin: 80px auto;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#rt-input {
+  width: 100%;
+  height: 80px;
+  resize: none;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.rt-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#rt-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+#rt-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* TEKS SEBARIS */
+.rt-text {
+  flex: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.95rem;
+}
+
+/* HAPUS */
+.delete-btn {
+  flex: 0 0 32px;
   text-align: center;
+  cursor: pointer;
+  color: #c00;
+  font-size: 1.1rem;
+  user-select: none;
+}
+
+.delete-btn:hover {
+  background: #ffecec;
+  border-radius: 6px;
 }
 </style>
 </head>
@@ -100,7 +161,7 @@ iframe {
 
 <div class="container">
 
-  <!-- RUNNING TEXT BAR -->
+  <!-- RUNNING TEXT -->
   <div id="running-text">
     <div class="running-inner-bar">
       <div class="running-inner">
@@ -113,62 +174,162 @@ iframe {
   <div id="digital-clock">00:00:00</div>
 
   <!-- IFRAME -->
-  <iframe 
-    src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"
-    allowfullscreen>
-  </iframe>
+  <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"></iframe>
 
+</div>
+
+<!-- MODAL -->
+<div id="rt-modal" class="rt-modal">
+  <div class="rt-box">
+    <h3>📝 Kelola Running Text</h3>
+
+    <textarea id="rt-input" maxlength="120" placeholder="Maksimal 120 karakter"></textarea>
+    <div class="char-count">
+      <span id="charCount">0</span> / 120
+    </div>
+
+    <div class="rt-buttons">
+      <button onclick="saveText()">💾 Simpan</button>
+      <button onclick="closeModal()">❌ Tutup</button>
+    </div>
+
+    <ul id="rt-list"></ul>
+  </div>
 </div>
 
 <script>
 /* JAM */
 function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-  document.getElementById("digital-clock").innerText = `${h}:${m}:${s}`;
+  document.getElementById("digital-clock")
+    .innerText = new Date().toLocaleTimeString("id-ID");
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-/* RUNNING TEXT RANDOM ISTILAH REFINERY */
-const messages = [
-  "🔥 Flash Point – Titik suhu saat bahan bakar mulai menguap dan bisa menyala sebentar saat terkena api",
-  "🔥 Fire Point – Suhu minimum saat bahan bakar terbakar terus menerus setelah mencapai flash point",
-  "⛽ Cetane Number – Angka yang menunjukkan kualitas pembakaran diesel; nilai tinggi = efisien",
-  "💧 Sulfur Content – Kandungan sulfur dalam bahan bakar; rendah lebih ramah lingkungan dan anti korosi",
-  "🛢️ Viscosity – Kekentalan produk minyak; menentukan aliran, pompa, dan performa mesin",
-  "🌡️ Aromatics – Persentase senyawa aromatik; mempengaruhi kualitas pembakaran & feedstock petrokimia",
-  "🔥 Boiling Point – Suhu di mana produk mulai menguap; digunakan untuk fraksionasi & pemisahan",
-  "⚖️ API Gravity – Berat jenis minyak relatif terhadap air; menentukan ringan atau berat crude oil",
-  "💡 Hydrogen Purity – Kemurnian hidrogen untuk proses hidrogenasi, desulfurisasi, atau chemical refinery",
-  "🛢️ Bitumen Softening Point – Suhu saat bitumen mulai melunak; penting untuk paving & konstruksi",
-  "💨 Reid Vapor Pressure (RVP) – Tekanan uap bensin pada suhu tertentu; mempengaruhi volatilitas & penguapan",
-  "⛽ Octane Number – Ukuran kemampuan bensin menahan detonasi atau knocking di mesin bensin",
-  "🔥 Distillation Range – Rentang suhu fraksi produk minyak mulai & selesai menguap dalam distilasi",
-  "❄️ Pour Point – Suhu minimum dimana produk minyak masih bisa mengalir; penting untuk transportasi",
-  "☁️ Cloud Point – Suhu saat parafin mulai mengendap di diesel, bisa menyumbat filter",
-  "⛽ Cetane Index – Perkiraan kualitas pembakaran diesel berdasarkan densitas & distilasi",
-  "⚠️ Flash/Fire Safety Limit – Batas aman suhu & konsentrasi uap agar tidak terjadi kebakaran",
-  "❄️ Pour Point Depressant – Additive menurunkan pour point agar bahan bakar tetap mengalir di suhu rendah",
-  "🛢️ Viscosity Index – Ukuran perubahan kekentalan minyak terhadap perubahan suhu; semakin tinggi semakin stabil"
+/* STORAGE */
+const STORAGE_KEY = "RUNNING_TEXT_DATA";
+const MAX_CHAR = 120;
+
+/* LOAD */
+let messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+  "🔥 Flash Point – Titik suhu saat bahan bakar mulai menguap",
+  "⛽ Cetane Number – Kualitas pembakaran diesel"
 ];
 
+let editIndex = null;
+
+/* SAVE STORAGE */
+function saveStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+}
+
+/* RUNNING TEXT */
 function updateRunningText() {
+  if (!messages.length) return;
+
   const span = document.getElementById("running-content");
   const text = messages[Math.floor(Math.random() * messages.length)];
 
   span.style.animation = "none";
-  span.offsetHeight; // trigger reflow
+  span.offsetHeight;
   span.textContent = text;
   span.style.animation = "marquee 20s linear infinite";
 }
-
 updateRunningText();
 setInterval(updateRunningText, 15000);
+
+/* MODAL */
+document.getElementById("digital-clock").onclick = openModal;
+
+function openModal() {
+  document.getElementById("rt-modal").style.display = "block";
+  renderList();
+  updateCounter();
+}
+
+function closeModal() {
+  document.getElementById("rt-modal").style.display = "none";
+  document.getElementById("rt-input").value = "";
+  editIndex = null;
+  updateCounter();
+}
+
+/* LIST */
+function renderList() {
+  const ul = document.getElementById("rt-list");
+  ul.innerHTML = "";
+
+  messages.forEach((msg, i) => {
+    const li = document.createElement("li");
+
+    const text = document.createElement("div");
+    text.className = "rt-text";
+    text.textContent = msg;
+    text.title = msg;
+    text.onclick = () => editText(i);
+
+    const del = document.createElement("div");
+    del.className = "delete-btn";
+    del.textContent = "🗑️";
+    del.onclick = (e) => {
+      e.stopPropagation();
+      deleteText(i);
+    };
+
+    li.appendChild(text);
+    li.appendChild(del);
+    ul.appendChild(li);
+  });
+}
+
+/* EDIT */
+function editText(index) {
+  document.getElementById("rt-input").value = messages[index];
+  editIndex = index;
+  updateCounter();
+}
+
+/* DELETE */
+function deleteText(index) {
+  if (!confirm("Hapus running text ini?")) return;
+  messages.splice(index, 1);
+  saveStorage();
+  renderList();
+}
+
+/* SAVE */
+function saveText() {
+  const val = document.getElementById("rt-input").value.trim();
+  if (!val) return;
+
+  if (val.length > MAX_CHAR) {
+    alert("Teks terlalu panjang!");
+    return;
+  }
+
+  if (editIndex !== null) {
+    messages[editIndex] = val;
+  } else {
+    messages.push(val);
+  }
+
+  saveStorage();
+  renderList();
+  document.getElementById("rt-input").value = "";
+  editIndex = null;
+  updateCounter();
+}
+
+/* COUNTER */
+const input = document.getElementById("rt-input");
+const counter = document.getElementById("charCount");
+
+function updateCounter() {
+  counter.innerText = input.value.length;
+}
+
+input.addEventListener("input", updateCounter);
 </script>
 
 </body>
 </html>
-
