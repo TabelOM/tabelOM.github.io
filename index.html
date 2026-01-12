@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabel Kalkulasi</title>
+    <title>Tabelom Dashboard</title>
     <link rel="stylesheet" href="style.css">
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -16,12 +16,10 @@
             <div id="running-text-wrapper">
                 <span id="running-content">Menghubungkan ke Database...</span>
             </div>
-            
             <div class="clock-container">
                 <div id="digital-clock">00:00:00</div>
             </div>
-
-            <button id="btn-manage-rt" onclick="openModal()" title="Pengaturan">⚙️</button>
+            <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
         </header>
 
         <main class="content-area">
@@ -32,38 +30,27 @@
     <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
             <div class="rt-header">
-                <h2>⚙️ Pengaturan Dashboard</h2>
-                <button class="btn-close-top" onclick="closeModal()">Tutup &times;</button>
+                <h2>⚙️ Pengaturan Pesan</h2>
+                <button class="btn-close-top" onclick="closeModal()">&times;</button>
             </div>
-
             <div class="rt-body">
                 <div class="input-group">
-                    <label id="input-label">📝 Tambah / Edit Pesan</label>
-                    <textarea id="rt-input" placeholder="Tulis pesan Anda di sini..." maxlength="150"></textarea>
-                    
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-save" id="btnSave" onclick="saveOrUpdate()" style="flex: 2;">💾 Simpan ke Firebase</button>
-                        <button id="btnCancel" onclick="cancelEdit()" style="display:none; flex: 1; background:#ef4444; color:white; border:none; border-radius:10px; cursor:pointer;">Batal</button>
+                    <textarea id="rt-input" placeholder="Tulis pesan di sini..." maxlength="150"></textarea>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn-save" id="btnSave" onclick="saveOrUpdate()" style="flex: 2;">💾 Simpan</button>
+                        <button id="btnCancel" onclick="cancelEdit()" style="display:none; flex: 1; background:#888; color:white; border:none; border-radius:10px;">Batal</button>
                     </div>
                 </div>
-
-                <hr class="divider">
-
+                <hr>
                 <div class="control-card">
-                    <label>⚡ Kecepatan Jalan (Detik)</label>
+                    <label>⚡ Kecepatan Animasi</label>
                     <input type="range" id="speed-slider" min="5" max="50" value="15">
-                    <div class="speed-info"><span id="speedValue">15</span> detik (semakin kecil semakin cepat)</div>
+                    <div class="speed-info"><span id="speedValue">15</span> detik</div>
                 </div>
-
-                <hr class="divider">
-
-                <label>📋 Daftar Pesan Aktif</label>
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">
-                    Klik teks untuk <b>Edit</b>, klik ikon mata untuk <b>Sembunyikan</b>.
-                </p>
+                <hr>
+                <label>📋 Daftar Pesan (Klik teks untuk Edit)</label>
                 <div class="list-container">
-                    <ul id="rt-list">
-                        </ul>
+                    <ul id="rt-list"></ul>
                 </div>
             </div>
         </div>
