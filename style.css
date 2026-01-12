@@ -1,290 +1,44 @@
-/* =========================================
-   1. VARIABEL & RESET
-   ========================================= */
 :root {
-    --primary: #123458;      /* Biru Gelap - Bar Atas */
-    --accent: #ffc107;       /* Kuning - Jam & Highlight */
-    --bg-light: #f8fafc;     /* Putih Kebiruan - Background List */
-    --text-main: #1e293b;    /* Abu Tua - Text Utama */
-    --text-muted: #94a3b8;   /* Abu Muda - Text Sembunyi */
-    --danger: #ef4444;       /* Merah - Hapus */
+    --primary: #123458;
+    --accent: #ffc107;
+    --bg-light: #f1f5f9;
+    --text-main: #1e293b;
+    --text-muted: #94a3b8;
     --white: #ffffff;
-    --transition: all 0.3s ease;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    font-family: 'Inter', -apple-system, sans-serif;
-    color: var(--text-main);
-}
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; }
+.main-wrapper { display: flex; flex-direction: column; height: 100vh; }
 
-/* =========================================
-   2. STRUKTUR UTAMA (LAYOUT)
-   ========================================= */
-.main-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
+/* HEADER BAR */
+.unified-bar { background: var(--primary); position: relative; height: 30px; display: flex; align-items: center; overflow: hidden; }
+#running-content { display: inline-block; white-space: nowrap; font-size: 0.9rem; color: var(--white); line-height: 30px; position: absolute; animation: marquee 15s linear infinite; font-weight: 500; }
+@keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
-.content-area {
-    flex-grow: 1;
-    background: #e2e8f0;
-}
+/* CLOCK & GEAR */
+.clock-container { position: absolute; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
+#digital-clock { background: var(--accent); color: var(--primary); padding: 0 10px; font-weight: 800; font-size: 0.8rem; border-radius: 4px; line-height: 20px; }
+#btn-manage-rt { position: absolute; right: 10px; z-index: 3; background: none; border: none; color: var(--white); cursor: pointer; font-size: 1.2rem; }
 
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
+/* MODAL STYLES */
+.rt-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); display: none; z-index: 10000; padding: 20px; }
+.rt-box { background: var(--white); width: 100%; max-width: 550px; margin: 30px auto; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; max-height: 85vh; }
+.rt-header { padding: 15px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.btn-close-top { background: var(--bg-light); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-muted); }
 
-/* =========================================
-   3. BAR ATAS (TOP BAR)
-   ========================================= */
-.unified-bar {
-    background: var(--primary);
-    position: relative;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+.rt-body { padding: 20px 25px; overflow-y: auto; }
+.info-card { background: #e0f2fe; padding: 15px; border-radius: 12px; border: 1px solid #bae6fd; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #0369a1; }
+.control-card { background: var(--bg-light); padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+.control-card label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 10px; }
 
-/* Animasi Running Text */
-#running-content {
-    display: inline-block;
-    white-space: nowrap;
-    font-size: 0.9rem;
-    color: var(--white);
-    line-height: 3px;
-    position: absolute;
-    animation: marquee 15s linear infinite;
-    font-weight: 500;
-}
+/* LIST ITEMS */
+#rt-list { list-style: none; padding: 0; margin: 0; }
+#rt-list li { display: flex; align-items: center; padding: 12px; background: var(--white); border: 1px solid #f1f5f9; border-radius: 10px; margin-bottom: 8px; gap: 12px; }
+.item-visibility { font-size: 1.2rem; opacity: 1; }
+.item-visibility.muted { opacity: 0.2; filter: grayscale(1); }
+.item-text { flex-grow: 1; font-size: 0.9rem; color: var(--text-main); }
+.text-muted { text-decoration: line-through; color: var(--text-muted); }
 
-@keyframes marquee {
-    0%   { transform: translateX(100vw); }
-    100% { transform: translateX(-100%); }
-}
-
-/* Jam di Tengah */
-.clock-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    pointer-events: none;
-}
-
-#digital-clock {
-    background: var(--accent);
-    color: var(--primary);
-    padding: 0 10px;
-    font-weight: 800;
-    font-size: 0.8rem;
-    border-radius: 4px;
-    line-height: 20px;
-}
-
-/* Tombol Gear */
-#btn-manage-rt {
-    position: absolute;
-    right: 10px;
-    z-index: 3;
-    background: none;
-    border: none;
-    color: var(--white);
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: var(--transition);
-}
-
-#btn-manage-rt:hover {
-    transform: rotate(90deg);
-}
-
-/* =========================================
-   4. MODAL PENGATURAN (SETTINGS)
-   ========================================= */
-.rt-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(8px);
-    display: none;
-    z-index: 10000;
-    padding: 20px;
-}
-
-.rt-box {
-    background: var(--white);
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto;
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-    animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-.rt-header {
-    padding: 15px 25px;
-    border-bottom: 1px solid #f1f5f9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.btn-close-top {
-    background: #f1f5f9;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text-muted);
-}
-
-/* =========================================
-   5. FORM & INPUT
-   ========================================= */
-.rt-body {
-    padding: 20px 25px;
-    overflow-y: auto;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-.input-group label, .rt-body label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#rt-input {
-    width: 100%;
-    height: 80px;
-    padding: 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 1rem;
-    resize: none;
-    box-sizing: border-box;
-    transition: var(--transition);
-}
-
-#rt-input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-.btn-save {
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-/* Slider Kecepatan */
-.control-card {
-    background: var(--bg-light);
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    margin: 15px 0;
-}
-
-/* =========================================
-   6. DAFTAR PESAN (LIST)
-   ========================================= */
-#rt-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#rt-list li {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    background: var(--white);
-    border: 1px solid #f1f5f9;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    gap: 15px;
-    transition: var(--transition);
-}
-
-#rt-list li:hover {
-    border-color: var(--primary);
-    transform: scale(1.01);
-}
-
-.item-text {
-    flex-grow: 1;
-    font-size: 0.95rem;
-}
-
-/* Ikon Mata & Hapus */
-.item-visibility {
-    cursor: pointer;
-    font-size: 1.3rem;
-    user-select: none;
-}
-
-.item-visibility.muted {
-    filter: grayscale(1);
-    opacity: 0.3;
-}
-
-.text-muted {
-    text-decoration: line-through;
-    color: var(--text-muted) !important;
-}
-
-.btn-delete {
-    color: var(--danger);
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.divider {
-    border: 0;
-    border-top: 1px solid #f1f5f9;
-    margin: 20px 0;
-}
-
-/* Tambahan agar user tahu teks bisa diklik */
-.item-text {
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 5px;
-    transition: background 0.2s;
-}
-.item-text:hover {
-    background: #f1f5f9;
-    color: #123458;
-}
+.divider { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+.content-area { flex-grow: 1; }
+iframe { width: 100%; height: 100%; border: none; }
