@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytn2YZXqgtqU8XcuefayvEpEV8NugEGhW4S1nIkVxyH9MIdxvgkkXPhjHHt4hHPIEe/exec";
+const SCRIPT_URL = "https://corsproxy.io/?https://script.google.com/macros/s/AKfycbytn2YZXqgtqU8XcuefayvEpEV8NugEGhW4S1nIkVxyH9MIdxvgkkXPhjHHt4hHPIEe/exec";
 let messages = [];
 let activeMessages = [];
 let editID = null; // Menyimpan ID yang sedang diedit
@@ -146,3 +146,4 @@ span.addEventListener('animationiteration', () => {
         span.textContent = nextMsg.Text;
     }
 });
+
