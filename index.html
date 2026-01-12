@@ -11,7 +11,7 @@
     <div class="main-wrapper">
         <header class="unified-bar">
             <div id="running-text-wrapper">
-                <span id="running-content">Memuat pesan dari data.json...</span>
+                <span id="running-content">Memuat data...</span>
             </div>
             <div class="clock-container">
                 <div id="digital-clock">00:00:00</div>
@@ -27,29 +27,29 @@
     <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
             <div class="rt-header">
-                <h2>⚙️ Pengaturan Dashboard</h2>
+                <h2>⚙️ Pengaturan Running Text</h2>
                 <button class="btn-close-top" onclick="closeModal()">Tutup &times;</button>
             </div>
 
             <div class="rt-body">
-                <div class="info-card">
-                    <p><strong>Cara Mengubah Pesan:</strong></p>
-                    <ol>
-                        <li>Buka akun GitHub Anda.</li>
-                        <li>Edit file <code>data.json</code>.</li>
-                        <li>Simpan (Commit), perubahan akan muncul di sini dalam 1-2 menit.</li>
-                    </ol>
+                <div class="input-group">
+                    <label id="input-label">Tambah/Edit Pesan</label>
+                    <textarea id="rt-input" placeholder="Tulis pesan di sini..." maxlength="150"></textarea>
+                    <button class="btn-save" id="btnSave" onclick="simulateSave()">💾 Simpan Ke Database</button>
+                    <p style="font-size: 10px; color: orange; margin-top: 5px;">*Edit permanen harus melalui file data.json di GitHub</p>
                 </div>
 
+                <hr class="divider">
+
                 <div class="control-card">
-                    <label>⚡ Kecepatan Jalan (Lokal)</label>
+                    <label>⚡ Kecepatan Jalan</label>
                     <input type="range" id="speed-slider" min="5" max="50" value="15">
                     <div class="speed-info"><span id="speedValue">15</span> detik</div>
                 </div>
 
                 <hr class="divider">
 
-                <label>📋 Daftar Pesan Saat Ini</label>
+                <label>📋 Kelola Pesan (Klik teks untuk edit)</label>
                 <div class="list-container">
                     <ul id="rt-list"></ul>
                 </div>
