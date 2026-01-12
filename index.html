@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabel Kalkulasi</title>
-    <link rel="stylesheet" href="style.css">
     
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-</head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <link rel="stylesheet" href="style.css">
+    </head>
 <body>
 
     <div class="main-wrapper">
@@ -23,32 +23,34 @@
         </header>
 
         <main class="content-area">
-            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"></iframe>
+            <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT1f6n_N6Yk_WfPUP1S2I7Gq2BwV7xL7vIuIqYx/pubhtml?widget=true&amp;headers=false"></iframe>
         </main>
     </div>
 
     <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
             <div class="rt-header">
-                <h2>⚙️ Pengaturan Pesan</h2>
+                <h2>⚙️ Pengaturan Dashboard</h2>
                 <button class="btn-close-top" onclick="closeModal()">&times;</button>
             </div>
             <div class="rt-body">
                 <div class="input-group">
+                    <label>📝 Tambah / Edit Pesan</label>
                     <textarea id="rt-input" placeholder="Tulis pesan di sini..." maxlength="150"></textarea>
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn-save" id="btnSave" onclick="saveOrUpdate()" style="flex: 2;">💾 Simpan</button>
+                        <button class="btn-save" id="btnSave" onclick="saveOrUpdate()" style="flex: 2;">💾 Simpan ke Firebase</button>
                         <button id="btnCancel" onclick="cancelEdit()" style="display:none; flex: 1; background:#888; color:white; border:none; border-radius:10px;">Batal</button>
                     </div>
                 </div>
                 <hr>
                 <div class="control-card">
-                    <label>⚡ Kecepatan Animasi</label>
-                    <input type="range" id="speed-slider" min="5" max="50" value="15">
-                    <div class="speed-info"><span id="speedValue">15</span> detik</div>
+                    <label>⚡ Kecepatan Jalan (Detik)</label>
+                    <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)">
+                    <div class="speed-info"><span id="speedValue">15</span> detik (semakin kecil semakin cepat)</div>
                 </div>
                 <hr>
-                <label>📋 Daftar Pesan (Klik teks untuk Edit)</label>
+                <label>📋 Daftar Pesan Aktif</label>
+                <p style="font-size: 10px; color: #888; margin-bottom: 5px;">Klik teks untuk Edit, klik ikon mata untuk Sembunyikan.</p>
                 <div class="list-container">
                     <ul id="rt-list"></ul>
                 </div>
@@ -59,7 +61,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
