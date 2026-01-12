@@ -1,4 +1,4 @@
-// 1. CONFIG FIREBASE (PASTIKAN URL SUDAH SESUAI)
+// 1. CONFIG FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
   authDomain: "tabelom60.firebaseapp.com",
@@ -9,43 +9,43 @@ const firebaseConfig = {
   appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
 };
 
-// 2. INIT FIREBASE
+// 2. INITIALIZE
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// 3. VARIABEL GLOBAL
 let messages = [];
 let activeMessages = [];
 let editID = null;
 
-// Ambil elemen DOM
 const span = document.getElementById("running-content");
 const inputField = document.getElementById("rt-input");
 const btnSave = document.getElementById("btnSave");
 const btnCancel = document.getElementById("btnCancel");
 
-// 4. FUNGSI UTAMA (SAYA PINDAHKAN KE ATAS AGAR TERBACA)
+// --- FUNGSI GLOBAL (WINDOW SCOPE) ---
+
+window.openModal = function() { document.getElementById("rt-modal").style.display = "block"; };
+window.closeModal = function() { document.getElementById("rt-modal").style.display = "none"; cancelEdit(); };
+
 window.saveOrUpdate = function() {
     const text = inputField.value.trim();
-    if (!text) {
-        alert("Isi pesan dulu ya!");
-        return;
-    }
+    if (!text) return alert("Pesan kosong!");
     
     if (editID) {
-        db.ref("messages/" + editID).update({ Text: text })
-          .then(() => cancelEdit());
+        db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
     } else {
-        db.ref("messages").push({ Text: text, Status: "active" })
-          .then(() => inputField.value = "");
+        db.ref("messages").push({ Text: text, Status: "active" }).then(() => { inputField.value = ""; });
     }
+};
+
+window.updateSpeed = function(val) {
+    db.ref("settings/speed").set(parseInt(val));
 };
 
 window.prepareEdit = function(id, text) {
     editID = id;
     inputField.value = text;
     btnSave.innerText = "🆙 Update";
-    btnSave.style.background = "#28a745";
     btnCancel.style.display = "block";
 };
 
@@ -53,7 +53,6 @@ window.cancelEdit = function() {
     editID = null;
     inputField.value = "";
     btnSave.innerText = "💾 Simpan ke Firebase";
-    btnSave.style.background = "#123458";
     btnCancel.style.display = "none";
 };
 
@@ -62,53 +61,66 @@ window.toggleStatus = function(id, currentStatus) {
 };
 
 window.deleteMessage = function(id) {
-    if (confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove();
+    if (confirm("Hapus permanen?")) db.ref("messages/" + id).remove();
 };
 
-window.openModal = function() { document.getElementById("rt-modal").style.display = "block"; };
-window.closeModal = function() { document.getElementById("rt-modal").style.display = "none"; cancelEdit(); };
+// --- REALTIME LISTENERS ---
 
-// 5. JAM & RUNNING TEXT LOGIC
-setInterval(() => { 
-    if(document.getElementById("digital-clock")) {
-        document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString("id-ID"); 
-    }
-}, 1000);
-
-function setSpeed(val) { 
-    span.style.animationDuration = val + "s"; 
-    if(document.getElementById("speedValue")) document.getElementById("speedValue").innerText = val; 
-    localStorage.setItem("rtSpeed", val); 
-}
-
+// Listen Pesan
 db.ref("messages").on("value", (snapshot) => {
     const data = snapshot.val();
     messages = [];
     if (data) {
-        Object.keys(data).forEach(key => {
-            messages.push({ ID: key, ...data[key] });
-        });
+        Object.keys(data).forEach(key => { messages.push({ ID: key, ...data[key] }); });
     }
     activeMessages = messages.filter(m => m.Status !== "hidden");
-    
-    // Update daftar di modal
-    const list = document.getElementById("rt-list");
-    if(list) {
-        list.innerHTML = messages.map(m => `
-            <li>
-                <span style="cursor:pointer" onclick="toggleStatus('${m.ID}', '${m.Status}')">${m.Status === 'active' ? '👁️' : '🚫'}</span>
-                <span class="item-text" onclick="prepareEdit('${m.ID}', '${m.Text}')">${m.Text}</span>
-                <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer">🗑️</span>
-            </li>
-        `).join('');
-    }
+    renderList();
+    updateMarquee();
+});
 
+// Listen Kecepatan (AUTO UPDATE ANTAR DEVICE)
+db.ref("settings/speed").on("value", (snapshot) => {
+    const speedVal = snapshot.val() || 15;
+    
+    // Update UI Slider
+    const slider = document.getElementById("speed-slider");
+    const speedLabel = document.getElementById("speedValue");
+    if(slider) slider.value = speedVal;
+    if(speedLabel) speedLabel.innerText = speedVal;
+
+    // Paksa Reset Animasi agar perubahan detik langsung terasa
+    span.style.animation = 'none';
+    void span.offsetWidth; // Trik Reflow
+    span.style.animation = `marquee ${speedVal}s linear infinite`;
+});
+
+// --- LOGIKA RENDER ---
+
+function renderList() {
+    const list = document.getElementById("rt-list");
+    if(!list) return;
+    list.innerHTML = messages.map(m => `
+        <li>
+            <span onclick="toggleStatus('${m.ID}', '${m.Status}')" style="cursor:pointer">
+                ${m.Status === 'active' ? '👁️' : '🚫'}
+            </span>
+            <span class="item-text" onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
+                ${m.Text}
+            </span>
+            <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer; color:red;">🗑️</span>
+        </li>
+    `).join('');
+}
+
+function updateMarquee() {
     if (activeMessages.length > 0) {
-        if (span.textContent.includes("Menghubungkan")) span.textContent = activeMessages[0].Text;
+        if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
+            span.textContent = activeMessages[0].Text;
+        }
     } else {
         span.textContent = "Tidak ada pesan aktif.";
     }
-});
+}
 
 span.addEventListener('animationiteration', () => {
     if (activeMessages.length > 0) {
@@ -118,12 +130,7 @@ span.addEventListener('animationiteration', () => {
     }
 });
 
-window.onload = () => {
-    const savedSpeed = localStorage.getItem("rtSpeed") || 15;
-    const slider = document.getElementById("speed-slider");
-    if(slider) {
-        slider.value = savedSpeed;
-        setSpeed(savedSpeed);
-        slider.oninput = (e) => setSpeed(e.target.value);
-    }
-};
+setInterval(() => { 
+    const clockEl = document.getElementById("digital-clock");
+    if(clockEl) clockEl.innerText = new Date().toLocaleTimeString("id-ID"); 
+}, 1000);
