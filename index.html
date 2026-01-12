@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Tabel Kalkulasi</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -28,18 +29,27 @@
 
 <div id="rt-modal" class="rt-modal">
     <div class="rt-box">
-        <h3>📝 Kelola Running Text</h3>
-        <textarea id="rt-input" maxlength="120" placeholder="Ketik pesan baru di sini..."></textarea>
-        <div class="char-count"><span id="charCount">0</span> / 120</div>
-        <div class="rt-buttons">
-            <button class="btn-save" id="btnSave" onclick="saveText()">💾 Simpan</button>
-            <button class="btn-close" onclick="closeModal()">❌ Tutup</button>
-        </div>
-        <ul id="rt-list"></ul>
+    <h3>📝 Kelola Running Text</h3>
+    <textarea id="rt-input" maxlength="120" placeholder="Ketik pesan baru di sini..."></textarea>
+    <div class="char-count"><span id="charCount">0</span> / 120</div>
+
+    <div class="speed-control">
+        <label>⚡ Kecepatan: <span id="speedValue">15</span> detik</label>
+        <input type="range" id="speed-slider" min="5" max="40" value="15">
+        <small>(Makin kecil angka, makin cepat)</small>
     </div>
+
+    <div class="rt-buttons">
+        <button class="btn-save" id="btnSave" onclick="saveText()">💾 Simpan</button>
+        <button class="btn-close" onclick="closeModal()">❌ Tutup</button>
+    </div>
+
+    <ul id="rt-list"></ul>
 </div>
+</div>
+
+
 
 <script src="script.js"></script>
 </body>
 </html>
-
