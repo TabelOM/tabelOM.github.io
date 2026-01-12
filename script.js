@@ -133,3 +133,4 @@ window.onload = () => {
     setSpeed(savedSpeed);
     document.getElementById("speed-slider").oninput = (e) => setSpeed(e.target.value);
 };
+
