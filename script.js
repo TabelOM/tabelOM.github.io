@@ -1,4 +1,4 @@
-// CONFIG FIREBASE ANDA
+// CONFIG FIREBASE TABELOM60
 const firebaseConfig = {
   apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
   authDomain: "tabelom60.firebaseapp.com",
@@ -10,11 +10,10 @@ const firebaseConfig = {
   measurementId: "G-FZBC4FEVPS"
 };
 
-// Inisialisasi Firebase
+// Inisialisasi
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Variabel Global
 let messages = [];
 let activeMessages = [];
 let editID = null;
@@ -26,18 +25,17 @@ const btnCancel = document.getElementById("btnCancel");
 
 // 1. JAM & SPEED
 setInterval(() => { 
-    if(document.getElementById("digital-clock")) {
-        document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString("id-ID"); 
-    }
+    const now = new Date();
+    document.getElementById("digital-clock").innerText = now.toLocaleTimeString("id-ID"); 
 }, 1000);
 
 function setSpeed(val) { 
     span.style.animationDuration = val + "s"; 
-    if(document.getElementById("speedValue")) document.getElementById("speedValue").innerText = val; 
+    document.getElementById("speedValue").innerText = val; 
     localStorage.setItem("rtSpeed", val); 
 }
 
-// 2. LISTEN DATABASE (REAL-TIME)
+// 2. LISTEN DATABASE (Real-time)
 db.ref("messages").on("value", (snapshot) => {
     const data = snapshot.val();
     messages = [];
@@ -52,7 +50,6 @@ db.ref("messages").on("value", (snapshot) => {
 
 function renderList() {
     const list = document.getElementById("rt-list");
-    if(!list) return;
     list.innerHTML = messages.map(m => {
         const isVisible = m.Status !== "hidden";
         return `
@@ -63,28 +60,29 @@ function renderList() {
             <span class="item-text ${isVisible ? '' : 'text-muted'}" onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
                 ${m.Text}
             </span>
-            <span class="btn-delete" style="cursor:pointer; margin-left:10px" onclick="deleteMessage('${m.ID}')">🗑️</span>
+            <span class="btn-delete" style="cursor:pointer" onclick="deleteMessage('${m.ID}')">🗑️</span>
         </li>
     `}).join('');
 }
 
-// 3. SIMPAN / UPDATE
-async function saveOrUpdate() {
+// 3. ACTIONS (SIMPAN, EDIT, HAPUS)
+function saveOrUpdate() {
     const text = inputField.value.trim();
     if (!text) return;
     
     if (editID) {
-        db.ref("messages/" + editID).update({ Text: text });
+        db.ref("messages/" + editID).update({ Text: text })
+          .then(() => cancelEdit());
     } else {
-        db.ref("messages").push({ Text: text, Status: "active" });
+        db.ref("messages").push({ Text: text, Status: "active" })
+          .then(() => inputField.value = "");
     }
-    cancelEdit();
 }
 
 function prepareEdit(id, text) {
     editID = id;
     inputField.value = text;
-    btnSave.innerText = "🆙 Update Pesan";
+    btnSave.innerText = "🆙 Update";
     btnSave.style.background = "#28a745";
     btnCancel.style.display = "block";
 }
@@ -92,7 +90,7 @@ function prepareEdit(id, text) {
 function cancelEdit() {
     editID = null;
     inputField.value = "";
-    btnSave.innerText = "💾 Simpan Ke Database";
+    btnSave.innerText = "💾 Simpan";
     btnSave.style.background = "#123458";
     btnCancel.style.display = "none";
 }
@@ -108,7 +106,7 @@ function deleteMessage(id) {
 function updateActiveMessages() {
     activeMessages = messages.filter(m => m.Status !== "hidden");
     if (activeMessages.length > 0) {
-        if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
+        if (span.textContent.includes("Menghubungkan")) {
             span.textContent = activeMessages[0].Text;
         }
     } else {
@@ -116,23 +114,22 @@ function updateActiveMessages() {
     }
 }
 
-// INITIAL LOAD
-window.onload = () => {
-    const savedSpeed = localStorage.getItem("rtSpeed") || 15;
-    const slider = document.getElementById("speed-slider");
-    if(slider) {
-        slider.value = savedSpeed;
-        setSpeed(savedSpeed);
-        slider.oninput = (e) => setSpeed(e.target.value);
-    }
-};
-
+// Ganti teks saat animasi selesai (looping)
 span.addEventListener('animationiteration', () => {
     if (activeMessages.length > 0) {
-        const nextMsg = activeMessages[Math.floor(Math.random() * activeMessages.length)];
-        span.textContent = nextMsg.Text;
+        const currentIndex = activeMessages.findIndex(m => m.Text === span.textContent);
+        const nextIndex = (currentIndex + 1) % activeMessages.length;
+        span.textContent = activeMessages[nextIndex].Text;
     }
 });
 
+// Modal Control
 function openModal() { document.getElementById("rt-modal").style.display = "block"; }
 function closeModal() { document.getElementById("rt-modal").style.display = "none"; cancelEdit(); }
+
+window.onload = () => {
+    const savedSpeed = localStorage.getItem("rtSpeed") || 15;
+    document.getElementById("speed-slider").value = savedSpeed;
+    setSpeed(savedSpeed);
+    document.getElementById("speed-slider").oninput = (e) => setSpeed(e.target.value);
+};
