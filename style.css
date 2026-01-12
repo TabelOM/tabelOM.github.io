@@ -9,7 +9,7 @@ html, body {
     height: 100vh;
 }
 
-/* BAR UTAMA */
+/* BAR UTAMA MINIMALIS */
 .unified-bar {
     background: #123458;
     position: relative;
@@ -20,14 +20,14 @@ html, body {
     overflow: hidden;
 }
 
-/* RUNNING TEXT - Dibuat Lebih Terang */
+/* RUNNING TEXT */
 #running-text {
     width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1; /* Di belakang jam */
+    z-index: 1;
 }
 
 #running-text span {
@@ -35,10 +35,11 @@ html, body {
     white-space: nowrap;
     font-size: 1rem;
     font-weight: 600;
-    color: #ffffff; /* Putih terang */
+    color: #ffffff;
     line-height: 30px;
     position: absolute;
-    animation: marquee 10s linear infinite;
+    /* Durasi default 15s, akan diupdate oleh JS */
+    animation: marquee 15s linear infinite;
 }
 
 @keyframes marquee {
@@ -46,7 +47,7 @@ html, body {
     100% { transform: translateX(-100%); }
 }
 
-/* CONTAINER JAM - Menjamin Center & Tidak Memutus Teks */
+/* JAM DIGITAL (KUNING MINIMALIS) */
 .clock-container {
     position: absolute;
     left: 50%;
@@ -55,22 +56,22 @@ html, body {
     display: flex;
     align-items: center;
     height: 100%;
-    pointer-events: none; /* Agar klik bisa tembus ke belakang jika perlu */
+    pointer-events: none;
 }
 
 #digital-clock {
-    background: #ffc107; /* Kuning minimalis */
+    background: #ffc107;
     color: #123458;
     padding: 0 12px;
     font-weight: bold;
     font-size: 0.9rem;
-    height: 22px; /* Lebih kecil dari bar agar minimalis */
+    height: 22px;
     line-height: 22px;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* GEAR - Pojok Kanan */
+/* GEAR POJOK KANAN */
 #btn-manage-rt {
     position: absolute;
     right: 5px;
@@ -87,21 +88,26 @@ html, body {
     justify-content: center;
 }
 
-#btn-manage-rt:hover {
-    color: #ffc107;
-}
-
 /* IFRAME AREA */
 .content-area { flex-grow: 1; }
 iframe { width: 100%; height: 100%; border: none; }
 
-/* MODAL */
+/* MODAL & SETTINGS */
 .rt-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9999; }
-.rt-box { background: #fff; width: 90%; max-width: 450px; margin: 50px auto; padding: 20px; border-radius: 8px; }
+.rt-box { background: #fff; width: 90%; max-width: 450px; margin: 40px auto; padding: 20px; border-radius: 8px; }
+
+.speed-control {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f1f5f9;
+    border-radius: 6px;
+}
+
 #rt-input { width: 100%; height: 70px; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; }
 .rt-buttons { display: flex; gap: 8px; margin-top: 10px; }
-.btn-save { background: #123458; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+.btn-save { background: #123458; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; flex: 1; }
 .btn-close { background: #eee; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
-#rt-list { list-style: none; padding: 0; margin-top: 15px; max-height: 200px; overflow-y: auto; }
+
+#rt-list { list-style: none; padding: 0; margin-top: 15px; max-height: 180px; overflow-y: auto; }
 #rt-list li { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 0.85rem; }
-.delete-btn { color: red; cursor: pointer; }
+.delete-btn { color: red; cursor: pointer; font-weight: bold; }
