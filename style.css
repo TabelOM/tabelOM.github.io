@@ -12,7 +12,7 @@ body { background: var(--bg-main); overflow: hidden; height: 100vh; }
 .unified-bar {
     display: flex;
     background: var(--navy);
-    height: 50px;
+    height: 30px;
     align-items: center;
     border-bottom: 3px solid var(--gold);
     position: relative;
@@ -99,3 +99,4 @@ iframe { width: 100%; height: 100%; border: none; }
 .item-text:hover { color: var(--navy); font-weight: bold; }
 .text-muted { color: #ccc; text-decoration: line-through; }
 .muted { opacity: 0.3; }
+
