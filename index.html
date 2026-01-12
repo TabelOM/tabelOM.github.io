@@ -2,54 +2,50 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Tabel Kalkulasi</title>
+    <title>Tabel Kalkulasit</title>
+    
     <link rel="icon" type="image/png" href="favicon.png">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="main-wrapper">
-    <header class="unified-bar">
-        <div id="running-text">
-            <span id="running-content">Memuat data running text...</span>
-        </div>
-        
-        <div class="clock-container">
-            <div id="digital-clock">00:00:00</div>
-        </div>
-        
-        <button id="btn-manage-rt" title="Kelola Teks">⚙️</button>
-    </header>
-
-    <main class="content-area">
-        <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"></iframe>
-    </main>
-</div>
-
-<div id="rt-modal" class="rt-modal">
-    <div class="rt-box">
-    <h3>📝 Kelola Running Text</h3>
-    <textarea id="rt-input" maxlength="120" placeholder="Ketik pesan baru di sini..."></textarea>
-    <div class="char-count"><span id="charCount">0</span> / 120</div>
-
-    <div class="speed-control">
-        <label>⚡ Kecepatan: <span id="speedValue">15</span> detik</label>
-        <input type="range" id="speed-slider" min="5" max="40" value="15">
-        <small>(Makin kecil angka, makin cepat)</small>
+    <div class="main-wrapper">
+        <header class="unified-bar">
+            <div id="running-text-wrapper"><span id="running-content">Memuat data...</span></div>
+            <div class="clock-container"><div id="digital-clock">00:00:00</div></div>
+            <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
+        </header>
+        <main class="content-area">
+            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"></iframe>
+        </main>
     </div>
 
-    <div class="rt-buttons">
-        <button class="btn-save" id="btnSave" onclick="saveText()">💾 Simpan</button>
-        <button class="btn-close" onclick="closeModal()">❌ Tutup</button>
+    <div id="rt-modal" class="rt-modal">
+        <div class="rt-box">
+            <div class="rt-header">
+                <h2>⚙️ Pengaturan Running Text</h2>
+                <button class="btn-close-top" onclick="closeModal()">Tutup &times;</button>
+            </div>
+            <div class="rt-body">
+                <div class="input-group">
+                    <label id="input-label">Tambah Pesan Baru</label>
+                    <textarea id="rt-input" placeholder="Tulis pesan..." maxlength="150"></textarea>
+                    <button class="btn-save" id="btnSave" onclick="saveOrUpdate()">💾 Simpan Ke Database</button>
+                    <button id="btnCancel" style="display:none; background:#ccc; border:none; margin-top:5px; border-radius:10px; padding:5px; cursor:pointer;" onclick="cancelEdit()">Batal Edit</button>
+                </div>
+                <hr class="divider">
+                <div class="control-card">
+                    <label>⚡ Kecepatan</label>
+                    <input type="range" id="speed-slider" min="5" max="50" value="15">
+                    <div class="speed-info"><span id="speedValue">15</span> detik</div>
+                </div>
+                <hr class="divider">
+                <label>📋 Daftar Pesan (Klik teks untuk edit)</label>
+                <div class="list-container"><ul id="rt-list"></ul></div>
+            </div>
+        </div>
     </div>
-
-    <ul id="rt-list"></ul>
-</div>
-</div>
-
-
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
