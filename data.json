@@ -3,15 +3,7 @@
     "ID": "1",
     "Text": "Selamat Datang di Dashboard Tabelom!",
     "Status": "active"
-  },
-  {
-    "ID": "2",
-    "Text": "Pengumuman: Rapat koordinasi pukul 14:00 WIB.",
-    "Status": "active"
-  },
-  {
-    "ID": "3",
-    "Text": "Pesan ini sedang disembunyikan.",
-    "Status": "hidden"
   }
+  
+
 ]
