@@ -52,7 +52,7 @@ window.prepareEdit = function(id, text) {
 window.cancelEdit = function() {
     editID = null;
     inputField.value = "";
-    btnSave.innerText = "💾 Simpan ke Firebase";
+    btnSave.innerText = "💾 Simpan";
     btnCancel.style.display = "none";
 };
 
@@ -134,3 +134,4 @@ setInterval(() => {
     const clockEl = document.getElementById("digital-clock");
     if(clockEl) clockEl.innerText = new Date().toLocaleTimeString("id-ID"); 
 }, 1000);
+
