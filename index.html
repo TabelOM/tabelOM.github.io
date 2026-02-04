@@ -8,10 +8,168 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
     
-    <link rel="stylesheet" href="style.css">
-    
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+    <style>
+        /* --- CSS DARI USER --- */
+        :root {
+            --bg-main: #f0f2f5;
+            --navy: #123458;
+            --gold: #fcc006;
+            --text-muted: #65676b;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; /* Perbaikan dari box-box */
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+        }
+
+        body { 
+            background: var(--bg-main); 
+            overflow: hidden; 
+            height: 100vh; 
+        }
+
+        /* HEADER BAR */
+        .unified-bar {
+            display: flex;
+            background: var(--navy);
+            height: 30px; /* Sesuai request: tipis & elegan */
+            align-items: center;
+            border-bottom: 3px solid var(--gold);
+            position: relative;
+            z-index: 100;
+        }
+
+        #running-text-wrapper {
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        #running-content {
+            display: inline-block;
+            color: white;
+            font-size: 1.1rem; /* Disesuaikan dengan tinggi bar */
+            font-weight: bold;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        .clock-container {
+            background: var(--gold);
+            color: var(--navy);
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        #btn-manage-rt {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 15px;
+        }
+
+        /* CONTENT AREA */
+        .content-area { 
+            height: calc(100vh - 30px); /* Menyesuaikan tinggi bar 30px */
+        }
+        
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* MODAL */
+        .rt-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .rt-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            margin: 50px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .rt-header { 
+            background: var(--navy); 
+            color: white; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .btn-close-top { background: none; border: none; color: white; font-size: 25px; cursor: pointer; }
+
+        .rt-body { padding: 20px; }
+        
+        #rt-input { 
+            width: 100%; 
+            height: 80px; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            resize: none; 
+            margin-bottom: 10px; 
+            font-size: 1rem;
+        }
+
+        .btn-save { 
+            background: var(--navy); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .list-container { max-height: 250px; overflow-y: auto; margin-top: 15px; }
+        #rt-list { list-style: none; padding: 0; }
+        
+        #rt-list li { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 10px; 
+            border-bottom: 1px solid #eee; 
+            font-size: 0.9rem;
+        }
+
+        .item-text { flex-grow: 1; cursor: pointer; color: #333; }
+        .item-text:hover { color: var(--navy); font-weight: bold; }
+        
+        /* Status Classes */
+        .text-muted { color: #ccc; text-decoration: line-through; }
+        .muted { opacity: 0.3; }
+
+        /* Speed Slider Styling */
+        .speed-control { margin: 15px 0; font-size: 0.9rem; color: var(--navy); font-weight: bold; }
+        #speed-slider { width: 100%; margin-top: 5px; cursor: pointer; }
+    </style>
 </head>
 <body>
 
@@ -34,26 +192,26 @@
     <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
             <div class="rt-header">
-                <h2>⚙️ Pengaturan Running Text</h2>
+                <h3>⚙️ Pengaturan</h3>
                 <button class="btn-close-top" onclick="closeModal()">&times;</button>
             </div>
             <div class="rt-body">
-                <div class="input-group">
-                    <label>📝 Tambah / Edit Pesan</label>
-                    <textarea id="rt-input" placeholder="Tulis pesan di sini..." maxlength="150"></textarea>
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn-save" id="btnSave" onclick="saveOrUpdate()" style="flex: 2;">💾 Simpan</button>
-                        <button id="btnCancel" onclick="cancelEdit()" style="display:none; flex: 1; background:#888; color:white; border:none; border-radius:10px;">Batal</button>
-                    </div>
+                <label style="font-weight: bold; color: var(--navy);">Pesan Baru:</label>
+                <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-save" id="btnSave" onclick="saveOrUpdate()">💾 Simpan</button>
+                    <button id="btnCancel" onclick="cancelEdit()" style="display:none; background:#888; color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; flex:1; height: 43px;">Batal</button>
                 </div>
-                <hr>
-                <div class="control-card">
-                    <label>Kecepatan</label>
+
+                <div class="speed-control">
+                    <label>⏱️ Kecepatan: <span id="speedValue">15</span>s</label>
                     <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)">
-                    <div class="speed-info"><span id="speedValue">15</span> detik (semakin kecil = semakin cepat)</div>
                 </div>
-                <hr>
-                <label>📋 Daftar Pesan Aktif</label>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+                
+                <label style="font-weight: bold; color: var(--navy);">Daftar Pesan:</label>
                 <div class="list-container">
                     <ul id="rt-list"></ul>
                 </div>
@@ -61,8 +219,135 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // --- CONFIG FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
+            authDomain: "tabelom60.firebaseapp.com",
+            databaseURL: "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tabelom60",
+            storageBucket: "tabelom60.firebasestorage.app",
+            messagingSenderId: "823392737112",
+            appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let messages = [];
+        let activeMessages = [];
+        let editID = null;
+
+        const span = document.getElementById("running-content");
+        const inputField = document.getElementById("rt-input");
+        const btnSave = document.getElementById("btnSave");
+        const btnCancel = document.getElementById("btnCancel");
+
+        // --- FUNCTIONS ---
+        window.openModal = function() { document.getElementById("rt-modal").style.display = "block"; };
+        window.closeModal = function() { document.getElementById("rt-modal").style.display = "none"; cancelEdit(); };
+
+        window.saveOrUpdate = function() {
+            const text = inputField.value.trim();
+            if (!text) return alert("Isi pesan dulu!");
+            
+            if (editID) {
+                db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
+            } else {
+                db.ref("messages").push({ Text: text, Status: "active" }).then(() => { inputField.value = ""; });
+            }
+        };
+
+        window.updateSpeed = function(val) {
+            db.ref("settings/speed").set(parseInt(val));
+        };
+
+        window.prepareEdit = function(id, text) {
+            editID = id;
+            inputField.value = text;
+            btnSave.innerText = "🆙 Update";
+            btnCancel.style.display = "block";
+            btnSave.style.flex = "2";
+        };
+
+        window.cancelEdit = function() {
+            editID = null;
+            inputField.value = "";
+            btnSave.innerText = "💾 Simpan";
+            btnCancel.style.display = "none";
+            btnSave.style.flex = "1";
+        };
+
+        window.toggleStatus = function(id, currentStatus) {
+            db.ref("messages/" + id).update({ Status: currentStatus === "active" ? "hidden" : "active" });
+        };
+
+        window.deleteMessage = function(id) {
+            if (confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove();
+        };
+
+        // --- LISTENERS ---
+        db.ref("messages").on("value", (snapshot) => {
+            const data = snapshot.val();
+            messages = [];
+            if (data) {
+                Object.keys(data).forEach(key => { messages.push({ ID: key, ...data[key] }); });
+            }
+            activeMessages = messages.filter(m => m.Status !== "hidden");
+            renderList();
+            updateMarquee();
+        });
+
+        db.ref("settings/speed").on("value", (snapshot) => {
+            const speedVal = snapshot.val() || 15;
+            document.getElementById("speed-slider").value = speedVal;
+            document.getElementById("speedValue").innerText = speedVal;
+
+            span.style.animation = 'none';
+            void span.offsetWidth; 
+            span.style.animation = `marquee ${speedVal}s linear infinite`;
+        });
+
+        function renderList() {
+            const list = document.getElementById("rt-list");
+            list.innerHTML = messages.map(m => `
+                <li class="${m.Status === 'hidden' ? 'muted' : ''}">
+                    <span onclick="toggleStatus('${m.ID}', '${m.Status}')" style="cursor:pointer; font-size: 1.2rem;">
+                        ${m.Status === 'active' ? '👁️' : '🚫'}
+                    </span>
+                    <span class="item-text ${m.Status === 'hidden' ? 'text-muted' : ''}" onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
+                        ${m.Text}
+                    </span>
+                    <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer; color:#ff4d4d;">🗑️</span>
+                </li>
+            `).join('');
+        }
+
+        function updateMarquee() {
+            if (activeMessages.length > 0) {
+                if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
+                    span.textContent = activeMessages[0].Text;
+                }
+            } else {
+                span.textContent = "Tidak ada pesan aktif.";
+            }
+        }
+
+        span.addEventListener('animationiteration', () => {
+            if (activeMessages.length > 1) {
+                const currentIndex = activeMessages.findIndex(m => m.Text === span.textContent);
+                const nextIndex = (currentIndex + 1) % activeMessages.length;
+                span.textContent = activeMessages[nextIndex].Text;
+            }
+        });
+
+        // Clock
+        setInterval(() => { 
+            const now = new Date();
+            document.getElementById("digital-clock").innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                                                                now.getMinutes().toString().padStart(2, '0') + ":" + 
+                                                                now.getSeconds().toString().padStart(2, '0');
+        }, 1000);
+    </script>
 </body>
 </html>
-
-
