@@ -12,7 +12,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
-        /* --- CSS DARI USER --- */
         :root {
             --bg-main: #f0f2f5;
             --navy: #123458;
@@ -23,7 +22,7 @@
         * { 
             margin: 0; 
             padding: 0; 
-            box-sizing: border-box; /* Perbaikan dari box-box */
+            box-sizing: border-box; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
 
@@ -33,11 +32,11 @@
             height: 100vh; 
         }
 
-        /* HEADER BAR */
+        /* --- Header / Navigation Bar --- */
         .unified-bar {
             display: flex;
             background: var(--navy);
-            height: 30px; /* Sesuai request: tipis & elegan */
+            height: 30px;
             align-items: center;
             border-bottom: 3px solid var(--gold);
             position: relative;
@@ -54,7 +53,7 @@
         #running-content {
             display: inline-block;
             color: white;
-            font-size: 1.1rem; /* Disesuaikan dengan tinggi bar */
+            font-size: 1.1rem;
             font-weight: bold;
             padding-left: 100%;
             animation: marquee 15s linear infinite;
@@ -85,14 +84,18 @@
             padding: 0 15px;
         }
 
-        /* CONTENT AREA */
+        /* --- Content Area (AppSheet Iframe) --- */
         .content-area { 
-            height: calc(100vh - 30px); /* Menyesuaikan tinggi bar 30px */
+            height: calc(100vh - 30px); 
         }
         
-        iframe { width: 100%; height: 100%; border: none; }
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
 
-        /* MODAL */
+        /* --- Modal System --- */
         .rt-modal {
             display: none;
             position: fixed;
@@ -120,9 +123,17 @@
             align-items: center; 
         }
 
-        .btn-close-top { background: none; border: none; color: white; font-size: 25px; cursor: pointer; }
+        .btn-close-top { 
+            background: none; 
+            border: none; 
+            color: white; 
+            font-size: 25px; 
+            cursor: pointer; 
+        }
 
-        .rt-body { padding: 20px; }
+        .rt-body { 
+            padding: 20px; 
+        }
         
         #rt-input { 
             width: 100%; 
@@ -147,8 +158,17 @@
             margin-bottom: 10px;
         }
 
-        .list-container { max-height: 250px; overflow-y: auto; margin-top: 15px; }
-        #rt-list { list-style: none; padding: 0; }
+        /* --- List Elements --- */
+        .list-container { 
+            max-height: 250px; 
+            overflow-y: auto; 
+            margin-top: 15px; 
+        }
+
+        #rt-list { 
+            list-style: none; 
+            padding: 0; 
+        }
         
         #rt-list li { 
             display: flex; 
@@ -159,16 +179,38 @@
             font-size: 0.9rem;
         }
 
-        .item-text { flex-grow: 1; cursor: pointer; color: #333; }
-        .item-text:hover { color: var(--navy); font-weight: bold; }
-        
-        /* Status Classes */
-        .text-muted { color: #ccc; text-decoration: line-through; }
-        .muted { opacity: 0.3; }
+        .item-text { 
+            flex-grow: 1; 
+            cursor: pointer; 
+            color: #333; 
+        }
 
-        /* Speed Slider Styling */
-        .speed-control { margin: 15px 0; font-size: 0.9rem; color: var(--navy); font-weight: bold; }
-        #speed-slider { width: 100%; margin-top: 5px; cursor: pointer; }
+        .item-text:hover { 
+            color: var(--navy); 
+            font-weight: bold; 
+        }
+        
+        .text-muted { 
+            color: #ccc; 
+            text-decoration: line-through; 
+        }
+
+        .muted { 
+            opacity: 0.3; 
+        }
+
+        .speed-control { 
+            margin: 15px 0; 
+            font-size: 0.9rem; 
+            color: var(--navy); 
+            font-weight: bold; 
+        }
+
+        #speed-slider { 
+            width: 100%; 
+            margin-top: 5px; 
+            cursor: pointer; 
+        }
     </style>
 </head>
 <body>
@@ -220,7 +262,9 @@
     </div>
 
     <script>
-        // --- CONFIG FIREBASE ---
+        /**
+         * INITIALIZATION & CONFIG
+         */
         const firebaseConfig = {
             apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
             authDomain: "tabelom60.firebaseapp.com",
@@ -243,34 +287,19 @@
         const btnSave = document.getElementById("btnSave");
         const btnCancel = document.getElementById("btnCancel");
 
-        // --- FUNCTIONS ---
-        window.openModal = function() { document.getElementById("rt-modal").style.display = "block"; };
-        window.closeModal = function() { document.getElementById("rt-modal").style.display = "none"; cancelEdit(); };
-
-        window.saveOrUpdate = function() {
-            const text = inputField.value.trim();
-            if (!text) return alert("Isi pesan dulu!");
-            
-            if (editID) {
-                db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
-            } else {
-                db.ref("messages").push({ Text: text, Status: "active" }).then(() => { inputField.value = ""; });
-            }
+        /**
+         * UI FUNCTIONS
+         */
+        window.openModal = () => { 
+            document.getElementById("rt-modal").style.display = "block"; 
         };
 
-        window.updateSpeed = function(val) {
-            db.ref("settings/speed").set(parseInt(val));
+        window.closeModal = () => { 
+            document.getElementById("rt-modal").style.display = "none"; 
+            cancelEdit(); 
         };
 
-        window.prepareEdit = function(id, text) {
-            editID = id;
-            inputField.value = text;
-            btnSave.innerText = "🆙 Update";
-            btnCancel.style.display = "block";
-            btnSave.style.flex = "2";
-        };
-
-        window.cancelEdit = function() {
+        window.cancelEdit = () => {
             editID = null;
             inputField.value = "";
             btnSave.innerText = "💾 Simpan";
@@ -278,36 +307,76 @@
             btnSave.style.flex = "1";
         };
 
-        window.toggleStatus = function(id, currentStatus) {
-            db.ref("messages/" + id).update({ Status: currentStatus === "active" ? "hidden" : "active" });
+        window.prepareEdit = (id, text) => {
+            editID = id;
+            inputField.value = text;
+            btnSave.innerText = "🆙 Update";
+            btnCancel.style.display = "block";
+            btnSave.style.flex = "2";
         };
 
-        window.deleteMessage = function(id) {
+        /**
+         * DATABASE OPERATIONS
+         */
+        window.saveOrUpdate = () => {
+            const text = inputField.value.trim();
+            if (!text) return alert("Isi pesan dulu!");
+            
+            if (editID) {
+                db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
+            } else {
+                db.ref("messages").push({ Text: text, Status: "active" }).then(() => { 
+                    inputField.value = ""; 
+                });
+            }
+        };
+
+        window.updateSpeed = (val) => {
+            db.ref("settings/speed").set(parseInt(val));
+        };
+
+        window.toggleStatus = (id, currentStatus) => {
+            db.ref("messages/" + id).update({ 
+                Status: currentStatus === "active" ? "hidden" : "active" 
+            });
+        };
+
+        window.deleteMessage = (id) => {
             if (confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove();
         };
 
-        // --- LISTENERS ---
+        /**
+         * REALTIME LISTENERS
+         */
+        
+        // Listen to Messages
         db.ref("messages").on("value", (snapshot) => {
             const data = snapshot.val();
             messages = [];
             if (data) {
-                Object.keys(data).forEach(key => { messages.push({ ID: key, ...data[key] }); });
+                Object.keys(data).forEach(key => { 
+                    messages.push({ ID: key, ...data[key] }); 
+                });
             }
             activeMessages = messages.filter(m => m.Status !== "hidden");
             renderList();
             updateMarquee();
         });
 
+        // Listen to Speed Settings
         db.ref("settings/speed").on("value", (snapshot) => {
             const speedVal = snapshot.val() || 15;
             document.getElementById("speed-slider").value = speedVal;
             document.getElementById("speedValue").innerText = speedVal;
 
             span.style.animation = 'none';
-            void span.offsetWidth; 
+            void span.offsetWidth; // Trigger reflow
             span.style.animation = `marquee ${speedVal}s linear infinite`;
         });
 
+        /**
+         * RENDERING LOGIC
+         */
         function renderList() {
             const list = document.getElementById("rt-list");
             list.innerHTML = messages.map(m => `
@@ -315,7 +384,8 @@
                     <span onclick="toggleStatus('${m.ID}', '${m.Status}')" style="cursor:pointer; font-size: 1.2rem;">
                         ${m.Status === 'active' ? '👁️' : '🚫'}
                     </span>
-                    <span class="item-text ${m.Status === 'hidden' ? 'text-muted' : ''}" onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
+                    <span class="item-text ${m.Status === 'hidden' ? 'text-muted' : ''}" 
+                          onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
                         ${m.Text}
                     </span>
                     <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer; color:#ff4d4d;">🗑️</span>
@@ -325,6 +395,7 @@
 
         function updateMarquee() {
             if (activeMessages.length > 0) {
+                // Jangan paksa ganti teks jika sudah ada teks yang sedang jalan, kecuali kondisi awal
                 if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
                     span.textContent = activeMessages[0].Text;
                 }
@@ -333,20 +404,26 @@
             }
         }
 
+        // Loop Marquee ke pesan berikutnya setelah satu putaran animasi selesai
         span.addEventListener('animationiteration', () => {
             if (activeMessages.length > 1) {
                 const currentIndex = activeMessages.findIndex(m => m.Text === span.textContent);
                 const nextIndex = (currentIndex + 1) % activeMessages.length;
                 span.textContent = activeMessages[nextIndex].Text;
+            } else if (activeMessages.length === 1) {
+                span.textContent = activeMessages[0].Text;
             }
         });
 
-        // Clock
+        /**
+         * CLOCK SYSTEM
+         */
         setInterval(() => { 
             const now = new Date();
-            document.getElementById("digital-clock").innerText = now.getHours().toString().padStart(2, '0') + ":" + 
-                                                                now.getMinutes().toString().padStart(2, '0') + ":" + 
-                                                                now.getSeconds().toString().padStart(2, '0');
+            const timeString = now.getHours().toString().padStart(2, '0') + ":" + 
+                               now.getMinutes().toString().padStart(2, '0') + ":" + 
+                               now.getSeconds().toString().padStart(2, '0');
+            document.getElementById("digital-clock").innerText = timeString;
         }, 1000);
     </script>
 </body>
