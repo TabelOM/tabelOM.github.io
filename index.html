@@ -5,394 +5,426 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TabeL Kalkulasi</title>
     
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
         :root {
-            --navy: #123458; --gold: #fcc006; --bg-main: #f8fafc;
-            --sidebar-width: 280px; --transition-speed: 0.4s;
-            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-main: #f0f2f5;
+            --navy: #123458;
+            --gold: #fcc006;
+            --text-muted: #65676b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg-main); display: flex; height: 100vh; width: 100vw; overflow: hidden; }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: var(--sidebar-width); min-width: var(--sidebar-width);
-            background: var(--navy); color: white; display: flex; flex-direction: column; 
-            z-index: 1001; transition: margin-left var(--transition-speed) var(--ease);
-            box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
-        body.sidebar-closed .sidebar { margin-left: calc(-1 * var(--sidebar-width)); box-shadow: none; }
 
-        #sidebar-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-            z-index: 1000; backdrop-filter: blur(2px);
+        body { 
+            background: var(--bg-main); 
+            overflow: hidden; 
+            height: 100vh; 
         }
-        body:not(.sidebar-closed) #sidebar-overlay { display: block; }
 
-        .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 3px solid var(--gold); font-weight: 800; }
-        .sidebar-menu { flex-grow: 1; padding: 20px 0; }
-        .menu-item {
-            padding: 16px 25px; display: flex; align-items: center; gap: 15px;
-            cursor: pointer; transition: 0.3s; border-left: 4px solid transparent; color: rgba(255,255,255,0.8);
+        /* --- Header / Navigation Bar --- */
+        .unified-bar {
+            display: flex;
+            background: var(--navy);
+            height: 30px;
+            align-items: center;
+            border-bottom: 3px solid var(--gold);
+            position: relative;
+            z-index: 100;
         }
-        .menu-item:hover, .menu-item.active { background: rgba(252, 192, 6, 0.1); border-left: 4px solid var(--gold); color: var(--gold); }
 
-        /* --- MAIN CONTAINER --- */
-        .main-container { flex: 1; display: flex; flex-direction: column; min-width: 0; width: 100%; height: 100%; }
+        #running-text-wrapper {
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
 
-        .header-bar { height: 60px; background: var(--navy); display: flex; align-items: center; padding: 0 15px; color: white; border-bottom: 2px solid var(--gold); z-index: 10; }
-        .btn-hamburger { background: rgba(255,255,255,0.1); border: none; color: white; font-size: 22px; cursor: pointer; width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
+        #running-content {
+            display: inline-block;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+        }
 
-        #running-text-wrapper { flex-grow: 1; overflow: hidden; white-space: nowrap; background: rgba(0,0,0,0.3); height: 35px; display: flex; align-items: center; border-radius: 6px; }
-        #running-content { display: inline-block; font-weight: 600; animation: marquee 15s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
 
-        .clock-container { background: var(--gold); color: var(--navy); padding: 0 15px; height: 35px; display: flex; align-items: center; font-weight: 800; margin-left: 15px; border-radius: 6px; }
+        .clock-container {
+            background: var(--gold);
+            color: var(--navy);
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
 
-        /* --- PAGES --- */
-        .content-page { display: none; height: 100%; width: 100%; overflow-y: auto; }
-        .content-page.active { display: block; }
-        iframe { width: 100%; height: 100%; border: none; }
+        #btn-manage-rt {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 15px;
+        }
 
-        /* TABLES & BADGES */
-        .mon-header { padding: 20px; background: white; text-align: center; border-bottom: 1px solid #e2e8f0; }
-        .search-box { width: 100%; max-width: 400px; padding: 10px 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; outline: none; }
+        /* --- Content Area (AppSheet Iframe) --- */
+        .content-area { 
+            height: calc(100vh - 30px); 
+        }
         
-        .table-wrap { padding: 25px; }
-        .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th { padding: 15px; background: #f8fafc; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #334155; }
-        tr:not(.group-header):hover td { background: #fffbeb; cursor: pointer; }
-        .group-header { background: #f1f5f9; font-weight: bold; color: var(--navy); border-left: 4px solid var(--gold); }
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
 
-        .badge { padding: 5px 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
-        .bg-progress { background: #e0f2fe; color: #0369a1; }
-        .bg-done { background: #dcfce7; color: #15803d; }
+        /* --- Modal System --- */
+        .rt-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
 
-        /* MODAL DETAIL */
-        .rt-modal { display: none; position: fixed; inset: 0; background: rgba(18, 52, 88, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
-        .rt-box { background: white; width: 95%; max-width: 650px; border-radius: 24px; overflow: hidden; animation: slideUp 0.3s; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .detail-header { background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .detail-grid { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .detail-item { border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .detail-label { font-size: 0.65rem; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
-        .detail-value { font-size: 1rem; color: var(--navy); font-weight: 600; margin-top: 4px; }
-        .full-width { grid-column: span 2; }
+        .rt-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            margin: 50px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
 
-        /* RT SPECIFIC STYLES */
-        .rt-history { max-height: 180px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f9f9f9; font-size: 0.85rem; }
-        .btn-delete { color: #ef4444; cursor: pointer; border: none; background: none; display: flex; align-items: center; }
-        .setting-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .setting-row div { flex: 1; }
+        .rt-header { 
+            background: var(--navy); 
+            color: white; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .btn-close-top { 
+            background: none; 
+            border: none; 
+            color: white; 
+            font-size: 25px; 
+            cursor: pointer; 
+        }
+
+        .rt-body { 
+            padding: 20px; 
+        }
+        
+        #rt-input { 
+            width: 100%; 
+            height: 80px; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            resize: none; 
+            margin-bottom: 10px; 
+            font-size: 1rem;
+        }
+
+        .btn-save { 
+            background: var(--navy); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* --- List Elements --- */
+        .list-container { 
+            max-height: 250px; 
+            overflow-y: auto; 
+            margin-top: 15px; 
+        }
+
+        #rt-list { 
+            list-style: none; 
+            padding: 0; 
+        }
+        
+        #rt-list li { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 10px; 
+            border-bottom: 1px solid #eee; 
+            font-size: 0.9rem;
+        }
+
+        .item-text { 
+            flex-grow: 1; 
+            cursor: pointer; 
+            color: #333; 
+        }
+
+        .item-text:hover { 
+            color: var(--navy); 
+            font-weight: bold; 
+        }
+        
+        .text-muted { 
+            color: #ccc; 
+            text-decoration: line-through; 
+        }
+
+        .muted { 
+            opacity: 0.3; 
+        }
+
+        .speed-control { 
+            margin: 15px 0; 
+            font-size: 0.9rem; 
+            color: var(--navy); 
+            font-weight: bold; 
+        }
+
+        #speed-slider { 
+            width: 100%; 
+            margin-top: 5px; 
+            cursor: pointer; 
+        }
     </style>
 </head>
-<body class="sidebar-closed">
+<body>
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <aside class="sidebar">
-        <div class="sidebar-header">TABEL SYSTEM</div>
-        <nav class="sidebar-menu">
-            <div class="menu-item active" onclick="showPage('appsheet', this)">
-                <i data-feather="grid"></i> Dashboard Utama
-            </div>
-            <div class="menu-item" onclick="showPage('monitoring', this)">
-                <i data-feather="activity"></i> Monitoring Perbaikan
-            </div>
-            <div class="menu-item" onclick="showPage('kontraktor', this)">
-                <i data-feather="users"></i> Monitor Kontraktor
-            </div>
-            <div class="menu-item" onclick="openRTModal()">
-                <i data-feather="edit-3"></i> Atur Running Text
-            </div>
-        </nav>
-    </aside>
-
-    <div class="main-container">
-        <header class="header-bar">
-            <button class="btn-hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="main-wrapper">
+        <header class="unified-bar">
             <div id="running-text-wrapper">
-                <span id="running-content">Menghubungkan Database...</span>
+                <span id="running-content">Menghubungkan ke Database...</span>
             </div>
-            <div class="clock-container" id="digital-clock">00:00:00</div>
+            <div class="clock-container">
+                <div id="digital-clock">00:00:00</div>
+            </div>
+            <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
         </header>
 
-        <div id="page-appsheet" class="content-page active">
-            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"></iframe>
-        </div>
-
-        <div id="page-monitoring" class="content-page">
-            <div class="mon-header">
-                <h2>Monitoring Daily Activity</h2>
-                <input type="text" class="search-box" id="searchPerbaikan" placeholder="Cari data perbaikan..." onkeyup="filterData('perbaikan')">
-            </div>
-            <div class="table-wrap">
-                <div class="table-container"><div style="overflow-x:auto;">
-                    <table>
-                        <thead><tr><th>Tanggal</th><th>No ESPK</th><th>Activity</th><th>Area</th><th>Status</th></tr></thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                </div></div>
-            </div>
-        </div>
-
-        <div id="page-kontraktor" class="content-page">
-            <div class="mon-header">
-                <h2>Monitor Progress Kontraktor</h2>
-                <input type="text" class="search-box" id="searchKontraktor" placeholder="Cari kontraktor atau area..." onkeyup="filterData('kontraktor')">
-            </div>
-            <div class="table-wrap">
-                <div class="table-container"><div style="overflow-x:auto;">
-                    <table>
-                        <thead><tr><th>Area</th><th>Tag Number</th><th>Activity</th><th>Progress</th><th>Kontraktor</th><th>Resiko</th></tr></thead>
-                        <tbody id="kontraktorTableBody"></tbody>
-                    </table>
-                </div></div>
-            </div>
-        </div>
+        <main class="content-area">
+            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
+        </main>
     </div>
 
-    <div id="detailModal" class="rt-modal">
+    <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
-            <div class="detail-header">
-                <h3>📋 Informasi Detail</h3>
-                <button onclick="closeDetail()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
+            <div class="rt-header">
+                <h3>⚙️ Pengaturan</h3>
+                <button class="btn-close-top" onclick="closeModal()">&times;</button>
             </div>
-            <div class="detail-grid" id="detailContent"></div>
-            <button onclick="closeDetail()" style="width:100%; padding:15px; background:var(--navy); color:white; border:none; font-weight:bold; cursor:pointer;">TUTUP</button>
-        </div>
-    </div>
-
-    <div id="rtModal" class="rt-modal">
-        <div class="rt-box" style="padding:25px; max-width:450px;">
-            <h3 style="margin-bottom:15px; color:var(--navy)">⚙️ Pengaturan Running Text</h3>
-            
-            <label class="detail-label">Pesan Baru</label>
-            <textarea id="rtInput" style="width:100%; height:80px; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;" placeholder="Tulis pesan pengumuman di sini..."></textarea>
-            
-            <div class="setting-row">
-                <div>
-                    <label class="detail-label">Kecepatan (Detik)</label>
-                    <input type="number" id="rtDuration" value="15" min="5" max="60" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ddd;">
+            <div class="rt-body">
+                <label style="font-weight: bold; color: var(--navy);">Pesan Baru:</label>
+                <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-save" id="btnSave" onclick="saveOrUpdate()">💾 Simpan</button>
+                    <button id="btnCancel" onclick="cancelEdit()" style="display:none; background:#888; color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; flex:1; height: 43px;">Batal</button>
                 </div>
-                <div>
-                    <label class="detail-label">Warna Teks</label>
-                    <input type="color" id="rtColor" value="#ffffff" style="width:100%; height:38px; border:none; background:none; cursor:pointer;">
+
+                <div class="speed-control">
+                    <label>⏱️ Kecepatan: <span id="speedValue">15</span>s</label>
+                    <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)">
                 </div>
-            </div>
 
-            <div style="display:flex; gap:10px;">
-                <button onclick="saveRT()" style="flex:1; padding:12px; background:var(--navy); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">SIMPAN</button>
-                <button onclick="closeRTModal()" style="flex:1; padding:12px; background:#eee; color:#666; border:none; border-radius:8px; cursor:pointer;">BATAL</button>
-            </div>
-
-            <div class="rt-history">
-                <label class="detail-label">Riwayat Pesan Terakhir</label>
-                <div id="rtHistoryList" style="margin-top:10px;"></div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+                
+                <label style="font-weight: bold; color: var(--navy);">Daftar Pesan:</label>
+                <div class="list-container">
+                    <ul id="rt-list"></ul>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        /**
+         * INITIALIZATION & CONFIG
+         */
         const firebaseConfig = {
             apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
             authDomain: "tabelom60.firebaseapp.com",
             databaseURL: "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "tabelom60", storageBucket: "tabelom60.firebasestorage.app",
-            messagingSenderId: "823392737112", appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
+            projectId: "tabelom60",
+            storageBucket: "tabelom60.firebasestorage.app",
+            messagingSenderId: "823392737112",
+            appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const APPSHEET_API = {
-            appId: '1474754a-c8a9-4660-aeef-d197abcbdf76',
-            accessKey: 'V2-uuT5Q-pHlJR-TdVlZ-lvl4W-3WkM2-kvQKN-HuHbl-KAcy6'
+        let messages = [];
+        let activeMessages = [];
+        let editID = null;
+
+        const span = document.getElementById("running-content");
+        const inputField = document.getElementById("rt-input");
+        const btnSave = document.getElementById("btnSave");
+        const btnCancel = document.getElementById("btnCancel");
+
+        /**
+         * UI FUNCTIONS
+         */
+        window.openModal = () => { 
+            document.getElementById("rt-modal").style.display = "block"; 
         };
 
-        let rawDataPerbaikan = [];
-        let rawDataKontraktor = [];
+        window.closeModal = () => { 
+            document.getElementById("rt-modal").style.display = "none"; 
+            cancelEdit(); 
+        };
 
-        function toggleSidebar() { document.body.classList.toggle('sidebar-closed'); }
+        window.cancelEdit = () => {
+            editID = null;
+            inputField.value = "";
+            btnSave.innerText = "💾 Simpan";
+            btnCancel.style.display = "none";
+            btnSave.style.flex = "1";
+        };
 
-        function showPage(pageId, element) {
-            document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            element.classList.add('active');
-            if(window.innerWidth < 1024 && !document.body.classList.contains('sidebar-closed')) toggleSidebar();
+        window.prepareEdit = (id, text) => {
+            editID = id;
+            inputField.value = text;
+            btnSave.innerText = "🆙 Update";
+            btnCancel.style.display = "block";
+            btnSave.style.flex = "2";
+        };
+
+        /**
+         * DATABASE OPERATIONS
+         */
+        window.saveOrUpdate = () => {
+            const text = inputField.value.trim();
+            if (!text) return alert("Isi pesan dulu!");
             
-            if(pageId === 'monitoring') loadData('DailyActivity', 'perbaikan');
-            if(pageId === 'kontraktor') loadData('MonitoringPerbaikan', 'kontraktor');
-            feather.replace();
-        }
-
-        async function loadData(tableName, type) {
-            const url = `https://api.appsheet.com/api/v2/apps/${APPSHEET_API.appId}/tables/${tableName}/Action`;
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'ApplicationAccessKey': APPSHEET_API.accessKey, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "Action": "Find", "Rows": [] })
-                });
-                const data = await res.json();
-                if(type === 'perbaikan') { rawDataPerbaikan = data; renderPerbaikan(data); }
-                else { rawDataKontraktor = data; renderKontraktor(data); }
-            } catch (e) { console.error(e); }
-        }
-
-        function renderPerbaikan(data) {
-            const tbody = document.getElementById('tableBody');
-            let content = '';
-            const groups = data.reduce((acc, row) => {
-                const key = row.type || 'LAINNYA';
-                if (!acc[key]) acc[key] = []; acc[key].push(row); return acc;
-            }, {});
-
-            Object.keys(groups).sort().forEach(group => {
-                content += `<tr class="group-header"><td colspan="5">📁 ${group}</td></tr>`;
-                groups[group].forEach(row => {
-                    const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
-                    const statusClass = (row.status || '').toLowerCase().includes('done') ? 'bg-done' : 'bg-progress';
-                    content += `
-                        <tr onclick='openDetail(${rowData}, "perbaikan")'>
-                            <td>${row.tanggalKerusakan || '-'}</td>
-                            <td>${row.ESPK || '-'}</td>
-                            <td>${row.activity || '-'}</td>
-                            <td>${row.area || '-'}</td>
-                            <td><span class="badge ${statusClass}">${row.status || '-'}</span></td>
-                        </tr>`;
-                });
-            });
-            tbody.innerHTML = content;
-        }
-
-        function renderKontraktor(data) {
-            const tbody = document.getElementById('kontraktorTableBody');
-            let content = '';
-            data.forEach(row => {
-                const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
-                const progressClass = (row.Progress || '').toLowerCase().includes('100') ? 'bg-done' : 'bg-progress';
-                content += `
-                    <tr onclick='openDetail(${rowData}, "kontraktor")'>
-                        <td>${row.area || '-'}</td>
-                        <td>${row.tagNumber || '-'}</td>
-                        <td>${row.activity || '-'}</td>
-                        <td><span class="badge ${progressClass}">${row.Progress || '0%'}</span></td>
-                        <td>${row.kontraktor || '-'}</td>
-                        <td>${row.resiko || '-'}</td>
-                    </tr>`;
-            });
-            tbody.innerHTML = content;
-        }
-
-        function filterData(type) {
-            if(type === 'perbaikan') {
-                const val = document.getElementById('searchPerbaikan').value.toLowerCase();
-                const filtered = rawDataPerbaikan.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(val)));
-                renderPerbaikan(filtered);
+            if (editID) {
+                db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
             } else {
-                const val = document.getElementById('searchKontraktor').value.toLowerCase();
-                const filtered = rawDataKontraktor.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(val)));
-                renderKontraktor(filtered);
+                db.ref("messages").push({ Text: text, Status: "active" }).then(() => { 
+                    inputField.value = ""; 
+                });
             }
-        }
+        };
 
-        function openDetail(row, pageType) {
-            const cont = document.getElementById('detailContent');
-            let dataToShow = [
-                { l: 'Area', v: row.area }, 
-                { l: 'Tag Number', v: row.tagNumber },
-                { l: 'Activity', v: row.activity, full: true }
-            ];
+        window.updateSpeed = (val) => {
+            db.ref("settings/speed").set(parseInt(val));
+        };
 
-            if(pageType === 'perbaikan') {
-                dataToShow.push({ l: 'Status Perbaikan', v: row.status });
-                dataToShow.push({ l: 'Deskripsi', v: row.desc || '-', full: true });
-            } else {
-                dataToShow.push({ l: 'Progress Kerja', v: row.Progress });
-                dataToShow.push({ l: 'Kontraktor Pelaksana', v: row.kontraktor });
-                dataToShow.push({ l: 'Analisa Resiko', v: row.resiko, full: true });
-            }
+        window.toggleStatus = (id, currentStatus) => {
+            db.ref("messages/" + id).update({ 
+                Status: currentStatus === "active" ? "hidden" : "active" 
+            });
+        };
 
-            cont.innerHTML = dataToShow.map(item => `
-                <div class="detail-item ${item.full ? 'full-width' : ''}">
-                    <div class="detail-label">${item.l}</div>
-                    <div class="detail-value">${item.v || '-'}</div>
-                </div>
-            `).join('');
-            document.getElementById('detailModal').style.display = 'flex';
-        }
+        window.deleteMessage = (id) => {
+            if (confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove();
+        };
 
-        function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
-
-        // --- RUNNING TEXT LOGIC (LENGKAP) ---
-        function openRTModal() { document.getElementById('rtModal').style.display = 'flex'; }
-        function closeRTModal() { document.getElementById('rtModal').style.display = 'none'; }
+        /**
+         * REALTIME LISTENERS
+         */
         
-        function saveRT() {
-            const val = document.getElementById('rtInput').value;
-            const dur = document.getElementById('rtDuration').value || 15;
-            const col = document.getElementById('rtColor').value || "#ffffff";
-            if(val) {
-                db.ref("messages").push({ 
-                    Text: val,
-                    Duration: dur,
-                    Color: col,
-                    Timestamp: Date.now()
-                }).then(() => {
-                    document.getElementById('rtInput').value = '';
-                    closeRTModal();
+        // Listen to Messages
+        db.ref("messages").on("value", (snapshot) => {
+            const data = snapshot.val();
+            messages = [];
+            if (data) {
+                Object.keys(data).forEach(key => { 
+                    messages.push({ ID: key, ...data[key] }); 
                 });
             }
+            activeMessages = messages.filter(m => m.Status !== "hidden");
+            renderList();
+            updateMarquee();
+        });
+
+        // Listen to Speed Settings
+        db.ref("settings/speed").on("value", (snapshot) => {
+            const speedVal = snapshot.val() || 15;
+            document.getElementById("speed-slider").value = speedVal;
+            document.getElementById("speedValue").innerText = speedVal;
+
+            span.style.animation = 'none';
+            void span.offsetWidth; // Trigger reflow
+            span.style.animation = `marquee ${speedVal}s linear infinite`;
+        });
+
+        /**
+         * RENDERING LOGIC
+         */
+        function renderList() {
+            const list = document.getElementById("rt-list");
+            list.innerHTML = messages.map(m => `
+                <li class="${m.Status === 'hidden' ? 'muted' : ''}">
+                    <span onclick="toggleStatus('${m.ID}', '${m.Status}')" style="cursor:pointer; font-size: 1.2rem;">
+                        ${m.Status === 'active' ? '👁️' : '🚫'}
+                    </span>
+                    <span class="item-text ${m.Status === 'hidden' ? 'text-muted' : ''}" 
+                          onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
+                        ${m.Text}
+                    </span>
+                    <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer; color:#ff4d4d;">🗑️</span>
+                </li>
+            `).join('');
         }
 
-        function deleteRT(key) {
-            if(confirm('Hapus pesan ini dari riwayat?')) {
-                db.ref("messages").child(key).remove();
+        function updateMarquee() {
+            if (activeMessages.length > 0) {
+                // Jangan paksa ganti teks jika sudah ada teks yang sedang jalan, kecuali kondisi awal
+                if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
+                    span.textContent = activeMessages[0].Text;
+                }
+            } else {
+                span.textContent = "Tidak ada pesan aktif.";
             }
         }
 
-        db.ref("messages").on("value", snap => {
-            const data = snap.val();
-            const display = document.getElementById("running-content");
-            const historyCont = document.getElementById("rtHistoryList");
-
-            if(data) {
-                const entries = Object.entries(data);
-                const lastMsg = entries[entries.length - 1][1];
-                
-                // Update Running Text Tampilan
-                display.innerText = lastMsg.Text;
-                display.style.animationDuration = (lastMsg.Duration || 15) + "s";
-                display.style.color = lastMsg.Color || "#ffffff";
-
-                // Update List Riwayat di Modal
-                historyCont.innerHTML = entries.reverse().slice(0, 5).map(([key, val]) => `
-                    <div class="history-item">
-                        <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-right:10px;">${val.Text}</span>
-                        <button class="btn-delete" onclick="deleteRT('${key}')"><i data-feather="trash-2" style="width:14px;"></i></button>
-                    </div>
-                `).join('');
-                feather.replace();
-            } else {
-                display.innerText = "Belum ada pesan yang diset.";
-                historyCont.innerHTML = "<small style='color:#999'>Riwayat kosong</small>";
+        // Loop Marquee ke pesan berikutnya setelah satu putaran animasi selesai
+        span.addEventListener('animationiteration', () => {
+            if (activeMessages.length > 1) {
+                const currentIndex = activeMessages.findIndex(m => m.Text === span.textContent);
+                const nextIndex = (currentIndex + 1) % activeMessages.length;
+                span.textContent = activeMessages[nextIndex].Text;
+            } else if (activeMessages.length === 1) {
+                span.textContent = activeMessages[0].Text;
             }
         });
 
+        /**
+         * CLOCK SYSTEM
+         */
         setInterval(() => { 
-            document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString('id-ID', { hour12: false });
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ":" + 
+                               now.getMinutes().toString().padStart(2, '0') + ":" + 
+                               now.getSeconds().toString().padStart(2, '0');
+            document.getElementById("digital-clock").innerText = timeString;
         }, 1000);
-
-        window.onload = () => { feather.replace(); };
     </script>
 </body>
 </html>
