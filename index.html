@@ -11,202 +11,87 @@
 
     <style>
         :root {
-            --navy: #123458;
-            --gold: #fcc006;
-            --bg-main: #f8fafc;
-            --sidebar-width: 280px;
-            --transition-speed: 0.4s;
+            --navy: #123458; --gold: #fcc006; --bg-main: #f8fafc;
+            --sidebar-width: 280px; --transition-speed: 0.4s;
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg-main); display: flex; height: 100vh; width: 100vw; overflow: hidden; }
 
-        /* --- SIDEBAR SYSTEM --- */
+        /* --- SIDEBAR --- */
         .sidebar {
-            width: var(--sidebar-width);
-            background: var(--navy);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            z-index: 1001;
-            position: relative;
-            transition: transform var(--transition-speed) var(--ease);
+            width: var(--sidebar-width); min-width: var(--sidebar-width);
+            background: var(--navy); color: white; display: flex; flex-direction: column; 
+            z-index: 1001; transition: margin-left var(--transition-speed) var(--ease);
             box-shadow: 5px 0 15px rgba(0,0,0,0.2);
         }
+        body.sidebar-closed .sidebar { margin-left: calc(-1 * var(--sidebar-width)); box-shadow: none; }
 
-        /* Sidebar State: Hidden */
-        body.sidebar-closed .sidebar { transform: translateX(-100%); box-shadow: none; }
-
-        /* OVERLAY SENSOR (Klik Luar) */
         #sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 1000;
-            backdrop-filter: blur(2px);
-            transition: opacity 0.3s ease;
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 1000; backdrop-filter: blur(2px);
         }
         body:not(.sidebar-closed) #sidebar-overlay { display: block; }
 
-        .sidebar-header {
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--gold);
-            font-weight: 800;
-            letter-spacing: 1px;
-            font-size: 1.2rem;
-        }
-
+        .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 3px solid var(--gold); font-weight: 800; }
         .sidebar-menu { flex-grow: 1; padding: 20px 0; }
-        
         .menu-item {
-            padding: 16px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            border-left: 4px solid transparent;
-            color: rgba(255,255,255,0.8);
+            padding: 16px 25px; display: flex; align-items: center; gap: 15px;
+            cursor: pointer; transition: 0.3s; border-left: 4px solid transparent; color: rgba(255,255,255,0.8);
         }
-
-        .menu-item:hover, .menu-item.active {
-            background: rgba(252, 192, 6, 0.1);
-            border-left: 4px solid var(--gold);
-            color: var(--gold);
-        }
+        .menu-item:hover, .menu-item.active { background: rgba(252, 192, 6, 0.1); border-left: 4px solid var(--gold); color: var(--gold); }
 
         /* --- MAIN CONTAINER --- */
-        .main-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            transition: margin-left var(--transition-speed) var(--ease);
-        }
+        .main-container { flex: 1; display: flex; flex-direction: column; min-width: 0; width: 100%; height: 100%; }
 
-        body.sidebar-closed .main-container { margin-left: calc(-1 * var(--sidebar-width)); }
+        .header-bar { height: 60px; background: var(--navy); display: flex; align-items: center; padding: 0 15px; color: white; border-bottom: 2px solid var(--gold); z-index: 10; }
+        .btn-hamburger { background: rgba(255,255,255,0.1); border: none; color: white; font-size: 22px; cursor: pointer; width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
 
-        .header-bar {
-            height: 60px;
-            background: var(--navy);
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            color: white;
-            border-bottom: 2px solid var(--gold);
-            z-index: 10;
-        }
+        #running-text-wrapper { flex-grow: 1; overflow: hidden; white-space: nowrap; background: rgba(0,0,0,0.3); height: 35px; display: flex; align-items: center; border-radius: 6px; }
+        #running-content { display: inline-block; font-weight: 600; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
-        .btn-hamburger {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            transition: 0.2s;
-        }
+        .clock-container { background: var(--gold); color: var(--navy); padding: 0 15px; height: 35px; display: flex; align-items: center; font-weight: 800; margin-left: 15px; border-radius: 6px; }
 
-        .btn-hamburger:hover { background: var(--gold); color: var(--navy); }
-
-        #running-text-wrapper {
-            flex-grow: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            background: rgba(0,0,0,0.3);
-            height: 35px;
-            display: flex;
-            align-items: center;
-            border-radius: 6px;
-        }
-
-        #running-content {
-            display: inline-block;
-            font-weight: 600;
-            padding-left: 10px;
-            animation: marquee 15s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(100vw); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .clock-container {
-            background: var(--gold);
-            color: var(--navy);
-            padding: 0 15px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            font-weight: 800;
-            margin-left: 15px;
-            border-radius: 6px;
-            min-width: 90px;
-            justify-content: center;
-        }
-
-        /* --- PAGES CONTENT --- */
-        .content-page { display: none; height: 100%; width: 100%; overflow: hidden; }
+        /* --- PAGES --- */
+        .content-page { display: none; height: 100%; width: 100%; overflow-y: auto; }
         .content-page.active { display: block; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* MONITORING PAGE STYLE */
-        #page-monitoring { overflow-y: auto; background: #f1f5f9; }
-        .mon-header { padding: 30px; background: white; text-align: center; border-bottom: 1px solid #e2e8f0; }
-        .search-container { position: relative; max-width: 500px; margin: 15px auto 0; }
-        .search-container input { 
-            width: 100%; padding: 12px 15px 12px 45px; border: 2px solid #e2e8f0; 
-            border-radius: 12px; outline: none; transition: 0.3s;
-        }
-        .search-container input:focus { border-color: var(--navy); }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--navy); width: 18px; }
-
+        /* TABLES & BADGES */
+        .mon-header { padding: 20px; background: white; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .search-box { width: 100%; max-width: 400px; padding: 10px 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; outline: none; }
+        
         .table-wrap { padding: 25px; }
         .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { padding: 15px; background: #f8fafc; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { padding: 15px; background: #f8fafc; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; text-align: left; }
         td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #334155; }
-        tr:hover td { background: #fffbeb; cursor: pointer; }
+        tr:not(.group-header):hover td { background: #fffbeb; cursor: pointer; }
         .group-header { background: #f1f5f9; font-weight: bold; color: var(--navy); border-left: 4px solid var(--gold); }
-        
-        .status-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
-        .badge-progres { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-        .badge-done { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
-        /* --- MODAL SYSTEM --- */
-        .rt-modal { 
-            display: none; position: fixed; inset: 0; 
-            background: rgba(18, 52, 88, 0.85); 
-            backdrop-filter: blur(5px); z-index: 2000; 
-            justify-content: center; align-items: center; 
-        }
-        .rt-box { 
-            background: white; width: 90%; max-width: 450px; 
-            border-radius: 24px; overflow: hidden; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            animation: slideUp 0.3s var(--ease);
-        }
+        .badge { padding: 5px 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
+        .bg-progress { background: #e0f2fe; color: #0369a1; }
+        .bg-done { background: #dcfce7; color: #15803d; }
+
+        /* MODAL DETAIL */
+        .rt-modal { display: none; position: fixed; inset: 0; background: rgba(18, 52, 88, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
+        .rt-box { background: white; width: 95%; max-width: 650px; border-radius: 24px; overflow: hidden; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .rt-header { background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .rt-body { padding: 25px; }
+        .detail-header { background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .detail-grid { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .detail-item { border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .detail-label { font-size: 0.65rem; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
+        .detail-value { font-size: 1rem; color: var(--navy); font-weight: 600; margin-top: 4px; }
+        .full-width { grid-column: span 2; }
     </style>
 </head>
 <body class="sidebar-closed">
 
     <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <aside class="sidebar" id="mainSidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">TABEL SYSTEM</div>
         <nav class="sidebar-menu">
             <div class="menu-item active" onclick="showPage('appsheet', this)">
@@ -215,20 +100,20 @@
             <div class="menu-item" onclick="showPage('monitoring', this)">
                 <i data-feather="activity"></i> Monitoring Perbaikan
             </div>
-            <div class="menu-item" onclick="openModal()">
+            <div class="menu-item" onclick="showPage('kontraktor', this)">
+                <i data-feather="users"></i> Monitor Kontraktor
+            </div>
+            <div class="menu-item" onclick="openRTModal()">
                 <i data-feather="edit-3"></i> Atur Running Text
             </div>
         </nav>
-        <div style="padding: 20px; font-size: 0.7rem; color: rgba(255,255,255,0.3); text-align: center; border-top: 1px solid rgba(255,255,255,0.05);">
-            VERSION 2.5 PRO
-        </div>
     </aside>
 
     <div class="main-container">
         <header class="header-bar">
             <button class="btn-hamburger" onclick="toggleSidebar()">☰</button>
             <div id="running-text-wrapper">
-                <span id="running-content">Menghubungkan ke Database...</span>
+                <span id="running-content">Menghubungkan Database...</span>
             </div>
             <div class="clock-container" id="digital-clock">00:00:00</div>
         </header>
@@ -239,77 +124,58 @@
 
         <div id="page-monitoring" class="content-page">
             <div class="mon-header">
-                <h2 style="color: var(--navy);">Monitoring Perbaikan</h2>
-                <div class="search-container">
-                    <i data-feather="search" class="search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="Cari Status, No ESPK, Area..." onkeyup="handleSearch()">
-                </div>
+                <h2>Monitoring Daily Activity</h2>
+                <input type="text" class="search-box" id="searchPerbaikan" placeholder="Cari data perbaikan..." onkeyup="filterData('perbaikan')">
             </div>
             <div class="table-wrap">
-                <div class="table-container">
-                    <div style="overflow-x: auto;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th><th>No ESPK</th><th>Activity</th><th>Area</th><th>Tag</th><th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
+                <div class="table-container"><div style="overflow-x:auto;">
+                    <table>
+                        <thead><tr><th>Tanggal</th><th>No ESPK</th><th>Activity</th><th>Area</th><th>Status</th></tr></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+
+        <div id="page-kontraktor" class="content-page">
+            <div class="mon-header">
+                <h2>Monitor Progress Kontraktor</h2>
+                <input type="text" class="search-box" id="searchKontraktor" placeholder="Cari kontraktor atau area..." onkeyup="filterData('kontraktor')">
+            </div>
+            <div class="table-wrap">
+                <div class="table-container"><div style="overflow-x:auto;">
+                    <table>
+                        <thead><tr><th>Area</th><th>Tag Number</th><th>Activity</th><th>Progress</th><th>Kontraktor</th><th>Resiko</th></tr></thead>
+                        <tbody id="kontraktorTableBody"></tbody>
+                    </table>
+                </div></div>
             </div>
         </div>
     </div>
 
-    <div id="rt-modal" class="rt-modal">
+    <div id="detailModal" class="rt-modal">
         <div class="rt-box">
-            <div class="rt-header">
-                <h3>⚙️ Setting Marquee</h3>
-                <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:28px; cursor:pointer;">&times;</button>
+            <div class="detail-header">
+                <h3>📋 Informasi Detail</h3>
+                <button onclick="closeDetail()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <div class="rt-body">
-                <textarea id="rt-input" style="width:100%; height:80px; padding:12px; border-radius:12px; border:1px solid #ddd; resize:none; margin-bottom:15px;" placeholder="Tulis pesan baru di sini..."></textarea>
-                <button onclick="saveMessage()" style="width:100%; padding:14px; background:var(--navy); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer; margin-bottom:20px;">💾 Simpan Pesan</button>
-                
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px;">
-                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--navy);">⏱️ Kecepatan: <span id="speedValue">15</span>s</label>
-                    <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)" style="width:100%; margin-top:8px;">
-                </div>
-
-                <div style="max-height: 150px; overflow-y: auto; margin-top: 15px;">
-                    <ul id="rt-list" style="list-style:none;"></ul>
-                </div>
-            </div>
+            <div class="detail-grid" id="detailContent"></div>
+            <button onclick="closeDetail()" style="width:100%; padding:15px; background:var(--navy); color:white; border:none; font-weight:bold; cursor:pointer;">TUTUP</button>
         </div>
     </div>
 
-    <div id="detailModal" class="rt-modal" onclick="closeDetail()">
-        <div class="rt-box" onclick="event.stopPropagation()" style="padding: 25px;">
-            <h3 id="detTitle" style="color:var(--navy); margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px;">Detail Perbaikan</h3>
-            <div id="detailContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"></div>
-            <button onclick="closeDetail()" style="width:100%; margin-top:25px; padding:12px; border:none; background:var(--navy); color:white; border-radius:10px; font-weight:bold; cursor:pointer;">TUTUP</button>
+    <div id="rtModal" class="rt-modal">
+        <div class="rt-box" style="padding:25px; max-width:400px;">
+            <h3 style="margin-bottom:15px; color:var(--navy)">Setting Pesan Running Text</h3>
+            <textarea id="rtInput" style="width:100%; height:100px; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;" placeholder="Tulis pesan baru di sini..."></textarea>
+            <div style="display:flex; gap:10px;">
+                <button onclick="saveRT()" style="flex:1; padding:12px; background:var(--navy); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">SIMPAN</button>
+                <button onclick="closeRTModal()" style="flex:1; padding:12px; background:#eee; color:#666; border:none; border-radius:8px; cursor:pointer;">BATAL</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 1. UI LOGIC ---
-        function toggleSidebar() { document.body.classList.toggle('sidebar-closed'); }
-        
-        function showPage(pageId, element) {
-            document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            element.classList.add('active');
-            
-            // Auto-hide sidebar jika di layar HP setelah pilih menu
-            if(window.innerWidth < 1024) toggleSidebar(); 
-            
-            if(pageId === 'monitoring') fetchData();
-            feather.replace();
-        }
-
-        // --- 2. FIREBASE (Running Text) ---
         const firebaseConfig = {
             apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
             authDomain: "tabelom60.firebaseapp.com",
@@ -319,135 +185,153 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const span = document.getElementById("running-content");
-        let activeMessages = [];
 
-        db.ref("messages").on("value", snapshot => {
-            const data = snapshot.val();
-            const all = [];
-            if(data) Object.keys(data).forEach(k => all.push({ID: k, ...data[k]}));
-            activeMessages = all.filter(m => m.Status !== 'hidden');
-            if(activeMessages.length > 0 && (span.textContent.includes("Menghubungkan") || span.textContent === "")) {
-                span.textContent = activeMessages[0].Text;
-            }
-            renderRTList(all);
-        });
-
-        db.ref("settings/speed").on("value", s => {
-            const v = s.val() || 15;
-            span.style.animation = 'none'; void span.offsetWidth;
-            span.style.animation = `marquee ${v}s linear infinite`;
-            document.getElementById("speedValue").innerText = v;
-            document.getElementById("speed-slider").value = v;
-        });
-
-        function saveMessage() {
-            const t = document.getElementById("rt-input").value;
-            if(t) db.ref("messages").push({Text: t, Status: "active"}).then(() => document.getElementById("rt-input").value = "");
-        }
-        function updateSpeed(v) { db.ref("settings/speed").set(parseInt(v)); }
-        function deleteMsg(id) { if(confirm("Hapus pesan ini?")) db.ref("messages/"+id).remove(); }
-
-        function renderRTList(msgs) {
-            const list = document.getElementById("rt-list");
-            list.innerHTML = msgs.map(m => `
-                <li style="display:flex; justify-content:space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 0.8rem;">
-                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:250px;">${m.Text}</span>
-                    <span onclick="deleteMsg('${m.ID}')" style="color:red; cursor:pointer;">🗑️</span>
-                </li>
-            `).join('');
-        }
-
-        // --- 3. MONITORING LOGIC (AppSheet API) ---
-        const API_CONFIG = {
+        const APPSHEET_API = {
             appId: '1474754a-c8a9-4660-aeef-d197abcbdf76',
-            accessKey: 'V2-uuT5Q-pHlJR-TdVlZ-lvl4W-3WkM2-kvQKN-HuHbl-KAcy6',
-            tableName: 'DailyActivity'
+            accessKey: 'V2-uuT5Q-pHlJR-TdVlZ-lvl4W-3WkM2-kvQKN-HuHbl-KAcy6'
         };
-        let monData = [];
 
-        async function fetchData() {
-            const url = `https://api.appsheet.com/api/v2/apps/${API_CONFIG.appId}/tables/${API_CONFIG.tableName}/Action`;
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'ApplicationAccessKey': API_CONFIG.accessKey, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "Action": "Find", "Rows": [] })
-                });
-                monData = await res.json();
-                renderMonTable(monData);
-            } catch (e) { console.error("Error API:", e); }
-        }
+        let rawDataPerbaikan = [];
+        let rawDataKontraktor = [];
 
-        function renderMonTable(data) {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            const groups = data.reduce((acc, o) => {
-                const k = o.type || 'LAIN-LAIN';
-                if (!acc[k]) acc[k] = []; acc[k].push(o); return acc;
-            }, {});
+        function toggleSidebar() { document.body.classList.toggle('sidebar-closed'); }
 
-            Object.keys(groups).sort().forEach(type => {
-                tbody.innerHTML += `<tr class="group-header"><td colspan="6">📁 ${type}</td></tr>`;
-                groups[type].forEach(row => {
-                    const badge = row.status === 'DONE' ? 'badge-done' : 'badge-progres';
-                    tbody.innerHTML += `
-                        <tr onclick='showDetail(${JSON.stringify(row)})'>
-                            <td style="color:#64748b">${row.tanggalKerusakan || '-'}</td>
-                            <td style="font-weight:bold">${row.ESPK || '-'}</td>
-                            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">${row.activity || '-'}</td>
-                            <td>${row.area || '-'}</td>
-                            <td><code style="background:#f1f5f9; padding:2px 5px; border-radius:4px;">${row.tagNumber || '-'}</code></td>
-                            <td><span class="status-badge ${badge}">${row.status || 'N/A'}</span></td>
-                        </tr>
-                    `;
-                });
-            });
+        function showPage(pageId, element) {
+            document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            element.classList.add('active');
+            if(window.innerWidth < 1024 && !document.body.classList.contains('sidebar-closed')) toggleSidebar();
+            
+            if(pageId === 'monitoring') loadData('DailyActivity', 'perbaikan');
+            if(pageId === 'kontraktor') loadData('MonitoringPerbaikan', 'kontraktor');
             feather.replace();
         }
 
-        function handleSearch() {
-            const v = document.getElementById('searchInput').value.toLowerCase();
-            const f = monData.filter(r => Object.values(r).some(val => String(val).toLowerCase().includes(v)));
-            renderMonTable(f);
+        async function loadData(tableName, type) {
+            const url = `https://api.appsheet.com/api/v2/apps/${APPSHEET_API.appId}/tables/${tableName}/Action`;
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'ApplicationAccessKey': APPSHEET_API.accessKey, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "Action": "Find", "Rows": [] })
+                });
+                const data = await res.json();
+                if(type === 'perbaikan') { rawDataPerbaikan = data; renderPerbaikan(data); }
+                else { rawDataKontraktor = data; renderKontraktor(data); }
+            } catch (e) { console.error(e); }
         }
 
-        function showDetail(r) {
-            const c = document.getElementById('detailContainer');
-            const fields = [
-                {l:'Status', v:r.status}, {l:'No ESPK', v:r.ESPK},
-                {l:'Area', v:r.area}, {l:'Tag', v:r.tagNumber},
-                {l:'Activity', v:r.activity}, {l:'Tanggal', v:r.tanggalKerusakan},
-                {l:'Deskripsi', v:r.desc || '-'}
+        function renderPerbaikan(data) {
+            const tbody = document.getElementById('tableBody');
+            let content = '';
+            const groups = data.reduce((acc, row) => {
+                const key = row.type || 'LAINNYA';
+                if (!acc[key]) acc[key] = []; acc[key].push(row); return acc;
+            }, {});
+
+            Object.keys(groups).sort().forEach(group => {
+                content += `<tr class="group-header"><td colspan="5">📁 ${group}</td></tr>`;
+                groups[group].forEach(row => {
+                    const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
+                    const statusClass = (row.status || '').toLowerCase().includes('done') ? 'bg-done' : 'bg-progress';
+                    content += `
+                        <tr onclick='openDetail(${rowData}, "perbaikan")'>
+                            <td>${row.tanggalKerusakan || '-'}</td>
+                            <td>${row.ESPK || '-'}</td>
+                            <td>${row.activity || '-'}</td>
+                            <td>${row.area || '-'}</td>
+                            <td><span class="badge ${statusClass}">${row.status || '-'}</span></td>
+                        </tr>`;
+                });
+            });
+            tbody.innerHTML = content;
+        }
+
+        function renderKontraktor(data) {
+            const tbody = document.getElementById('kontraktorTableBody');
+            let content = '';
+            data.forEach(row => {
+                const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
+                const progressClass = (row.Progress || '').toLowerCase().includes('100') ? 'bg-done' : 'bg-progress';
+                content += `
+                    <tr onclick='openDetail(${rowData}, "kontraktor")'>
+                        <td>${row.area || '-'}</td>
+                        <td>${row.tagNumber || '-'}</td>
+                        <td>${row.activity || '-'}</td>
+                        <td><span class="badge ${progressClass}">${row.Progress || '0%'}</span></td>
+                        <td>${row.kontraktor || '-'}</td>
+                        <td>${row.resiko || '-'}</td>
+                    </tr>`;
+            });
+            tbody.innerHTML = content;
+        }
+
+        function filterData(type) {
+            if(type === 'perbaikan') {
+                const val = document.getElementById('searchPerbaikan').value.toLowerCase();
+                const filtered = rawDataPerbaikan.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(val)));
+                renderPerbaikan(filtered);
+            } else {
+                const val = document.getElementById('searchKontraktor').value.toLowerCase();
+                const filtered = rawDataKontraktor.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(val)));
+                renderKontraktor(filtered);
+            }
+        }
+
+        function openDetail(row, pageType) {
+            const cont = document.getElementById('detailContent');
+            let dataToShow = [
+                { l: 'Area', v: row.area }, 
+                { l: 'Tag Number', v: row.tagNumber },
+                { l: 'Activity', v: row.activity, full: true }
             ];
-            c.innerHTML = fields.map(f => `
-                <div style="margin-bottom:10px;">
-                    <div style="font-size:0.65rem; color:#94a3b8; font-weight:bold; text-transform:uppercase;">${f.l}</div>
-                    <div style="font-weight:600; color:var(--navy); font-size:0.9rem;">${f.v}</div>
+
+            if(pageType === 'perbaikan') {
+                dataToShow.push({ l: 'Status Perbaikan', v: row.status });
+                dataToShow.push({ l: 'Deskripsi', v: row.desc || '-', full: true });
+            } else {
+                dataToShow.push({ l: 'Progress Kerja', v: row.Progress });
+                dataToShow.push({ l: 'Kontraktor Pelaksana', v: row.kontraktor });
+                dataToShow.push({ l: 'Analisa Resiko', v: row.resiko, full: true });
+            }
+
+            cont.innerHTML = dataToShow.map(item => `
+                <div class="detail-item ${item.full ? 'full-width' : ''}">
+                    <div class="detail-label">${item.l}</div>
+                    <div class="detail-value">${item.v || '-'}</div>
                 </div>
             `).join('');
             document.getElementById('detailModal').style.display = 'flex';
         }
 
-        // --- 4. UTILS ---
-        window.openModal = () => document.getElementById("rt-modal").style.display = "flex";
-        window.closeModal = () => document.getElementById("rt-modal").style.display = "none";
-        window.closeDetail = () => document.getElementById("detailModal").style.display = "none";
+        function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
+
+        // --- RUNNING TEXT LOGIC ---
+        function openRTModal() { document.getElementById('rtModal').style.display = 'flex'; }
+        function closeRTModal() { document.getElementById('rtModal').style.display = 'none'; }
+        function saveRT() {
+            const val = document.getElementById('rtInput').value;
+            if(val) {
+                db.ref("messages").push({ Text: val }).then(() => {
+                    document.getElementById('rtInput').value = '';
+                    closeRTModal();
+                });
+            }
+        }
+
+        db.ref("messages").on("value", snap => {
+            const data = snap.val();
+            if(data) {
+                const lastMsg = Object.values(data).pop();
+                document.getElementById("running-content").innerText = lastMsg.Text;
+            }
+        });
 
         setInterval(() => { 
             document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString('id-ID', { hour12: false });
         }, 1000);
-
-        span.addEventListener('animationiteration', () => {
-            if (activeMessages.length > 1) {
-                const cur = activeMessages.findIndex(m => m.Text === span.textContent);
-                span.textContent = activeMessages[(cur + 1) % activeMessages.length].Text;
-            }
-        });
-
         window.onload = () => { feather.replace(); };
     </script>
 </body>
 </html>
-
-
