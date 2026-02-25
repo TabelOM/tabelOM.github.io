@@ -3,428 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TabeL Kalkulasi</title>
-    
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
+    <title>Tabel Kalkulasi</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
         :root {
-            --bg-main: #f0f2f5;
-            --navy: #123458;
-            --gold: #fcc006;
-            --text-muted: #65676b;
+            --navy: #123458; --gold: #fcc006; --bg-main: #f8fafc;
+            --sidebar-width: 260px; --transition-speed: 0.4s;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #1e3a8a; --accent: #0ea5e9;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+        body { background: var(--bg-main); display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+        /* --- SIDEBAR & NAVIGATION --- */
+        .sidebar {
+            width: var(--sidebar-width); background: var(--navy); color: white;
+            display: flex; flex-direction: column; z-index: 1000; position: relative;
+            transition: transform var(--transition-speed) var(--ease);
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
         }
 
-        body { 
-            background: var(--bg-main); 
-            overflow: hidden; 
-            height: 100vh; 
+        body.sidebar-closed .sidebar { transform: translateX(-100%); }
+
+        .sidebar-header {
+            padding: 25px 20px; text-align: center; border-bottom: 3px solid var(--gold);
+            font-weight: 800; letter-spacing: 1px;
         }
 
-        /* --- Header / Navigation Bar --- */
-        .unified-bar {
-            display: flex;
-            background: var(--navy);
-            height: 30px;
-            align-items: center;
-            border-bottom: 3px solid var(--gold);
-            position: relative;
-            z-index: 100;
+        .sidebar-menu { flex-grow: 1; padding: 20px 0; }
+        .menu-item {
+            padding: 15px 25px; display: flex; align-items: center; gap: 15px;
+            cursor: pointer; transition: 0.3s; border-left: 4px solid transparent;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: rgba(252, 192, 6, 0.1); border-left: 4px solid var(--gold); color: var(--gold);
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-container {
+            flex-grow: 1; display: flex; flex-direction: column; min-width: 0;
+            transition: margin-left var(--transition-speed) var(--ease);
+        }
+        body.sidebar-closed .main-container { margin-left: calc(-1 * var(--sidebar-width)); }
+
+        /* HEADER BAR */
+        .header-bar {
+            height: 60px; background: var(--navy); display: flex; align-items: center;
+            padding: 0 15px; color: white; border-bottom: 2px solid var(--gold);
+        }
+
+        .btn-hamburger {
+            background: rgba(255,255,255,0.1); border: none; color: white;
+            font-size: 22px; cursor: pointer; width: 40px; height: 40px;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px;
         }
 
         #running-text-wrapper {
-            flex-grow: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
+            flex-grow: 1; overflow: hidden; white-space: nowrap; background: rgba(0,0,0,0.25);
+            height: 35px; display: flex; align-items: center; border-radius: 6px;
         }
-
-        #running-content {
-            display: inline-block;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding-left: 100%;
-            animation: marquee 15s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
+        #running-content { display: inline-block; font-weight: 600; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
         .clock-container {
-            background: var(--gold);
-            color: var(--navy);
-            padding: 0 20px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            font-weight: 800;
-            font-size: 1.1rem;
+            background: var(--gold); color: var(--navy); padding: 0 15px; height: 35px;
+            display: flex; align-items: center; font-weight: 800; margin-left: 15px; border-radius: 6px;
         }
 
-        #btn-manage-rt {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0 15px;
-        }
+        /* CONTENT PAGES */
+        .content-page { display: none; height: 100%; width: 100%; overflow-y: auto; }
+        .content-page.active { display: block; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- Content Area (AppSheet Iframe) --- */
-        .content-area { 
-            height: calc(100vh - 30px); 
+        /* --- MONITORING PERBAIKAN STYLES --- */
+        .mon-header { padding: 30px; background: white; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .search-container { position: relative; max-width: 600px; margin: 15px auto 0; }
+        .search-container input { 
+            width: 100%; padding: 12px 12px 12px 45px; border: 2px solid #e2e8f0; 
+            border-radius: 12px; outline: none; transition: 0.3s;
         }
-        
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        }
+        .search-container input:focus { border-color: var(--navy); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--navy); width: 18px; }
 
-        /* --- Modal System --- */
-        .rt-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-        }
+        .table-wrap { padding: 25px; }
+        .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th { padding: 15px; background: #f8fafc; color: #64748b; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        tr:hover td { background: #fffbeb; cursor: pointer; }
+        .group-header { background: #f1f5f9; font-weight: bold; color: var(--navy); }
+        .status-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        .badge-progres { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .badge-done { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
-        .rt-box {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            margin: 50px auto;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .rt-header { 
-            background: var(--navy); 
-            color: white; 
-            padding: 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .btn-close-top { 
-            background: none; 
-            border: none; 
-            color: white; 
-            font-size: 25px; 
-            cursor: pointer; 
-        }
-
-        .rt-body { 
-            padding: 20px; 
-        }
-        
-        #rt-input { 
-            width: 100%; 
-            height: 80px; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 10px; 
-            resize: none; 
-            margin-bottom: 10px; 
-            font-size: 1rem;
-        }
-
-        .btn-save { 
-            background: var(--navy); 
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        /* --- List Elements --- */
-        .list-container { 
-            max-height: 250px; 
-            overflow-y: auto; 
-            margin-top: 15px; 
-        }
-
-        #rt-list { 
-            list-style: none; 
-            padding: 0; 
-        }
-        
-        #rt-list li { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            padding: 10px; 
-            border-bottom: 1px solid #eee; 
-            font-size: 0.9rem;
-        }
-
-        .item-text { 
-            flex-grow: 1; 
-            cursor: pointer; 
-            color: #333; 
-        }
-
-        .item-text:hover { 
-            color: var(--navy); 
-            font-weight: bold; 
-        }
-        
-        .text-muted { 
-            color: #ccc; 
-            text-decoration: line-through; 
-        }
-
-        .muted { 
-            opacity: 0.3; 
-        }
-
-        .speed-control { 
-            margin: 15px 0; 
-            font-size: 0.9rem; 
-            color: var(--navy); 
-            font-weight: bold; 
-        }
-
-        #speed-slider { 
-            width: 100%; 
-            margin-top: 5px; 
-            cursor: pointer; 
-        }
+        /* MODAL */
+        .rt-modal { display: none; position: fixed; inset: 0; background: rgba(18, 52, 88, 0.8); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center; }
+        .rt-box { background: white; width: 90%; max-width: 450px; border-radius: 20px; overflow: hidden; animation: slideUp 0.3s var(--ease); }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .rt-header { background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <header class="unified-bar">
+    <aside class="sidebar">
+        <div class="sidebar-header">TABEL KALKULASI</div>
+        <nav class="sidebar-menu">
+            <div class="menu-item active" onclick="showPage('appsheet', this)">
+                <i data-feather="grid" style="width:18px"></i> Dashboard AppSheet
+            </div>
+            <div class="menu-item" onclick="showPage('monitoring', this)">
+                <i data-feather="activity" style="width:18px"></i> Monitoring Perbaikan
+            </div>
+            <div class="menu-item" onclick="openModal()">
+                <i data-feather="settings" style="width:18px"></i> Running Text
+            </div>
+        </nav>
+        <div style="padding: 20px; font-size: 0.7rem; color: rgba(255,255,255,0.3); text-align: center;">V 2.0 &copy; 2026</div>
+    </aside>
+
+    <div class="main-container">
+        <header class="header-bar">
+            <button class="btn-hamburger" onclick="toggleSidebar()">☰</button>
             <div id="running-text-wrapper">
                 <span id="running-content">Menghubungkan ke Database...</span>
             </div>
-            <div class="clock-container">
-                <div id="digital-clock">00:00:00</div>
-            </div>
-            <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
+            <div class="clock-container" id="digital-clock">00:00:00</div>
         </header>
 
-        <main class="content-area">
-            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
-        </main>
+        <div id="page-appsheet" class="content-page active">
+            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&view=Dashboard"></iframe>
+        </div>
+
+        <div id="page-monitoring" class="content-page">
+            <div class="mon-header">
+                <h2 style="color: var(--navy);">Monitoring Harian Activity</h2>
+                <div class="search-container">
+                    <i data-feather="search" class="search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Cari Status, No ESPK, atau Area..." onkeyup="handleSearch()">
+                </div>
+            </div>
+            <div class="table-wrap">
+                <div class="table-container">
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th><th>No ESPK</th><th>Activity</th><th>Area</th><th>Tag</th><th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
             <div class="rt-header">
                 <h3>⚙️ Pengaturan</h3>
-                <button class="btn-close-top" onclick="closeModal()">&times;</button>
+                <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <div class="rt-body">
-                <label style="font-weight: bold; color: var(--navy);">Pesan Baru:</label>
-                <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
-                
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-save" id="btnSave" onclick="saveOrUpdate()">💾 Simpan</button>
-                    <button id="btnCancel" onclick="cancelEdit()" style="display:none; background:#888; color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; flex:1; height: 43px;">Batal</button>
+            <div style="padding: 20px;">
+                <textarea id="rt-input" style="width:100%; height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; resize:none;" placeholder="Pesan baru..."></textarea>
+                <button id="btnSave" onclick="saveOrUpdate()" style="width:100%; padding:12px; background:var(--navy); color:white; border:none; border-radius:10px; font-weight:bold; margin-top:10px; cursor:pointer;">💾 Simpan</button>
+                <div style="margin-top:15px;">
+                    <label style="font-size: 0.8rem; font-weight: bold;">⏱️ Kecepatan: <span id="speedValue">15</span>s</label>
+                    <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)" style="width:100%;">
                 </div>
-
-                <div class="speed-control">
-                    <label>⏱️ Kecepatan: <span id="speedValue">15</span>s</label>
-                    <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)">
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-                
-                <label style="font-weight: bold; color: var(--navy);">Daftar Pesan:</label>
-                <div class="list-container">
-                    <ul id="rt-list"></ul>
+                <div style="max-height: 150px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #eee;">
+                    <ul id="rt-list" style="list-style:none; padding: 10px 0;"></ul>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="detailModal" class="rt-modal" onclick="closeDetail()">
+        <div class="rt-box" onclick="event.stopPropagation()" style="max-width: 500px; padding: 25px;">
+            <h3 id="detTitle" style="color:var(--navy); margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Detail Perbaikan</h3>
+            <div id="detailContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"></div>
+            <button onclick="closeDetail()" style="width:100%; margin-top:25px; padding:12px; border:none; background:var(--navy); color:white; border-radius:10px; font-weight:bold; cursor:pointer;">TUTUP</button>
+        </div>
+    </div>
+
     <script>
-        /**
-         * INITIALIZATION & CONFIG
-         */
+        // --- 1. CORE NAVIGATION ---
+        function toggleSidebar() { document.body.classList.toggle('sidebar-closed'); }
+        
+        function showPage(pageId, element) {
+            document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            
+            document.getElementById('page-' + pageId).classList.add('active');
+            element.classList.add('active');
+            
+            if(pageId === 'monitoring') fetchData(); // Refresh data monitoring saat dibuka
+            feather.replace();
+        }
+
+        // --- 2. FIREBASE LOGIC (Running Text) ---
         const firebaseConfig = {
             apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
             authDomain: "tabelom60.firebaseapp.com",
             databaseURL: "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "tabelom60",
-            storageBucket: "tabelom60.firebasestorage.app",
-            messagingSenderId: "823392737112",
-            appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
+            projectId: "tabelom60", storageBucket: "tabelom60.firebasestorage.app",
+            messagingSenderId: "823392737112", appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        let messages = [];
-        let activeMessages = [];
-        let editID = null;
-
         const span = document.getElementById("running-content");
-        const inputField = document.getElementById("rt-input");
-        const btnSave = document.getElementById("btnSave");
-        const btnCancel = document.getElementById("btnCancel");
+        let activeMessages = [];
 
-        /**
-         * UI FUNCTIONS
-         */
-        window.openModal = () => { 
-            document.getElementById("rt-modal").style.display = "block"; 
-        };
-
-        window.closeModal = () => { 
-            document.getElementById("rt-modal").style.display = "none"; 
-            cancelEdit(); 
-        };
-
-        window.cancelEdit = () => {
-            editID = null;
-            inputField.value = "";
-            btnSave.innerText = "💾 Simpan";
-            btnCancel.style.display = "none";
-            btnSave.style.flex = "1";
-        };
-
-        window.prepareEdit = (id, text) => {
-            editID = id;
-            inputField.value = text;
-            btnSave.innerText = "🆙 Update";
-            btnCancel.style.display = "block";
-            btnSave.style.flex = "2";
-        };
-
-        /**
-         * DATABASE OPERATIONS
-         */
-        window.saveOrUpdate = () => {
-            const text = inputField.value.trim();
-            if (!text) return alert("Isi pesan dulu!");
-            
-            if (editID) {
-                db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
-            } else {
-                db.ref("messages").push({ Text: text, Status: "active" }).then(() => { 
-                    inputField.value = ""; 
-                });
-            }
-        };
-
-        window.updateSpeed = (val) => {
-            db.ref("settings/speed").set(parseInt(val));
-        };
-
-        window.toggleStatus = (id, currentStatus) => {
-            db.ref("messages/" + id).update({ 
-                Status: currentStatus === "active" ? "hidden" : "active" 
-            });
-        };
-
-        window.deleteMessage = (id) => {
-            if (confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove();
-        };
-
-        /**
-         * REALTIME LISTENERS
-         */
-        
-        // Listen to Messages
-        db.ref("messages").on("value", (snapshot) => {
+        db.ref("messages").on("value", snapshot => {
             const data = snapshot.val();
-            messages = [];
-            if (data) {
-                Object.keys(data).forEach(key => { 
-                    messages.push({ ID: key, ...data[key] }); 
-                });
-            }
-            activeMessages = messages.filter(m => m.Status !== "hidden");
-            renderList();
-            updateMarquee();
+            const allMsg = [];
+            if (data) Object.keys(data).forEach(k => allMsg.push({ID: k, ...data[k]}));
+            activeMessages = allMsg.filter(m => m.Status !== 'hidden');
+            if (activeMessages.length > 0) span.textContent = activeMessages[0].Text;
+            renderRTList(allMsg);
         });
 
-        // Listen to Speed Settings
-        db.ref("settings/speed").on("value", (snapshot) => {
-            const speedVal = snapshot.val() || 15;
-            document.getElementById("speed-slider").value = speedVal;
-            document.getElementById("speedValue").innerText = speedVal;
-
-            span.style.animation = 'none';
-            void span.offsetWidth; // Trigger reflow
-            span.style.animation = `marquee ${speedVal}s linear infinite`;
+        db.ref("settings/speed").on("value", s => {
+            const v = s.val() || 15;
+            span.style.animation = 'none'; void span.offsetWidth;
+            span.style.animation = `marquee ${v}s linear infinite`;
+            document.getElementById("speedValue").innerText = v;
         });
 
-        /**
-         * RENDERING LOGIC
-         */
-        function renderList() {
+        function renderRTList(msgs) {
             const list = document.getElementById("rt-list");
-            list.innerHTML = messages.map(m => `
-                <li class="${m.Status === 'hidden' ? 'muted' : ''}">
-                    <span onclick="toggleStatus('${m.ID}', '${m.Status}')" style="cursor:pointer; font-size: 1.2rem;">
-                        ${m.Status === 'active' ? '👁️' : '🚫'}
-                    </span>
-                    <span class="item-text ${m.Status === 'hidden' ? 'text-muted' : ''}" 
-                          onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
-                        ${m.Text}
-                    </span>
-                    <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer; color:#ff4d4d;">🗑️</span>
+            list.innerHTML = msgs.map(m => `
+                <li style="display:flex; justify-content:space-between; font-size:0.8rem; padding: 5px 0;">
+                    <span>${m.Text.substring(0, 20)}...</span>
+                    <span style="cursor:pointer" onclick="deleteMsg('${m.ID}')">🗑️</span>
                 </li>
             `).join('');
         }
+        function deleteMsg(id) { if(confirm("Hapus?")) db.ref("messages/"+id).remove(); }
+        function saveOrUpdate() {
+            const t = document.getElementById("rt-input").value;
+            if(t) db.ref("messages").push({Text: t, Status: "active"}).then(()=>document.getElementById("rt-input").value="");
+        }
+        function updateSpeed(v) { db.ref("settings/speed").set(parseInt(v)); }
 
-        function updateMarquee() {
-            if (activeMessages.length > 0) {
-                // Jangan paksa ganti teks jika sudah ada teks yang sedang jalan, kecuali kondisi awal
-                if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
-                    span.textContent = activeMessages[0].Text;
-                }
-            } else {
-                span.textContent = "Tidak ada pesan aktif.";
-            }
+        // --- 3. MONITORING PERBAIKAN LOGIC (API AppSheet) ---
+        const API_CONFIG = {
+            appId: '1474754a-c8a9-4660-aeef-d197abcbdf76',
+            accessKey: 'V2-uuT5Q-pHlJR-TdVlZ-lvl4W-3WkM2-kvQKN-HuHbl-KAcy6',
+            tableName: 'DailyActivity'
+        };
+        let monData = [];
+
+        async function fetchData() {
+            const url = `https://api.appsheet.com/api/v2/apps/${API_CONFIG.appId}/tables/${API_CONFIG.tableName}/Action`;
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'ApplicationAccessKey': API_CONFIG.accessKey, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "Action": "Find", "Rows": [] })
+                });
+                monData = await res.json();
+                renderMonTable(monData);
+            } catch (e) { console.error("Fetch Error:", e); }
         }
 
-        // Loop Marquee ke pesan berikutnya setelah satu putaran animasi selesai
+        function handleSearch() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            const fil = monData.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(val)));
+            renderMonTable(fil);
+        }
+
+        function renderMonTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            const groups = data.reduce((acc, o) => {
+                const k = o.type || 'LAIN-LAIN';
+                if (!acc[k]) acc[k] = []; acc[k].push(o); return acc;
+            }, {});
+
+            Object.keys(groups).sort().forEach(type => {
+                tbody.innerHTML += `<tr class="group-header"><td colspan="6">📁 ${type}</td></tr>`;
+                groups[type].forEach(row => {
+                    const badge = row.status === 'DONE' ? 'badge-done' : 'badge-progres';
+                    tbody.innerHTML += `
+                        <tr onclick='showDetail(${JSON.stringify(row)})'>
+                            <td style="color:#64748b">${row.tanggalKerusakan || '-'}</td>
+                            <td style="font-weight:bold">${row.ESPK || '-'}</td>
+                            <td>${row.activity || '-'}</td>
+                            <td>${row.area || '-'}</td>
+                            <td><code>${row.tagNumber || '-'}</code></td>
+                            <td><span class="status-badge ${badge}">${row.status || 'N/A'}</span></td>
+                        </tr>
+                    `;
+                });
+            });
+            feather.replace();
+        }
+
+        function showDetail(r) {
+            const c = document.getElementById('detailContainer');
+            const fields = [
+                {l:'Status', v:r.status}, {l:'No ESPK', v:r.ESPK},
+                {l:'Area', v:r.area}, {l:'Tag', v:r.tagNumber},
+                {l:'Aktivitas', v:r.activity}, {l:'Tanggal', v:r.tanggalKerusakan}
+            ];
+            c.innerHTML = fields.map(f => `<div><div style="font-size:0.7rem; color:#94a3b8; font-weight:bold;">${f.l}</div><div style="font-weight:600">${f.v || '-'}</div></div>`).join('');
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+        function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
+
+        // Modal RT
+        window.openModal = () => document.getElementById("rt-modal").style.display = "flex";
+        window.closeModal = () => document.getElementById("rt-modal").style.display = "none";
+
+        // Clock & Init
+        setInterval(() => { 
+            document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString('id-ID', { hour12: false });
+        }, 1000);
+        
+        window.onload = () => { feather.replace(); };
+
+        // Animation Loop RT
         span.addEventListener('animationiteration', () => {
             if (activeMessages.length > 1) {
-                const currentIndex = activeMessages.findIndex(m => m.Text === span.textContent);
-                const nextIndex = (currentIndex + 1) % activeMessages.length;
-                span.textContent = activeMessages[nextIndex].Text;
-            } else if (activeMessages.length === 1) {
-                span.textContent = activeMessages[0].Text;
+                const cur = activeMessages.findIndex(m => m.Text === span.textContent);
+                span.textContent = activeMessages[(cur + 1) % activeMessages.length].Text;
             }
         });
-
-        /**
-         * CLOCK SYSTEM
-         */
-        setInterval(() => { 
-            const now = new Date();
-            const timeString = now.getHours().toString().padStart(2, '0') + ":" + 
-                               now.getMinutes().toString().padStart(2, '0') + ":" + 
-                               now.getSeconds().toString().padStart(2, '0');
-            document.getElementById("digital-clock").innerText = timeString;
-        }, 1000);
     </script>
 </body>
 </html>
