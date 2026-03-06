@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TabeL Kalkulasi</title>
+    <title>TabeL Kalkulasi & Report</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -20,10 +19,8 @@
         }
 
         * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
         }
 
         body { 
@@ -36,18 +33,104 @@
         .unified-bar {
             display: flex;
             background: var(--navy);
-            height: 30px;
+            height: 35px;
             align-items: center;
             border-bottom: 3px solid var(--gold);
             position: relative;
             z-index: 100;
         }
 
+        /* TOMBOL MENU POJOK KIRI - ESTETIK & MINIMALIS */
+        .menu-dropdown {
+            position: relative;
+            height: 100%;
+        }
+
+        #btn-main-menu {
+            background: var(--gold);
+            border: none;
+            color: var(--navy);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0 18px;
+            height: 100%;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s ease;
+        }
+
+        #btn-main-menu:hover {
+            background: #eab104;
+        }
+
+        /* Ikon Hamburger Garis Minimalis */
+        .nav-icon {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .nav-icon span {
+            display: block;
+            width: 16px;
+            height: 2px;
+            background: var(--navy);
+            border-radius: 2px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 35px;
+            left: 0;
+            background-color: white;
+            min-width: 230px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.15);
+            z-index: 1000;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content button {
+            color: var(--navy);
+            padding: 14px 20px;
+            display: block;
+            width: 100%;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #f1f4f7;
+            padding-left: 25px; /* Efek geser minimalis */
+        }
+
+        .dropdown-content button.active {
+            background: #f1f4f7;
+            font-weight: 700;
+            border-left: 5px solid var(--navy);
+        }
+
+        /* Running Text Area */
         #running-text-wrapper {
             flex-grow: 1;
             overflow: hidden;
             white-space: nowrap;
-            position: relative;
         }
 
         #running-content {
@@ -72,188 +155,107 @@
             display: flex;
             align-items: center;
             font-weight: 800;
-            font-size: 1.1rem;
         }
 
         #btn-manage-rt {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0 15px;
+            background: none; border: none; color: white;
+            font-size: 1.2rem; cursor: pointer; padding: 0 15px;
+            opacity: 0.7;
+            transition: 0.2s;
         }
+        #btn-manage-rt:hover { opacity: 1; }
 
-        /* --- Content Area (AppSheet Iframe) --- */
+        /* --- Content Area --- */
         .content-area { 
-            height: calc(100vh - 30px); 
+            height: calc(100vh - 35px); 
+            position: relative;
         }
         
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
+        .iframe-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: none;
         }
+
+        .iframe-layer.active {
+            display: block;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
 
         /* --- Modal System --- */
         .rt-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
+            display: none; position: fixed; z-index: 2000;
             left: 0; top: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
         }
-
         .rt-box {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            margin: 50px auto;
-            border-radius: 15px;
-            overflow: hidden;
+            background: white; width: 90%; max-width: 400px;
+            margin: 50px auto; border-radius: 15px; overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-
-        .rt-header { 
-            background: var(--navy); 
-            color: white; 
-            padding: 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .btn-close-top { 
-            background: none; 
-            border: none; 
-            color: white; 
-            font-size: 25px; 
-            cursor: pointer; 
-        }
-
-        .rt-body { 
-            padding: 20px; 
-        }
-        
-        #rt-input { 
-            width: 100%; 
-            height: 80px; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 10px; 
-            resize: none; 
-            margin-bottom: 10px; 
-            font-size: 1rem;
-        }
-
-        .btn-save { 
-            background: var(--navy); 
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        /* --- List Elements --- */
-        .list-container { 
-            max-height: 250px; 
-            overflow-y: auto; 
-            margin-top: 15px; 
-        }
-
-        #rt-list { 
-            list-style: none; 
-            padding: 0; 
-        }
-        
-        #rt-list li { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            padding: 10px; 
-            border-bottom: 1px solid #eee; 
-            font-size: 0.9rem;
-        }
-
-        .item-text { 
-            flex-grow: 1; 
-            cursor: pointer; 
-            color: #333; 
-        }
-
-        .item-text:hover { 
-            color: var(--navy); 
-            font-weight: bold; 
-        }
-        
-        .text-muted { 
-            color: #ccc; 
-            text-decoration: line-through; 
-        }
-
-        .muted { 
-            opacity: 0.3; 
-        }
-
-        .speed-control { 
-            margin: 15px 0; 
-            font-size: 0.9rem; 
-            color: var(--navy); 
-            font-weight: bold; 
-        }
-
-        #speed-slider { 
-            width: 100%; 
-            margin-top: 5px; 
-            cursor: pointer; 
-        }
+        .rt-header { background: var(--navy); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .rt-body { padding: 20px; }
+        #rt-input { width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; resize: none; margin-bottom: 10px; }
+        .btn-save { background: var(--navy); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; }
+        .list-container { max-height: 250px; overflow-y: auto; margin-top: 15px; }
+        #rt-list { list-style: none; padding: 0; }
+        #rt-list li { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .item-text { flex-grow: 1; cursor: pointer; color: #333; }
     </style>
 </head>
 <body>
 
     <div class="main-wrapper">
         <header class="unified-bar">
+            <div class="menu-dropdown">
+                <button id="btn-main-menu" onclick="toggleDropdown()">
+                    <div class="nav-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span>MENU</span>
+                </button>
+                <div id="myDropdown" class="dropdown-content">
+                    <button onclick="changeIframe(1, this)" class="active">📊 Tabel Kalkulasi</button>
+                    <button onclick="changeIframe(2, this)">📝 Maintenance Report</button>
+                </div>
+            </div>
+
             <div id="running-text-wrapper">
                 <span id="running-content">Menghubungkan ke Database...</span>
             </div>
+            
             <div class="clock-container">
                 <div id="digital-clock">00:00:00</div>
             </div>
+            
             <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
         </header>
 
         <main class="content-area">
-            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
+            <div id="frame1" class="iframe-layer active">
+                <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
+            </div>
+
+            <div id="frame2" class="iframe-layer">
+                <iframe src="https://tabelom.github.io/MaintenanceReport/"></iframe>
+            </div>
         </main>
     </div>
 
     <div id="rt-modal" class="rt-modal">
         <div class="rt-box">
             <div class="rt-header">
-                <h3>⚙️ Pengaturan</h3>
-                <button class="btn-close-top" onclick="closeModal()">&times;</button>
+                <h3>⚙️ Pengaturan Running Text</h3>
+                <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:25px; cursor:pointer;">&times;</button>
             </div>
             <div class="rt-body">
-                <label style="font-weight: bold; color: var(--navy);">Pesan Baru:</label>
-                <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
-                
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-save" id="btnSave" onclick="saveOrUpdate()">💾 Simpan</button>
-                    <button id="btnCancel" onclick="cancelEdit()" style="display:none; background:#888; color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; flex:1; height: 43px;">Batal</button>
-                </div>
-
-                <div class="speed-control">
-                    <label>⏱️ Kecepatan: <span id="speedValue">15</span>s</label>
-                    <input type="range" id="speed-slider" min="5" max="60" value="15" oninput="updateSpeed(this.value)">
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-                
-                <label style="font-weight: bold; color: var(--navy);">Daftar Pesan:</label>
+                <label style="font-weight: bold; color: var(--navy); font-size: 0.9rem;">Pesan Baru:</label>
+                <textarea id="rt-input" placeholder="Tulis pesan Anda di sini..."></textarea>
+                <button class="btn-save" id="btnSave" onclick="saveOrUpdate()">💾 Simpan</button>
                 <div class="list-container">
                     <ul id="rt-list"></ul>
                 </div>
@@ -262,9 +264,29 @@
     </div>
 
     <script>
-        /**
-         * INITIALIZATION & CONFIG
-         */
+        // --- LOGIKA IFRAME & DROPDOWN ---
+        function toggleDropdown() {
+            const dropdown = document.getElementById("myDropdown");
+            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        }
+
+        function changeIframe(index, btn) {
+            document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
+            document.getElementById('frame' + index).classList.add('active');
+            
+            document.querySelectorAll('.dropdown-content button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            toggleDropdown();
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('#btn-main-menu') && !event.target.closest('#btn-main-menu')) {
+                document.getElementById("myDropdown").style.display = "none";
+            }
+        }
+
+        // --- FIREBASE SYSTEM ---
         const firebaseConfig = {
             apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
             authDomain: "tabelom60.firebaseapp.com",
@@ -277,153 +299,54 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
         let messages = [];
         let activeMessages = [];
-        let editID = null;
-
         const span = document.getElementById("running-content");
-        const inputField = document.getElementById("rt-input");
-        const btnSave = document.getElementById("btnSave");
-        const btnCancel = document.getElementById("btnCancel");
 
-        /**
-         * UI FUNCTIONS
-         */
-        window.openModal = () => { 
-            document.getElementById("rt-modal").style.display = "block"; 
-        };
+        window.openModal = () => document.getElementById("rt-modal").style.display = "block";
+        window.closeModal = () => document.getElementById("rt-modal").style.display = "none";
 
-        window.closeModal = () => { 
-            document.getElementById("rt-modal").style.display = "none"; 
-            cancelEdit(); 
-        };
-
-        window.cancelEdit = () => {
-            editID = null;
-            inputField.value = "";
-            btnSave.innerText = "💾 Simpan";
-            btnCancel.style.display = "none";
-            btnSave.style.flex = "1";
-        };
-
-        window.prepareEdit = (id, text) => {
-            editID = id;
-            inputField.value = text;
-            btnSave.innerText = "🆙 Update";
-            btnCancel.style.display = "block";
-            btnSave.style.flex = "2";
-        };
-
-        /**
-         * DATABASE OPERATIONS
-         */
         window.saveOrUpdate = () => {
-            const text = inputField.value.trim();
-            if (!text) return alert("Isi pesan dulu!");
-            
-            if (editID) {
-                db.ref("messages/" + editID).update({ Text: text }).then(() => cancelEdit());
-            } else {
-                db.ref("messages").push({ Text: text, Status: "active" }).then(() => { 
-                    inputField.value = ""; 
-                });
-            }
-        };
-
-        window.updateSpeed = (val) => {
-            db.ref("settings/speed").set(parseInt(val));
-        };
-
-        window.toggleStatus = (id, currentStatus) => {
-            db.ref("messages/" + id).update({ 
-                Status: currentStatus === "active" ? "hidden" : "active" 
+            const text = document.getElementById("rt-input").value.trim();
+            if (text) db.ref("messages").push({ Text: text, Status: "active" }).then(() => {
+                document.getElementById("rt-input").value = "";
             });
         };
 
-        window.deleteMessage = (id) => {
-            if (confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove();
-        };
-
-        /**
-         * REALTIME LISTENERS
-         */
-        
-        // Listen to Messages
         db.ref("messages").on("value", (snapshot) => {
             const data = snapshot.val();
             messages = [];
-            if (data) {
-                Object.keys(data).forEach(key => { 
-                    messages.push({ ID: key, ...data[key] }); 
-                });
-            }
+            if (data) Object.keys(data).forEach(key => messages.push({ ID: key, ...data[key] }));
             activeMessages = messages.filter(m => m.Status !== "hidden");
             renderList();
-            updateMarquee();
+            if (activeMessages.length > 0 && (span.textContent.includes("Menghubungkan") || span.textContent === "")) {
+                span.textContent = activeMessages[0].Text;
+            }
         });
 
-        // Listen to Speed Settings
-        db.ref("settings/speed").on("value", (snapshot) => {
-            const speedVal = snapshot.val() || 15;
-            document.getElementById("speed-slider").value = speedVal;
-            document.getElementById("speedValue").innerText = speedVal;
-
-            span.style.animation = 'none';
-            void span.offsetWidth; // Trigger reflow
-            span.style.animation = `marquee ${speedVal}s linear infinite`;
-        });
-
-        /**
-         * RENDERING LOGIC
-         */
         function renderList() {
             const list = document.getElementById("rt-list");
             list.innerHTML = messages.map(m => `
-                <li class="${m.Status === 'hidden' ? 'muted' : ''}">
-                    <span onclick="toggleStatus('${m.ID}', '${m.Status}')" style="cursor:pointer; font-size: 1.2rem;">
-                        ${m.Status === 'active' ? '👁️' : '🚫'}
-                    </span>
-                    <span class="item-text ${m.Status === 'hidden' ? 'text-muted' : ''}" 
-                          onclick="prepareEdit('${m.ID}', '${m.Text.replace(/'/g, "\\'")}')">
-                        ${m.Text}
-                    </span>
-                    <span onclick="deleteMessage('${m.ID}')" style="cursor:pointer; color:#ff4d4d;">🗑️</span>
-                </li>
-            `).join('');
+                <li>
+                    <span class="item-text">${m.Text}</span>
+                    <span onclick="deleteMsg('${m.ID}')" style="cursor:pointer; color:#ff4d4d;">🗑️</span>
+                </li>`).join('');
         }
 
-        function updateMarquee() {
-            if (activeMessages.length > 0) {
-                // Jangan paksa ganti teks jika sudah ada teks yang sedang jalan, kecuali kondisi awal
-                if (span.textContent.includes("Menghubungkan") || span.textContent === "Tidak ada pesan aktif.") {
-                    span.textContent = activeMessages[0].Text;
-                }
-            } else {
-                span.textContent = "Tidak ada pesan aktif.";
-            }
-        }
+        window.deleteMsg = (id) => { if(confirm("Hapus pesan ini?")) db.ref("messages/" + id).remove(); };
 
-        // Loop Marquee ke pesan berikutnya setelah satu putaran animasi selesai
         span.addEventListener('animationiteration', () => {
             if (activeMessages.length > 1) {
                 const currentIndex = activeMessages.findIndex(m => m.Text === span.textContent);
                 const nextIndex = (currentIndex + 1) % activeMessages.length;
                 span.textContent = activeMessages[nextIndex].Text;
-            } else if (activeMessages.length === 1) {
-                span.textContent = activeMessages[0].Text;
             }
         });
 
-        /**
-         * CLOCK SYSTEM
-         */
-        setInterval(() => { 
+        // --- CLOCK ---
+        setInterval(() => {
             const now = new Date();
-            const timeString = now.getHours().toString().padStart(2, '0') + ":" + 
-                               now.getMinutes().toString().padStart(2, '0') + ":" + 
-                               now.getSeconds().toString().padStart(2, '0');
-            document.getElementById("digital-clock").innerText = timeString;
+            document.getElementById("digital-clock").innerText = now.toLocaleTimeString('en-GB');
         }, 1000);
     </script>
 </body>
