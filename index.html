@@ -4,251 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TabeL Kalkulasi & Report</title>
-    
     <link rel="icon" type="image/png" href="favicon.png">
-    
+
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
-        :root {
-            --bg-main: #f0f2f5;
-            --navy: #123458;
-            --gold: #fcc006;
-            --text-muted: #65676b;
-        }
+        :root { --navy: #123458; --gold: #fcc006; --bg: #f0f2f5; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,sans-serif; }
+        body { background:var(--bg); overflow:hidden; height:100vh; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-
-        body { background: var(--bg-main); overflow: hidden; height: 100vh; }
-
-        /* --- Header / Navigation Bar --- */
         .unified-bar {
-            display: flex;
-            background: var(--navy);
-            height: 35px;
-            align-items: center;
-            border-bottom: 3px solid var(--gold);
-            position: relative;
-            z-index: 100;
+            display:flex; align-items:center;
+            background:var(--navy); height:38px;
+            border-bottom:3px solid var(--gold);
+            position:relative; z-index:100;
+            gap:4px; padding-left:6px;
         }
 
-        /* TOMBOL MENU ESTETIK */
-        .menu-dropdown { position: relative; height: 100%; }
-
-        #btn-main-menu {
-            background: var(--gold);
-            border: none;
-            color: var(--navy);
-            font-size: 0.85rem;
-            cursor: pointer;
-            padding: 0 18px;
-            height: 100%;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 0.5px;
+        .nav-btn {
+            position:relative; height:26px; padding:0 16px;
+            border:none; border-radius:5px; cursor:pointer;
+            font-size:0.78rem; font-weight:700; letter-spacing:0.8px;
+            text-transform:uppercase; transition:all 0.18s ease;
+            white-space:nowrap;
+            background:transparent; color:rgba(255,255,255,0.45);
+            outline:1px solid rgba(255,255,255,0.15);
+        }
+        .nav-btn:hover:not(.active) {
+            color:rgba(255,255,255,0.8);
+            outline:1px solid rgba(255,255,255,0.35);
+            background:rgba(255,255,255,0.06);
+        }
+        .nav-btn.active {
+            background:var(--gold); color:var(--navy);
+            outline:none; box-shadow:0 2px 10px rgba(252,192,6,0.45);
         }
 
-        .nav-icon { display: flex; flex-direction: column; gap: 3px; }
-        .nav-icon span { display: block; width: 16px; height: 2px; background: var(--navy); border-radius: 2px; }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 35px;
-            left: 0;
-            background-color: white;
-            min-width: 230px;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.15);
-            z-index: 1000;
-            border-radius: 0 0 10px 10px;
-            overflow: hidden;
-            border: 1px solid #eee;
-            animation: slideDown 0.2s ease-out;
-        }
-
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-
-        .dropdown-content button {
-            color: var(--navy); padding: 14px 20px; display: block; width: 100%; border: none;
-            background: none; text-align: left; cursor: pointer; font-size: 0.9rem; font-weight: 500;
-            border-bottom: 1px solid #f8f9fa;
-        }
-
-        .dropdown-content button:hover { background-color: #f1f4f7; padding-left: 25px; transition: 0.2s; }
-        .dropdown-content button.active { background: #f1f4f7; font-weight: 700; border-left: 5px solid var(--navy); }
-
-        /* Running Text Area */
-        #running-text-wrapper { flex-grow: 1; overflow: hidden; white-space: nowrap; }
+        #running-text-wrapper { flex-grow:1; overflow:hidden; white-space:nowrap; margin-left:8px; }
         #running-content {
-            display: inline-block; color: white; font-size: 1.1rem; font-weight: bold;
-            padding-left: 100%; animation: marquee 10s linear infinite;
+            display:inline-block; color:white;
+            font-size:0.95rem; font-weight:600;
+            padding-left:100%; animation:marquee 10s linear infinite;
         }
+        @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
 
-        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        .clock-container {
+            background:var(--gold); color:var(--navy);
+            padding:0 16px; height:100%;
+            display:flex; align-items:center;
+            font-weight:800; font-size:0.9rem; letter-spacing:1px;
+        }
+        #btn-manage-rt { background:none; border:none; color:white; font-size:1.1rem; cursor:pointer; padding:0 12px; }
 
-        .clock-container { background: var(--gold); color: var(--navy); padding: 0 20px; height: 100%; display: flex; align-items: center; font-weight: 800; }
-        #btn-manage-rt { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 0 15px; }
+        .content-area { height:calc(100vh - 41px); position:relative; }
+        .iframe-layer { position:absolute; inset:0; display:none; }
+        .iframe-layer.active { display:block; }
+        iframe { width:100%; height:100%; border:none; }
 
-        /* --- Content Area --- */
-        .content-area { height: calc(100vh - 35px); position: relative; }
-        .iframe-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-        .iframe-layer.active { display: block; }
-        iframe { width: 100%; height: 100%; border: none; }
-
-        /* --- Modal System (KEMBALI KE LENGKAP) --- */
-        .rt-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
-        .rt-box { background: white; width: 90%; max-width: 400px; margin: 40px auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .rt-header { background: var(--navy); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .rt-body { padding: 20px; }
-        
-        #rt-input { width: 100%; height: 70px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; resize: none; margin-bottom: 10px; }
-        .btn-save { background: var(--navy); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        .speed-control { margin-bottom: 20px; border-top: 1px solid #eee; padding-top: 15px; }
-        .speed-label { font-size: 0.9rem; font-weight: bold; color: var(--navy); display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
-        #speed-slider { width: 100%; cursor: pointer; accent-color: var(--navy); }
-
-        .list-container { max-height: 200px; overflow-y: auto; margin-top: 10px; }
-        #rt-list { list-style: none; padding: 0; }
-        #rt-list li { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem; }
-        .item-text { flex-grow: 1; color: #333; }
-        .muted { opacity: 0.3; text-decoration: line-through; }
+        .rt-modal { display:none; position:fixed; z-index:2000; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(2px); }
+        .rt-box { background:white; width:90%; max-width:400px; margin:40px auto; border-radius:15px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+        .rt-header { background:var(--navy); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; }
+        .rt-body { padding:20px; }
+        #rt-input { width:100%; height:70px; padding:10px; border:1px solid #ddd; border-radius:10px; resize:none; margin-bottom:10px; }
+        .btn-save { background:var(--navy); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:bold; width:100%; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .speed-control { margin-bottom:20px; border-top:1px solid #eee; padding-top:15px; }
+        .speed-label { font-size:0.9rem; font-weight:bold; color:var(--navy); display:flex; align-items:center; gap:5px; margin-bottom:8px; }
+        #speed-slider { width:100%; cursor:pointer; accent-color:var(--navy); }
+        .list-container { max-height:200px; overflow-y:auto; margin-top:10px; }
+        #rt-list { list-style:none; padding:0; }
+        #rt-list li { display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee; font-size:0.85rem; }
+        .item-text { flex-grow:1; color:#333; }
+        .muted { opacity:0.3; text-decoration:line-through; }
     </style>
 </head>
 <body>
 
-    <header class="unified-bar">
-        <div class="menu-dropdown">
-            <button id="btn-main-menu" onclick="toggleDropdown()">
-                <div class="nav-icon"><span></span><span></span><span></span></div>
-                <span>MENU</span>
-            </button>
-            <div id="myDropdown" class="dropdown-content">
-                <button onclick="changeIframe(1, this)" class="active">📊 Tabel Kalkulasi</button>
-                <button onclick="changeIframe(2, this)">60NBM.DEV</button>
-            </div>
-        </div>
+<header class="unified-bar">
+    <button class="nav-btn active" onclick="changeIframe(1, this)">📊 Tabel Kalkulasi</button>
+    <button class="nav-btn" onclick="changeIframe(2, this)">🛠️ 60NBM.DEV</button>
 
-        <div id="running-text-wrapper">
-            <span id="running-content">Menghubungkan ke Database...</span>
-        </div>
-        
-        <div class="clock-container"><div id="digital-clock">00:00:00</div></div>
-        <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
-    </header>
-
-    <main class="content-area">
-        <div id="frame1" class="iframe-layer active">
-            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
-        </div>
-        <div id="frame2" class="iframe-layer">
-            <iframe src="https://daily-activity-nextjs.vercel.app/"></iframe>
-        </div>
-    </main>
-
-    <div id="rt-modal" class="rt-modal">
-        <div class="rt-box">
-            <div class="rt-header"><h3>⚙️ Pengaturan</h3><button onclick="closeModal()" style="background:none; border:none; color:white; font-size:25px; cursor:pointer;">&times;</button></div>
-            <div class="rt-body">
-                <label style="font-weight:bold; color:var(--navy); font-size:0.85rem;">Pesan Baru:</label>
-                <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
-                <button class="btn-save" onclick="saveMsg()">💾 Simpan</button>
-                
-                <div class="speed-control">
-                    <div class="speed-label">⏱️ Kecepatan: <span id="speed-val">10</span>s</div>
-                    <input type="range" id="speed-slider" min="2" max="30" value="10" oninput="updateSpeed(this.value)">
-                </div>
-
-                <label style="font-weight:bold; color:var(--navy); font-size:0.85rem;">Daftar Pesan:</label>
-                <div class="list-container"><ul id="rt-list"></ul></div>
-            </div>
-        </div>
+    <div id="running-text-wrapper">
+        <span id="running-content">Menghubungkan ke Database...</span>
     </div>
 
-    <script>
-        function toggleDropdown() {
-            const d = document.getElementById("myDropdown");
-            d.style.display = (d.style.display === "block") ? "none" : "block";
-        }
+    <div class="clock-container"><span id="digital-clock">00:00:00</span></div>
+    <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
+</header>
 
-        function changeIframe(idx, btn) {
-            document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
-            document.getElementById('frame' + idx).classList.add('active');
-            document.querySelectorAll('.dropdown-content button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            toggleDropdown();
-        }
+<main class="content-area">
+    <div id="frame1" class="iframe-layer active">
+        <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
+    </div>
+    <div id="frame2" class="iframe-layer">
+        <iframe src="https://daily-activity-nextjs.vercel.app/"></iframe>
+    </div>
+</main>
 
-        window.onclick = e => { if (!e.target.matches('#btn-main-menu') && !e.target.closest('#btn-main-menu')) document.getElementById("myDropdown").style.display = "none"; }
+<div id="rt-modal" class="rt-modal">
+    <div class="rt-box">
+        <div class="rt-header">
+            <h3>⚙️ Pengaturan</h3>
+            <button onclick="closeModal()" style="background:none;border:none;color:white;font-size:25px;cursor:pointer;">&times;</button>
+        </div>
+        <div class="rt-body">
+            <label style="font-weight:bold;color:var(--navy);font-size:0.85rem;">Pesan Baru:</label>
+            <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
+            <button class="btn-save" onclick="saveMsg()">💾 Simpan</button>
+            <div class="speed-control">
+                <div class="speed-label">⏱️ Kecepatan: <span id="speed-val">10</span>s</div>
+                <input type="range" id="speed-slider" min="2" max="30" value="10" oninput="updateSpeed(this.value)">
+            </div>
+            <label style="font-weight:bold;color:var(--navy);font-size:0.85rem;">Daftar Pesan:</label>
+            <div class="list-container"><ul id="rt-list"></ul></div>
+        </div>
+    </div>
+</div>
 
-        // --- FIREBASE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
-            authDomain: "tabelom60.firebaseapp.com",
-            databaseURL: "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "tabelom60",
-            storageBucket: "tabelom60.firebasestorage.app",
-            messagingSenderId: "823392737112",
-            appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        let activeMessages = [];
-        const span = document.getElementById("running-content");
+<script>
+    function changeIframe(idx, btn) {
+        document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
+        document.getElementById('frame' + idx).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
 
-        window.openModal = () => document.getElementById("rt-modal").style.display = "block";
-        window.closeModal = () => document.getElementById("rt-modal").style.display = "none";
+    window.openModal  = () => document.getElementById("rt-modal").style.display = "block";
+    window.closeModal = () => document.getElementById("rt-modal").style.display = "none";
 
-        function saveMsg() {
-            const val = document.getElementById("rt-input").value.trim();
-            if(val) db.ref("messages").push({ Text: val, Status: "active" }).then(() => document.getElementById("rt-input").value = "");
-        }
+    const firebaseConfig = {
+        apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
+        authDomain: "tabelom60.firebaseapp.com",
+        databaseURL: "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tabelom60",
+        storageBucket: "tabelom60.firebasestorage.app",
+        messagingSenderId: "823392737112",
+        appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let activeMessages = [];
+    const span = document.getElementById("running-content");
 
-        function updateSpeed(val) {
-            document.getElementById("speed-val").innerText = val;
-            db.ref("settings/speed").set(val);
-        }
+    function saveMsg() {
+        const val = document.getElementById("rt-input").value.trim();
+        if (val) db.ref("messages").push({ Text: val, Status: "active" })
+                    .then(() => document.getElementById("rt-input").value = "");
+    }
+    function updateSpeed(val) {
+        document.getElementById("speed-val").innerText = val;
+        db.ref("settings/speed").set(val);
+    }
 
-        db.ref("settings/speed").on("value", s => {
-            const v = s.val() || 10;
-            document.getElementById("speed-slider").value = v;
-            document.getElementById("speed-val").innerText = v;
-            span.style.animationDuration = v + "s";
+    db.ref("settings/speed").on("value", s => {
+        const v = s.val() || 10;
+        document.getElementById("speed-slider").value = v;
+        document.getElementById("speed-val").innerText = v;
+        span.style.animationDuration = v + "s";
+    });
+
+    db.ref("messages").on("value", snap => {
+        const data = snap.val();
+        const list = document.getElementById("rt-list");
+        list.innerHTML = "";
+        activeMessages = [];
+        if (data) Object.keys(data).forEach(k => {
+            const m = data[k];
+            if (m.Status === "active") activeMessages.push(m.Text);
+            list.innerHTML += `<li>
+                <span class="item-text ${m.Status==='hidden'?'muted':''}">${m.Text}</span>
+                <span onclick="toggleStatus('${k}','${m.Status}')" style="cursor:pointer">${m.Status==='active'?'👁️':'🚫'}</span>
+                <span onclick="delMsg('${k}')" style="cursor:pointer;color:red;">🗑️</span>
+            </li>`;
         });
+        if (activeMessages.length > 0) span.textContent = activeMessages[0];
+    });
 
-        db.ref("messages").on("value", snap => {
-            const data = snap.val();
-            const list = document.getElementById("rt-list");
-            list.innerHTML = "";
-            activeMessages = [];
-            if(data) Object.keys(data).forEach(k => {
-                const m = data[k];
-                if(m.Status === "active") activeMessages.push(m.Text);
-                list.innerHTML += `<li>
-                    <span class="item-text ${m.Status === 'hidden' ? 'muted' : ''}">${m.Text}</span>
-                    <span onclick="toggleStatus('${k}', '${m.Status}')" style="cursor:pointer">${m.Status === 'active' ? '👁️' : '🚫'}</span>
-                    <span onclick="delMsg('${k}')" style="cursor:pointer; color:red;">🗑️</span>
-                </li>`;
-            });
-            if(activeMessages.length > 0) span.textContent = activeMessages[0];
-        });
+    window.toggleStatus = (id, cur) => db.ref("messages/"+id).update({ Status: cur==='active'?'hidden':'active' });
+    window.delMsg = id => { if (confirm("Hapus?")) db.ref("messages/"+id).remove(); };
 
-        window.toggleStatus = (id, cur) => db.ref("messages/" + id).update({ Status: cur === 'active' ? 'hidden' : 'active' });
-        window.delMsg = id => { if(confirm("Hapus?")) db.ref("messages/" + id).remove(); };
+    span.addEventListener('animationiteration', () => {
+        if (activeMessages.length > 1) {
+            const i = activeMessages.indexOf(span.textContent);
+            span.textContent = activeMessages[(i+1) % activeMessages.length];
+        }
+    });
 
-        span.addEventListener('animationiteration', () => {
-            if (activeMessages.length > 1) {
-                const curIdx = activeMessages.indexOf(span.textContent);
-                span.textContent = activeMessages[(curIdx + 1) % activeMessages.length];
-            }
-        });
-
-        setInterval(() => { document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString('en-GB'); }, 1000);
-    </script>
+    setInterval(() => {
+        document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString('en-GB');
+    }, 1000);
+</script>
 </body>
 </html>
-
-
