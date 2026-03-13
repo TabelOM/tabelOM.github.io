@@ -5,340 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TabeL Kalkulasi & Report</title>
     <link rel="icon" type="image/png" href="favicon.png">
-
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-
     <style>
         :root { --navy: #123458; --gold: #fcc006; --bg: #f0f2f5; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,sans-serif; }
         body { background:var(--bg); overflow:hidden; height:100vh; }
 
-        /* ── NAV BAR ── */
-        .unified-bar {
-            display:flex; align-items:center;
-            background:var(--navy); height:38px;
-            border-bottom:3px solid var(--gold);
-            position:relative; z-index:100;
-            gap:4px; padding-left:6px;
-        }
-        .nav-btn {
-            position:relative; height:26px; padding:0 16px;
-            border:none; border-radius:5px; cursor:pointer;
-            font-size:0.78rem; font-weight:700; letter-spacing:0.8px;
-            text-transform:uppercase; transition:all 0.18s ease;
-            white-space:nowrap;
-            background:transparent; color:rgba(255,255,255,0.45);
-            outline:1px solid rgba(255,255,255,0.15);
-        }
-        .nav-btn:hover:not(.active) {
-            color:rgba(255,255,255,0.8);
-            outline:1px solid rgba(255,255,255,0.35);
-            background:rgba(255,255,255,0.06);
-        }
-        .nav-btn.active {
-            background:var(--gold); color:var(--navy);
-            outline:none; box-shadow:0 2px 10px rgba(252,192,6,0.45);
-        }
+        .unified-bar { display:flex; align-items:center; background:var(--navy); height:38px; border-bottom:3px solid var(--gold); position:relative; z-index:100; gap:4px; padding-left:6px; }
+        .nav-btn { height:26px; padding:0 16px; border:none; border-radius:5px; cursor:pointer; font-size:0.78rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; transition:all 0.18s; white-space:nowrap; background:transparent; color:rgba(255,255,255,0.45); outline:1px solid rgba(255,255,255,0.15); }
+        .nav-btn:hover:not(.active) { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.06); }
+        .nav-btn.active { background:var(--gold); color:var(--navy); outline:none; box-shadow:0 2px 10px rgba(252,192,6,0.45); }
 
-        /* Chat button khusus - Floating FAB */
-        #btn-chat {
-            position: fixed;
-            bottom: 35px;
-            right: 35px;
-            width: 60px;
-            height: 60px;
-            background: var(--navy);
-            border: 3px solid var(--gold);
-            border-radius: 50%;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            z-index: 2500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #btn-chat:hover {
-            transform: scale(1.1) rotate(5deg);
-            background: #0d2540;
-        }
-        #btn-chat.pulse {
-            animation: chat-pulse 2s infinite;
-        }
-        @keyframes chat-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(252, 192, 6, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(252, 192, 6, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(252, 192, 6, 0); }
-        }
-        #chat-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 800;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        #chat-badge.show { display: flex; }
+        /* Status koneksi - indikator kecil di navbar */
+        #conn-status { display:flex; align-items:center; margin-left:4px; }
+        #conn-dot { width:8px; height:8px; border-radius:50%; background:#ef4444; transition:background 0.4s; flex-shrink:0; }
+        #conn-dot.on { background:#22c55e; box-shadow:0 0 5px #22c55e; }
+        #conn-label { display:none; }
 
         #running-text-wrapper { flex-grow:1; overflow:hidden; white-space:nowrap; margin-left:4px; }
-        #running-content {
-            display:inline-block; color:white;
-            font-size:0.95rem; font-weight:600;
-            padding-left:100%; animation:marquee 10s linear infinite;
-        }
+        #running-content { display:inline-block; color:white; font-size:0.95rem; font-weight:600; padding-left:100%; animation:marquee 10s linear infinite; }
         @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
 
-        .clock-container {
-            background:var(--gold); color:var(--navy);
-            padding:0 16px; height:100%;
-            display:flex; align-items:center;
-            font-weight:800; font-size:0.9rem; letter-spacing:1px;
-        }
+        .clock-container { background:var(--gold); color:var(--navy); padding:0 16px; height:100%; display:flex; align-items:center; font-weight:800; font-size:0.9rem; letter-spacing:1px; }
         #btn-manage-rt { background:none; border:none; color:white; font-size:1.1rem; cursor:pointer; padding:0 12px; }
+        #btn-refresh { background:none; border:none; color:white; font-size:1rem; cursor:pointer; padding:0 8px; }
 
-        /* ── CONTENT ── */
         .content-area { height:calc(100vh - 41px); position:relative; }
         .iframe-layer { position:absolute; inset:0; display:none; }
         .iframe-layer.active { display:block; }
         iframe { width:100%; height:100%; border:none; }
 
-        /* ── CHAT PANEL ── */
-        #chat-panel {
-            display: none;
-            position: fixed;
-            bottom: 110px;
-            right: 35px;
-            width: 450px; height: 680px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-            z-index: 3000;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        #chat-panel.open { display:flex; }
+        /* CHAT FAB */
+        #btn-chat { position:fixed; bottom:35px; right:35px; width:60px; height:60px; background:var(--navy); border:3px solid var(--gold); border-radius:50%; color:white; font-size:1.8rem; cursor:pointer; z-index:2500; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+        #btn-chat:hover { transform:scale(1.1) rotate(5deg); background:#0d2540; }
+        #btn-chat.pulse { animation:cpulse 2s infinite; }
+        @keyframes cpulse { 0%{box-shadow:0 0 0 0 rgba(252,192,6,.7)} 70%{box-shadow:0 0 0 15px rgba(252,192,6,0)} 100%{box-shadow:0 0 0 0 rgba(252,192,6,0)} }
+        #chat-badge { position:absolute; top:-5px; right:-5px; background:#ef4444; color:white; font-size:0.7rem; font-weight:800; border-radius:50%; width:22px; height:22px; display:none; align-items:center; justify-content:center; border:2px solid white; }
+        #chat-badge.show { display:flex; }
 
-        .chat-head {
-            background:var(--navy);
-            padding:10px 14px;
-            display:flex; align-items:center; justify-content:space-between;
-            flex-shrink:0;
-        }
+        /* CHAT PANEL */
+        #chat-panel { display:none; position:fixed; bottom:110px; right:35px; width:420px; height:600px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.3); z-index:3000; flex-direction:column; overflow:hidden; border:1px solid rgba(0,0,0,0.1); }
+        #chat-panel.open { display:flex; animation:popIn 0.22s cubic-bezier(0.175,0.885,0.32,1.275); }
+        @keyframes popIn { from{transform:scale(0.88) translateY(16px);opacity:0} to{transform:scale(1);opacity:1} }
+
+        .chat-head { background:var(--navy); padding:10px 14px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
         .chat-head-left { display:flex; align-items:center; gap:10px; }
-        .chat-avatar-group { display:flex; }
-        .chat-online-dot {
-            width:8px; height:8px; border-radius:50%;
-            background:#22c55e;
-            box-shadow:0 0 0 2px var(--navy);
-        }
-        .chat-title { color:white; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
-        .chat-sub { color:rgba(255,255,255,0.6); font-size:0.75rem; margin-top:2px; cursor:pointer; }
-        .chat-sub:hover { color:white; text-decoration:underline; }
-
-        /* Online List Overlay */
-        #online-list-panel {
-            display:none; position:absolute;
-            top:55px; left:10px; right:10px;
-            background:white; border-radius:12px;
-            box-shadow:0 8px 24px rgba(0,0,0,0.2);
-            z-index:4000; padding:12px;
-            border:1px solid #eee;
-            animation: slideDown 0.2s ease;
-        }
-        #online-list-panel.show { display:block; }
-        .online-user-item {
-            display:flex; align-items:center; gap:8px;
-            padding:6px 0; border-bottom:1px solid #f5f5f5;
-            font-size:0.82rem; color:#333;
-        }
-        .online-user-item:last-child { border-bottom:none; }
-        .dot { width:7px; height:7px; border-radius:50%; background:#22c55e; }
-
-        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        #btn-close-chat {
-            background:rgba(255,255,255,0.1); border:none;
-            color:white; width:26px; height:26px;
-            border-radius:6px; cursor:pointer; font-size:0.9rem;
-            transition:background 0.2s;
-        }
+        .ch-online-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; flex-shrink:0; }
+        .chat-title { color:white; font-weight:700; font-size:0.88rem; }
+        .chat-sub { color:rgba(255,255,255,0.55); font-size:0.72rem; margin-top:1px; }
+        #typing-status { color:#86efac; font-size:0.67rem; min-height:11px; }
+        #btn-close-chat { background:rgba(255,255,255,0.1); border:none; color:white; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:0.9rem; }
         #btn-close-chat:hover { background:rgba(255,255,255,0.25); }
 
-        /* Removing manual name prompt as per request */
-        #name-prompt { display:none; }
+        /* name bar */
+        #name-bar { display:flex; align-items:center; gap:8px; padding:6px 12px; background:#f5f7fa; border-bottom:1px solid #eee; flex-shrink:0; font-size:0.75rem; color:#666; }
+        #name-bar strong { color:var(--navy); }
+        #btn-chname { font-size:0.68rem; background:none; border:1px solid #ccc; border-radius:5px; padding:2px 7px; cursor:pointer; color:#555; }
 
-        /* Messages */
-        #chat-messages {
-            flex-grow:1; overflow-y:auto;
-            padding:12px 10px;
-            display:flex; flex-direction:column; gap:6px;
-            background:#f0f2f5;
-        }
+        /* messages */
+        #chat-messages { flex-grow:1; overflow-y:auto; padding:10px 8px; display:flex; flex-direction:column; gap:5px; background:#f0f2f5; }
         #chat-messages::-webkit-scrollbar { width:4px; }
         #chat-messages::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
 
-        .msg-row { display:flex; flex-direction:column; max-width:80%; }
+        .msg-row { display:flex; flex-direction:column; max-width:82%; }
         .msg-row.me { align-self:flex-end; align-items:flex-end; }
         .msg-row.them { align-self:flex-start; align-items:flex-start; }
+        .msg-sender { font-size:0.67rem; font-weight:700; margin-bottom:2px; padding:0 4px; }
+        .msg-bubble { padding:9px 13px; border-radius:16px; font-size:0.85rem; line-height:1.4; word-break:break-word; }
+        .msg-row.me .msg-bubble { background:var(--navy); color:white; border-radius:16px 16px 3px 16px; }
+        .msg-row.them .msg-bubble { background:white; color:#111; border-radius:16px 16px 16px 3px; box-shadow:0 1px 6px rgba(0,0,0,0.07); }
+        .msg-footer { display:flex; align-items:center; gap:6px; margin-top:2px; padding:0 4px; }
+        .msg-row.me .msg-footer { justify-content:flex-end; }
+        .msg-time { font-size:0.62rem; color:#aaa; }
+        .btn-act { background:none; border:none; cursor:pointer; font-size:0.78rem; opacity:0; transition:opacity 0.15s; padding:1px 3px; }
+        .msg-row:hover .btn-act { opacity:0.6; }
+        .btn-act:hover { opacity:1!important; }
 
-        .msg-sender {
-            font-size:0.68rem; font-weight:700; margin-bottom:2px;
-            color:var(--navy); padding:0 4px;
-        }
-        .msg-row.me .msg-sender { color:#555; }
+        .reply-quote { background:rgba(0,0,0,0.05); border-left:3px solid var(--navy); padding:5px 9px; margin-bottom:5px; border-radius:5px; font-size:0.76rem; color:#555; overflow:hidden; max-height:52px; }
+        .msg-row.me .reply-quote { background:rgba(255,255,255,0.14); border-left-color:var(--gold); color:rgba(255,255,255,0.85); }
+        .reply-qname { font-weight:800; font-size:0.67rem; display:block; margin-bottom:1px; }
 
-        .msg-bubble {
-            padding:10px 14px; border-radius:18px;
-            font-size:0.88rem; line-height:1.4; word-break:break-word;
-            position: relative;
-        }
-        .msg-row.me .msg-bubble {
-            background:var(--navy); color:white;
-            border-radius:18px 18px 4px 18px;
-        }
-        .msg-row.them .msg-bubble {
-            background:white; color:#111;
-            border-radius:18px 18px 18px 4px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.06);
-        }
-        .msg-footer {
-            display: flex; align-items:center; gap:8px; width: 100%;
-            margin-top: 2px; padding: 0 4px;
-        }
-        .msg-row.me .msg-footer { justify-content: flex-end; }
-        .msg-row.them .msg-footer { justify-content: flex-start; }
-        .msg-time { font-size:0.65rem; color:#888; }
-        .btn-del-msg {
-            background: none; border: none; color: #ff4d4d;
-            cursor: pointer; font-size: 0.75rem; opacity: 0;
-            transition: opacity 0.2s; padding: 2px;
-        }
-        .msg-row:hover .btn-del-msg, .msg-row:hover .btn-reply-msg { opacity: 0.7; }
-        .btn-del-msg:hover, .btn-reply-msg:hover { opacity: 1 !important; transform: scale(1.1); }
-        .btn-reply-msg {
-            background: none; border: none; color: #888;
-            cursor: pointer; font-size: 0.85rem; opacity: 0;
-            transition: opacity 0.2s; padding: 2px; order: -1;
-        }
+        #reply-preview { display:none; padding:8px 36px 8px 14px; background:#fdfdfd; border-top:1px solid #eee; border-left:4px solid var(--navy); font-size:0.8rem; position:relative; flex-shrink:0; }
+        #reply-preview.show { display:block; }
+        #btn-cancel-reply { position:absolute; right:10px; top:8px; background:none; border:none; cursor:pointer; color:#bbb; font-size:1rem; }
 
-        /* Reply styles */
-        .reply-quote {
-            background: rgba(0,0,0,0.05);
-            border-left: 3px solid var(--navy);
-            padding: 6px 10px;
-            margin-bottom: 6px;
-            border-radius: 6px;
-            font-size: 0.78rem;
-            color: #444;
-            max-height: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-        .msg-row.me .reply-quote {
-            background: rgba(255,255,255,0.12);
-            border-left-color: var(--gold);
-            color: rgba(255,255,255,0.9);
-        }
-        .reply-name { font-weight: 800; font-size: 0.7rem; display: block; margin-bottom: 2px; }
+        .chat-divider { text-align:center; font-size:0.66rem; color:#bbb; margin:3px 0; }
 
-        #reply-preview {
-            display: none; padding: 10px 40px 10px 15px;
-            background: #fdfdfd; border-top: 1px solid #eee;
-            border-left: 4px solid var(--navy); font-size: 0.82rem;
-            position: relative; animation: slideUp 0.2s ease;
-        }
-        #reply-preview.show { display: block; }
-        #btn-cancel-reply {
-            position: absolute; right: 12px; top: 10px;
-            cursor: pointer; font-size: 1rem; color: #999;
-            background: none; border: none;
-        }
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .chat-divider {
-            text-align:center; font-size:0.68rem;
-            color:#aaa; margin:4px 0;
-        }
-
-        /* Input area */
-        .chat-input-area {
-            display:flex; gap:8px; padding:10px;
-            background:white; border-top:1px solid #eee;
-            flex-shrink:0;
-        }
-        #chat-input {
-            flex-grow:1; padding:9px 14px;
-            border:1.5px solid #ddd; border-radius:22px;
-            font-size:0.85rem; outline:none; resize:none;
-            line-height:1.3; max-height:80px; overflow-y:auto;
-        }
+        .chat-input-area { display:flex; gap:8px; padding:9px; background:white; border-top:1px solid #eee; flex-shrink:0; }
+        #chat-input { flex-grow:1; padding:8px 13px; border:1.5px solid #ddd; border-radius:20px; font-size:0.84rem; outline:none; resize:none; line-height:1.3; max-height:80px; overflow-y:auto; }
         #chat-input:focus { border-color:var(--navy); }
-        #btn-send {
-            width:38px; height:38px; border-radius:50%;
-            background:var(--navy); border:none; cursor:pointer;
-            display:flex; align-items:center; justify-content:center;
-            color:var(--gold); font-size:1rem; flex-shrink:0;
-            transition:transform 0.15s, background 0.15s;
-        }
-        #btn-send:hover { background:#0d2540; transform:scale(1.05); }
-        #btn-send:active { transform:scale(0.95); }
+        #btn-send { width:36px; height:36px; border-radius:50%; background:var(--navy); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:1rem; flex-shrink:0; transition:transform 0.15s; }
+        #btn-send:hover { transform:scale(1.08); }
 
-        /* ── SETTINGS MODAL ── */
-        .rt-modal { display:none; position:fixed; z-index:2000; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(2px); }
-        .rt-box { background:white; width:90%; max-width:400px; margin:40px auto; border-radius:15px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+        /* SETTINGS MODAL */
+        .rt-modal { display:none; position:fixed; z-index:4000; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(2px); }
+        .rt-box { background:white; width:90%; max-width:420px; margin:40px auto; border-radius:15px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
         .rt-header { background:var(--navy); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; }
-        .rt-body { padding:20px; }
-        #rt-input { width:100%; height:70px; padding:10px; border:1px solid #ddd; border-radius:10px; resize:none; margin-bottom:10px; }
-        .btn-save { background:var(--navy); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:bold; width:100%; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:8px; }
-        .speed-control { margin-bottom:20px; border-top:1px solid #eee; padding-top:15px; }
-        .speed-label { font-size:0.9rem; font-weight:bold; color:var(--navy); display:flex; align-items:center; gap:5px; margin-bottom:8px; }
+        .rt-body { padding:20px; max-height:80vh; overflow-y:auto; }
+        #rt-input { width:100%; height:70px; padding:10px; border:1px solid #ddd; border-radius:10px; resize:none; margin-bottom:10px; font-size:0.85rem; }
+        .btn-save { background:var(--navy); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:bold; width:100%; margin-bottom:15px; }
+        .speed-control { margin-bottom:18px; border-top:1px solid #eee; padding-top:14px; }
+        .speed-label { font-size:0.85rem; font-weight:bold; color:var(--navy); display:flex; align-items:center; gap:5px; margin-bottom:8px; }
         #speed-slider { width:100%; cursor:pointer; accent-color:var(--navy); }
-        .list-container { max-height:200px; overflow-y:auto; margin-top:10px; }
-        #rt-list { list-style:none; padding:0; }
-        #rt-list li { display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee; font-size:0.85rem; }
+        .list-container { max-height:180px; overflow-y:auto; margin-top:8px; }
+        #rt-list { list-style:none; }
+        #rt-list li { display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid #f0f0f0; font-size:0.82rem; }
         .item-text { flex-grow:1; color:#333; }
         .muted { opacity:0.3; text-decoration:line-through; }
+        .bc-section { margin-top:18px; border-top:2px solid #eee; padding-top:14px; }
+        .bc-row { display:flex; gap:6px; margin-top:6px; }
+        .bc-row input { flex-grow:1; padding:8px 10px; border-radius:8px; border:1px solid #ddd; font-size:0.83rem; }
+        .btn-bc { background:#b91c1c; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.82rem; }
 
-        /* Emergency Alert Modal */
-        #emergency-overlay {
-            display:none; position:fixed; inset:0; z-index:9999;
-            background:rgba(185, 28, 28, 0.95); backdrop-filter:blur(8px);
-            align-items:center; justify-content:center; padding:20px;
-            color:white; text-align:center;
-        }
-        .emergency-box {
-            max-width:500px; width:100%;
-            background:#7f1d1d; border:4px solid #fca5a5;
-            padding:30px; border-radius:24px; box-shadow:0 0 50px rgba(0,0,0,0.5);
-            animation: shake 0.5s infinite;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+        /* EMERGENCY */
+        #emergency-overlay { display:none; position:fixed; inset:0; z-index:9999; background:rgba(185,28,28,0.95); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; color:white; text-align:center; }
+        .emergency-box { max-width:500px; width:100%; background:#7f1d1d; border:4px solid #fca5a5; padding:30px; border-radius:24px; animation:shake 0.5s infinite; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
         .emergency-title { font-size:2rem; font-weight:900; margin-bottom:15px; }
         .emergency-text { font-size:1.2rem; line-height:1.5; margin-bottom:25px; }
-        .btn-ack {
-            background:#fca5a5; color:#7f1d1d; border:none; padding:12px 40px;
-            border-radius:12px; font-weight:bold; cursor:pointer; font-size:1.1rem;
+        .btn-ack { background:#fca5a5; color:#7f1d1d; border:none; padding:12px 40px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:1.1rem; }
+
+        /* ERROR BANNER */
+        #err-banner { display:none; position:fixed; top:46px; left:0; right:0; background:#b91c1c; color:white; padding:8px 16px; font-size:0.82rem; font-weight:600; z-index:5000; text-align:center; }
+        #err-banner.show { display:block; }
+        #err-banner a { color:#fca5a5; text-decoration:underline; cursor:pointer; margin-left:8px; }
+
+        /* Online users dropdown */
+        #online-panel {
+            display:none; position:absolute;
+            top:100%; left:0; margin-top:4px;
+            background:white; border-radius:12px;
+            box-shadow:0 8px 24px rgba(0,0,0,0.18);
+            z-index:4000; padding:10px 0;
+            min-width:200px;
+            border:0.5px solid #eee;
+            animation:slideDown 0.15s ease;
         }
+        #online-panel.show { display:block; }
+        @keyframes slideDown { from{transform:translateY(-6px);opacity:0} to{transform:translateY(0);opacity:1} }
+        .online-item { display:flex; align-items:center; gap:8px; padding:7px 14px; font-size:0.82rem; color:#333; }
+        .online-item .odot { width:7px; height:7px; border-radius:50%; background:#22c55e; flex-shrink:0; }
+        .online-item.me { color:#888; font-style:italic; }
+        #online-panel-title { font-size:0.72rem; font-weight:700; color:#aaa; letter-spacing:1px; text-transform:uppercase; padding:4px 14px 8px; border-bottom:1px solid #f0f0f0; margin-bottom:4px; }
     </style>
 </head>
 <body>
@@ -347,21 +154,31 @@
     <button class="nav-btn active" onclick="changeIframe(1, this)">60NBM.DEV</button>
     <button class="nav-btn" onclick="changeIframe(2, this)">Tabel Kalkulasi</button>
 
-    <div id="running-text-wrapper">
-        <span id="running-content">Menghubungkan ke Database...</span>
+    <!-- Indikator koneksi database -->
+    <div id="conn-status">
+        <div id="conn-dot"></div>
+        <span id="conn-label">Menghubungkan...</span>
     </div>
 
-    <!-- Chat Button moved outside nav for highlighting -->
-    <button id="btn-chat" onclick="toggleChat()" title="Grup Chat">
-        💬
-        <span id="chat-badge">0</span>
-    </button>
+    <div id="running-text-wrapper">
+        <span id="running-content">Memuat...</span>
+    </div>
 
     <div class="clock-container"><span id="digital-clock">00:00:00</span></div>
-    <button onclick="refreshCurrentIframe()" id="btn-refresh" title="Muat ulang dashboard"
-        style="background:none; border:none; color:white; font-size:1rem; cursor:pointer; padding:0 8px;">🔄</button>
+    <button id="btn-refresh" onclick="refreshCurrentIframe()" title="Reload">🔄</button>
     <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
 </header>
+
+<!-- Error banner (muncul kalau Firebase Rules belum diset) -->
+<div id="err-banner">
+    ❌ <span id="err-msg">Database error</span>
+    <a onclick="document.getElementById('err-banner').classList.remove('show')">✕ tutup</a>
+</div>
+
+<button id="btn-chat" onclick="toggleChat()" title="Grup Chat">
+    💬
+    <span id="chat-badge"></span>
+</button>
 
 <main class="content-area">
     <div id="frame1" class="iframe-layer active">
@@ -376,32 +193,34 @@
 <div id="chat-panel">
     <div class="chat-head">
         <div class="chat-head-left">
-            <div class="chat-online-dot"></div>
+            <div class="ch-online-dot"></div>
             <div>
-                <div class="chat-title">💬 <span id="my-display-name">Loading...</span></div>
-                <div class="chat-sub" id="online-count" onclick="toggleOnlineList()">Memuat...</div>
-                <div id="typing-status" style="color: #22c55e; font-size: 0.65rem; font-weight: bold; height: 0; overflow: visible;"></div>
+                <div class="chat-title">💬 <span id="my-display-name">...</span></div>
+                <div style="position:relative;">
+                    <div class="chat-sub" id="online-count" onclick="toggleOnlinePanel(event)" style="cursor:pointer;user-select:none;">...</div>
+                    <div id="online-panel">
+                        <div id="online-panel-title">Sedang Online</div>
+                        <div id="online-panel-list"></div>
+                    </div>
+                </div>
+                <div id="typing-status"></div>
             </div>
         </div>
         <button id="btn-close-chat" onclick="toggleChat()">✕</button>
     </div>
 
-    <!-- ONLINE LIST OVERLAY -->
-    <div id="online-list-panel">
-        <div style="font-weight:bold; font-size:0.85rem; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">👷 Sedang Online:</div>
-        <div id="online-users-container" style="max-height:200px; overflow-y:auto;"></div>
+    <div id="name-bar">
+        <span>Nama: <strong id="name-bar-label">-</strong></span>
+        <button id="btn-chname" onclick="changeName()">✏️ Ganti</button>
     </div>
 
-    <div id="name-prompt">
-        <input id="input-name" type="text" placeholder="Nama kamu..." maxlength="20">
-        <button id="btn-set-name" onclick="setName()">Masuk</button>
+    <div id="chat-messages">
+        <div class="chat-divider">Memuat pesan...</div>
     </div>
-
-    <div id="chat-messages"></div>
 
     <div id="reply-preview">
-        <div id="reply-to-info" style="font-weight:bold; font-size:0.75rem; color:var(--navy);">Membalas Alon...</div>
-        <div id="reply-to-text" style="color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Pesan asli...</div>
+        <div id="reply-to-info" style="font-weight:800;font-size:0.73rem;color:var(--navy)"></div>
+        <div id="reply-to-text" style="color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
         <button id="btn-cancel-reply" onclick="cancelReply()">✕</button>
     </div>
 
@@ -413,30 +232,29 @@
 </div>
 
 <!-- SETTINGS MODAL -->
-<div id="rt-modal" class="rt-modal">
+<div id="rt-modal" class="rt-modal" onclick="if(event.target===this)closeModal()">
     <div class="rt-box">
         <div class="rt-header">
             <h3>⚙️ Pengaturan</h3>
-            <button onclick="closeModal()" style="background:none;border:none;color:white;font-size:25px;cursor:pointer;">&times;</button>
+            <button onclick="closeModal()" style="background:none;border:none;color:white;font-size:1.4rem;cursor:pointer;">×</button>
         </div>
         <div class="rt-body">
-            <label style="font-weight:bold;color:var(--navy);font-size:0.85rem;">Pesan Baru:</label>
-            <textarea id="rt-input" placeholder="Tulis pesan running text..."></textarea>
+            <label style="font-weight:bold;color:var(--navy);font-size:0.83rem;">Pesan Running Text:</label>
+            <textarea id="rt-input" placeholder="Tulis pesan baru..."></textarea>
             <button class="btn-save" onclick="saveMsg()">💾 Simpan</button>
             <div class="speed-control">
                 <div class="speed-label">⏱️ Kecepatan: <span id="speed-val">10</span>s</div>
                 <input type="range" id="speed-slider" min="2" max="30" value="10" oninput="updateSpeed(this.value)">
             </div>
-            <label style="font-weight:bold;color:var(--navy);font-size:0.85rem;">Daftar Pesan:</label>
+            <label style="font-weight:bold;color:var(--navy);font-size:0.83rem;">Daftar Pesan:</label>
             <div class="list-container"><ul id="rt-list"></ul></div>
-            
-            <div style="margin-top:20px; border-top:2px solid #eee; padding-top:15px;">
-                <label style="font-weight:bold;color:#b91c1c;font-size:0.85rem;">🚨 BROADCAST DARURAT:</label>
-                <div style="display:flex; gap:5px; margin-top:5px;">
-                    <input type="text" id="bc-input" placeholder="Tulis pengumuman..." style="flex-grow:1; padding:8px; border-radius:8px; border:1px solid #ddd;">
-                    <button onclick="sendBroadcast()" style="background:#b91c1c; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">KIRIM</button>
+            <div class="bc-section">
+                <label style="font-weight:bold;color:#b91c1c;font-size:0.83rem;">🚨 Broadcast Darurat:</label>
+                <div class="bc-row">
+                    <input type="text" id="bc-input" placeholder="Tulis pengumuman...">
+                    <button class="btn-bc" onclick="sendBroadcast()">KIRIM</button>
                 </div>
-                <p style="font-size:0.65rem; color:#888; margin-top:4px;">*Membutuhkan PIN Admin untuk mengirim ke semua user.</p>
+                <p style="font-size:0.65rem;color:#aaa;margin-top:4px;">*PIN Admin: 6060</p>
             </div>
         </div>
     </div>
@@ -446,411 +264,411 @@
 <div id="emergency-overlay">
     <div class="emergency-box">
         <div class="emergency-title">⚠️ PERINGATAN!</div>
-        <div class="emergency-text" id="emergency-msg">Pesan Darurat akan muncul di sini...</div>
+        <div class="emergency-text" id="emergency-msg"></div>
         <button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>
     </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
 <script>
-    // ── NAV ──
-    function changeIframe(idx, btn) {
-        document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
-        document.getElementById('frame' + idx).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        window.currentFrameIdx = idx;
+// ════════════════════════════════════
+//  HELPER
+// ════════════════════════════════════
+function showError(msg) {
+    console.error('[FB ERROR]', msg);
+    document.getElementById('err-msg').textContent = msg;
+    document.getElementById('err-banner').classList.add('show');
+}
+function hideError() {
+    document.getElementById('err-banner').classList.remove('show');
+}
+function esc(t) {
+    return (t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+// Sanitize Firebase key — hapus semua karakter tidak boleh: . # $ [ ] /
+function safeKey(str) {
+    return str.replace(/[.#$\[\]\/]/g, '_').replace(/\s+/g, '_').substring(0, 60);
+}
+
+// ════════════════════════════════════
+//  FIREBASE INIT
+// ════════════════════════════════════
+const firebaseConfig = {
+    apiKey:            "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
+    authDomain:        "tabelom60.firebaseapp.com",
+    databaseURL:       "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:         "tabelom60",
+    storageBucket:     "tabelom60.firebasestorage.app",
+    messagingSenderId: "823392737112",
+    appId:             "1:823392737112:web:6ccfafbd5123cdb858372d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ════════════════════════════════════
+//  STATUS KONEKSI
+// ════════════════════════════════════
+let isConnected = false;
+
+db.ref('.info/connected').on('value', snap => {
+    isConnected = snap.val() === true;
+    const dot   = document.getElementById('conn-dot');
+    const label = document.getElementById('conn-label');
+    if (isConnected) {
+        dot.classList.add('on');
+        label.textContent = 'Database OK';
+        hideError();
+        registerPresence(); // daftar hadir saat koneksi pulih
+    } else {
+        dot.classList.remove('on');
+        label.textContent = 'Terputus...';
     }
+});
 
-    function refreshCurrentIframe() {
-        const frame = document.querySelector(`#frame${window.currentFrameIdx || 1} iframe`);
-        if (frame) {
-            const btn = document.getElementById('btn-refresh');
-            btn.style.transform = 'rotate(360deg)';
-            btn.style.transition = 'transform 0.5s';
-            frame.src = frame.src;
-            setTimeout(() => { btn.style.transform = 'rotate(0deg)'; btn.style.transition = 'none'; }, 500);
-        }
-    }
+// ════════════════════════════════════
+//  RUNNING TEXT
+// ════════════════════════════════════
+let rtMsgs = [];
+const rtSpan = document.getElementById('running-content');
 
-    window.openModal  = () => document.getElementById("rt-modal").style.display = "block";
-    window.closeModal = () => document.getElementById("rt-modal").style.display = "none";
+db.ref('settings/speed').on('value', s => {
+    const v = s.val() || 10;
+    document.getElementById('speed-slider').value = v;
+    document.getElementById('speed-val').textContent = v;
+    rtSpan.style.animationDuration = v + 's';
+}, err => showError('Speed read: ' + err.message));
 
-    // ── FIREBASE ──
-    const firebaseConfig = {
-        apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
-        authDomain: "tabelom60.firebaseapp.com",
-        databaseURL: "https://tabelom60-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "tabelom60",
-        storageBucket: "tabelom60.firebasestorage.app",
-        messagingSenderId: "823392737112",
-        appId: "1:823392737112:web:6ccfafbd5123cdb858372d"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // ── RUNNING TEXT ──
-    let activeMessages = [];
-    const span = document.getElementById("running-content");
-
-    function saveMsg() {
-        const val = document.getElementById("rt-input").value.trim();
-        if (val) db.ref("messages").push({ Text: val, Status: "active" })
-                    .then(() => document.getElementById("rt-input").value = "");
-    }
-    function updateSpeed(val) {
-        document.getElementById("speed-val").innerText = val;
-        db.ref("settings/speed").set(val);
-    }
-    db.ref("settings/speed").on("value", s => {
-        const v = s.val() || 10;
-        document.getElementById("speed-slider").value = v;
-        document.getElementById("speed-val").innerText = v;
-        span.style.animationDuration = v + "s";
+db.ref('messages').on('value', snap => {
+    const data = snap.val() || {};
+    const list = document.getElementById('rt-list');
+    list.innerHTML = ''; rtMsgs = [];
+    Object.keys(data).forEach(k => {
+        const m = data[k];
+        if (m.Status === 'active') rtMsgs.push(m.Text);
+        list.innerHTML += `<li>
+            <span class="item-text ${m.Status==='hidden'?'muted':''}">${esc(m.Text)}</span>
+            <span onclick="toggleRT('${k}','${m.Status}')" style="cursor:pointer">${m.Status==='active'?'👁️':'🚫'}</span>
+            <span onclick="delRT('${k}')" style="cursor:pointer;color:red">🗑️</span>
+        </li>`;
     });
-    db.ref("messages").on("value", snap => {
-        const data = snap.val();
-        const list = document.getElementById("rt-list");
-        list.innerHTML = ""; activeMessages = [];
-        if (data) Object.keys(data).forEach(k => {
-            const m = data[k];
-            if (m.Status === "active") activeMessages.push(m.Text);
-            list.innerHTML += `<li>
-                <span class="item-text ${m.Status==='hidden'?'muted':''}">${m.Text}</span>
-                <span onclick="toggleStatus('${k}','${m.Status}')" style="cursor:pointer">${m.Status==='active'?'👁️':'🚫'}</span>
-                <span onclick="delMsg('${k}')" style="cursor:pointer;color:red;">🗑️</span>
-            </li>`;
-        });
-        if (activeMessages.length > 1) span.textContent = activeMessages[0];
-    });
-    window.toggleStatus = (id, cur) => db.ref("messages/"+id).update({ Status: cur==='active'?'hidden':'active' });
-    window.delMsg = id => { if (confirm("Hapus?")) db.ref("messages/"+id).remove(); };
-    span.addEventListener('animationiteration', () => {
-        if (activeMessages.length > 1) {
-            const i = activeMessages.indexOf(span.textContent);
-            span.textContent = activeMessages[(i+1) % activeMessages.length];
-        }
-    });
+    // FIX: gunakan > 0 bukan > 1
+    if (rtMsgs.length > 0) rtSpan.textContent = rtMsgs[0];
+}, err => showError('Messages read: ' + err.message));
 
-    setInterval(() => {
-        document.getElementById("digital-clock").innerText = new Date().toLocaleTimeString('en-GB');
-    }, 1000);
-
-    // ── CHAT ──
-    const adjs = ["Tangki", "Pipa", "Kilang", "Pompa", "Solar", "Pertalite", "Oli", "LPG", "Aspal", "Bensin", "Cerobong", "Kran", "Kompresor", "Filter"];
-    const anims = ["Terbang", "Goyang", "Lampu", "Balap", "Sakti", "Galau", "Racing", "Muter", "Nari", "Loncat", "Nyanyi", "Miring", "Ngantuk", "Kaget"];
-
-    function getRandName() {
-        const a = adjs[Math.floor(Math.random()*adjs.length)];
-        const b = anims[Math.floor(Math.random()*anims.length)];
-        const n = Math.floor(100 + Math.random()*899);
-        return a + " " + b + " " + n;
+rtSpan.addEventListener('animationiteration', () => {
+    if (rtMsgs.length > 1) {
+        const i = rtMsgs.indexOf(rtSpan.textContent);
+        rtSpan.textContent = rtMsgs[(i + 1) % rtMsgs.length];
     }
+});
 
-    let myName = localStorage.getItem('chatName');
-    if (!myName) {
-        myName = getRandName();
-        localStorage.setItem('chatName', myName);
+function saveMsg() {
+    const val = document.getElementById('rt-input').value.trim();
+    if (!val) return;
+    db.ref('messages').push({ Text: val, Status: 'active' })
+        .then(() => document.getElementById('rt-input').value = '')
+        .catch(err => showError('Gagal simpan pesan: ' + err.message + ' — Pastikan Firebase Rules sudah diset ke public!'));
+}
+function updateSpeed(v) {
+    document.getElementById('speed-val').textContent = v;
+    db.ref('settings/speed').set(+v).catch(err => showError('Speed: ' + err.message));
+}
+function toggleRT(id, cur) { db.ref('messages/'+id).update({ Status: cur==='active'?'hidden':'active' }); }
+function delRT(id) { if (confirm('Hapus?')) db.ref('messages/'+id).remove(); }
+
+// ════════════════════════════════════
+//  NAMA USER
+// ════════════════════════════════════
+const NA = ["Tangki","Pipa","Kilang","Pompa","Solar","Pertalite","Oli","LPG","Aspal","Bensin","Kran","Filter"];
+const NB = ["Terbang","Goyang","Balap","Sakti","Racing","Muter","Nari","Loncat","Kaget","Nyanyi","Miring","Ngantuk"];
+function randName() {
+    return NA[Math.random()*NA.length|0] + ' ' + NB[Math.random()*NB.length|0] + ' ' + (100+Math.random()*900|0);
+}
+
+let myName = localStorage.getItem('chatName') || '';
+if (!myName) { myName = randName(); localStorage.setItem('chatName', myName); }
+refreshNameUI();
+
+function refreshNameUI() {
+    document.getElementById('my-display-name').textContent = myName;
+    document.getElementById('name-bar-label').textContent  = myName;
+}
+function changeName() {
+    const n = prompt('Nama baru (maks 25 karakter):', myName);
+    if (!n || !n.trim()) return;
+    myName = n.trim().substring(0, 25);
+    localStorage.setItem('chatName', myName);
+    refreshNameUI();
+    if (presRef) { presRef.remove(); presRef = null; }
+    registerPresence();
+}
+
+// ════════════════════════════════════
+//  PRESENCE (siapa online)
+// ════════════════════════════════════
+let presRef = null;
+function registerPresence() {
+    if (!isConnected || !myName) return;
+    if (presRef) { presRef.remove(); presRef = null; }
+    // key aman: pakai safeKey + timestamp
+    const key = safeKey(myName) + '_' + Date.now();
+    presRef = db.ref('chat_online/' + key);
+    presRef.set({ name: myName, ts: Date.now() })
+           .catch(err => showError('Presence: ' + err.message));
+    presRef.onDisconnect().remove();
+}
+
+db.ref('chat_online').on('value', snap => {
+    const data = snap.val() || {};
+    const users = Object.values(data);
+    const count = users.length;
+    document.getElementById('online-count').textContent = count + ' orang online ▾';
+    // populate panel
+    const list = document.getElementById('online-panel-list');
+    if (list) {
+        list.innerHTML = users.length
+            ? users.map(u => `<div class="online-item${u.name===myName?' me':''}"><span class="odot"></span>${u.name}${u.name===myName?' (Anda)':''}</div>`).join('')
+            : '<div class="online-item" style="color:#aaa">Belum ada yang online</div>';
     }
+}, err => showError('Online: ' + err.message));
 
-    let chatOpen = false;
-    let unreadCount = 0;
-    let lastSeenKey = localStorage.getItem('lastSeenKey') || '';
-    let replyData = null;
+function toggleOnlinePanel(e) {
+    e.stopPropagation();
+    document.getElementById('online-panel').classList.toggle('show');
+}
+// tutup panel saat klik di luar
+document.addEventListener('click', () => {
+    const p = document.getElementById('online-panel');
+    if (p) p.classList.remove('show');
+});
 
-    const msgSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
-    const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3');
+// ════════════════════════════════════
+//  TYPING INDICATOR
+// ════════════════════════════════════
+let typTmr;
+function handleTyping() {
+    if (!isConnected) return;
+    const key = safeKey(myName);
+    db.ref('chat_typing/' + key).set({ name: myName, ts: Date.now() });
+    clearTimeout(typTmr);
+    typTmr = setTimeout(() => db.ref('chat_typing/' + key).remove(), 3000);
+}
 
-    // Presence
-    const presenceRef = db.ref('.info/connected');
-    let myPresenceRef = null;
-    presenceRef.on('value', snap => {
-        if (snap.val() && myName) registerPresence();
-    });
+db.ref('chat_typing').on('value', snap => {
+    const data = snap.val() || {};
+    const typers = Object.values(data)
+        .filter(t => t.name !== myName && Date.now() - t.ts < 4000)
+        .map(t => t.name.split(' ')[0]);
+    document.getElementById('typing-status').textContent =
+        typers.length ? typers.join(', ') + ' mengetik...' : '';
+});
 
-    function registerPresence() {
-        if (!myName) return;
-        if (myPresenceRef) myPresenceRef.remove();
-        myPresenceRef = db.ref('chat_online/' + myName.replace(/\s/g,'_') + '_' + Date.now());
-        myPresenceRef.set({ name: myName, ts: Date.now() });
-        myPresenceRef.onDisconnect().remove();
-    }
+// ════════════════════════════════════
+//  CHAT UI
+// ════════════════════════════════════
+let chatOpen = false, unreadCount = 0;
+let lastSeenKey = localStorage.getItem('lastSeenKey') || '';
+let replyData = null;
 
-    db.ref('chat_online').on('value', snap => {
-        const data = snap.val() || {};
-        const count = Object.keys(data).length;
-        document.getElementById('online-count').textContent =
-            count > 0 ? count + ' orang online ▾' : 'Belum ada yang online';
-        
-        // Update online list container
-        const container = document.getElementById('online-users-container');
-        container.innerHTML = '';
-        Object.values(data).forEach(u => {
-            const div = document.createElement('div');
-            div.className = 'online-user-item';
-            div.innerHTML = `<span class="dot"></span> <span>${u.name} ${u.name === myName ? '(Anda)' : ''}</span>`;
-            container.appendChild(div);
-        });
-    });
-
-    window.toggleOnlineList = () => {
-        document.getElementById('online-list-panel').classList.toggle('show');
-    };
-
-    function toggleChat() {
-        chatOpen = !chatOpen;
-        const panel = document.getElementById('chat-panel');
-        const btn = document.getElementById('btn-chat');
-        panel.classList.toggle('open', chatOpen);
-
-        // Update display name when opening
-        if (chatOpen) {
-            document.getElementById('my-display-name').textContent = myName;
-            document.getElementById('online-list-panel').classList.remove('show');
-            unreadCount = 0;
-            const badge = document.getElementById('chat-badge');
-            badge.textContent = '0';
-            badge.classList.remove('show');
-            btn.classList.remove('pulse');
-            scrollToBottom();
-            setTimeout(() => document.getElementById('chat-input').focus(), 100);
-        }
-    }
-
-    // Autohide chat and modal when clicking outside
-    window.addEventListener('click', (e) => {
-        const panel = document.getElementById('chat-panel');
-        const btn = document.getElementById('btn-chat');
-        const modal = document.getElementById('rt-modal');
-        
-        // Chat panel autohide
-        if (chatOpen && !panel.contains(e.target) && !btn.contains(e.target)) {
-            toggleChat();
-        }
-        
-        // Modal autohide (if clicking the backdrop)
-        if (modal.style.display === 'block' && e.target === modal) {
-            closeModal();
-        }
-    });
-
-    // Handle clicks inside iframes (via window blur)
-    window.addEventListener('blur', () => {
-        setTimeout(() => {
-            if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
-                if (chatOpen) toggleChat();
-                if (document.getElementById('rt-modal').style.display === 'block') closeModal();
-            }
-        }, 100);
-    });
-
-    // Typing Status Logic
-    let typingTimeout;
-    function handleTyping() {
-        if (!myName) return;
-        db.ref('chat_typing/' + myName.replace(/\s/g,'_')).set({ name: myName, ts: Date.now() });
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-            db.ref('chat_typing/' + myName.replace(/\s/g,'_')).remove();
-        }, 3000);
-    }
-
-    db.ref('chat_typing').on('value', snap => {
-        const data = snap.val();
-        const el = document.getElementById('typing-status');
-        if (!data) { el.textContent = ''; return; }
-        
-        const typers = Object.values(data)
-            .filter(t => t.name !== myName && (Date.now() - t.ts < 4000))
-            .map(t => t.name.split(' ')[0]); // Ambil kata pertama saja
-
-        if (typers.length > 0) {
-            el.textContent = typers.join(', ') + (typers.length > 1 ? ' sedang mengetik...' : ' mengetik...');
-        } else {
-            el.textContent = '';
-        }
-    });
-
-    function sendMessage() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if (!text) return;
-
-        const msg = {
-            name: myName,
-            text: text,
-            ts: Date.now()
-        };
-
-        if (replyData) {
-            msg.replyTo = replyData;
-            cancelReply();
-        }
-
-        db.ref('chat_messages').push(msg);
-        input.value = '';
-        input.style.height = 'auto';
-    }
-
-    window.replyToMessage = (name, text) => {
-        replyData = { name, text };
-        document.getElementById('reply-to-info').textContent = "Membalas " + name;
-        document.getElementById('reply-to-text').textContent = text;
-        document.getElementById('reply-preview').classList.add('show');
-        document.getElementById('chat-input').focus();
-    };
-
-    window.cancelReply = () => {
-        replyData = null;
-        document.getElementById('reply-preview').classList.remove('show');
-    };
-
-    window.delChatMessage = key => {
-        if (confirm("Hapus pesan ini permanent?")) {
-            db.ref('chat_messages').child(key).remove();
-        }
-    };
-
-    // Emergency Broadcast
-    window.sendBroadcast = () => {
-        const text = document.getElementById('bc-input').value.trim();
-        if (!text) return;
-        const pin = prompt("Masukkan PIN Admin untuk konfirmasi:");
-        if (pin === "6060") { // PIN Admin Default
-            db.ref('emergency_alert').set({ text: text, ts: Date.now() });
-            document.getElementById('bc-input').value = "";
-            closeModal();
-            alert("Broadcast terkirim!");
-        } else {
-            alert("PIN Salah! Akses ditolak.");
-        }
-    };
-
-    db.ref('emergency_alert').on('value', snap => {
-        const data = snap.val();
-        if (data && (Date.now() - data.ts < 60000)) { // Aktif selama 1 menit sejak dikirim
-            document.getElementById('emergency-msg').textContent = data.text;
-            document.getElementById('emergency-overlay').style.display = 'flex';
-            alertSound.play().catch(e => console.log('Auto-play blocked'));
-        }
-    });
-
-    window.ackEmergency = () => {
-        document.getElementById('emergency-overlay').style.display = 'none';
-        db.ref('emergency_alert').remove(); // Reset agar tidak muncul lagi di semua user
-    };
-
-    function handleKey(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        } else {
-            handleTyping();
-        }
-    }
-
-    function autoResize(el) {
-        el.style.height = 'auto';
-        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-    }
-
-    function scrollToBottom() {
-        const el = document.getElementById('chat-messages');
-        el.scrollTop = el.scrollHeight;
-    }
-
-    function formatTime(ts) {
-        return new Date(ts).toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
-    }
-
-    // Colors per user
-    const colorMap = {};
-    const colors = ['#1d6fa5','#c0392b','#27ae60','#8e44ad','#d35400','#16a085','#2c3e50','#e74c3c'];
-    let colorIdx = 0;
-    function getColor(name) {
-        if (!colorMap[name]) { colorMap[name] = colors[colorIdx % colors.length]; colorIdx++; }
-        return colorMap[name];
-    }
-
-    // Load messages
-    db.ref('chat_messages').limitToLast(100).on('value', snap => {
-        const data = snap.val();
-        const container = document.getElementById('chat-messages');
-        container.innerHTML = '';
-        if (!data) return;
-
-        let lastDate = '';
-        Object.keys(data).forEach(key => {
-            const m = data[key];
-            const d = new Date(m.ts).toLocaleDateString('id-ID', { day:'numeric', month:'long' });
-            if (d !== lastDate) {
-                lastDate = d;
-                const div = document.createElement('div');
-                div.className = 'chat-divider';
-                div.textContent = '— ' + d + ' —';
-                container.appendChild(div);
-            }
-            const isMe = m.name === myName;
-            const row = document.createElement('div');
-            row.className = 'msg-row ' + (isMe ? 'me' : 'them');
-            
-            let replyHtml = '';
-            if (m.replyTo) {
-                replyHtml = `<div class="reply-quote">
-                    <span class="reply-name">${m.replyTo.name}</span>
-                    ${escapeHtml(m.replyTo.text)}
-                </div>`;
-            }
-
-            row.innerHTML = `
-                ${!isMe ? `<div class="msg-sender" style="color:${getColor(m.name)}">${m.name}</div>` : ''}
-                <div class="msg-bubble">
-                    ${replyHtml}
-                    ${escapeHtml(m.text)}
-                </div>
-                <div class="msg-footer">
-                    <span class="msg-time">${formatTime(m.ts)}</span>
-                    <button class="btn-reply-msg" onclick="replyToMessage('${m.name}', '${m.text.replace(/'/g, "\\'")}')" title="Balas">↩️</button>
-                    ${isMe ? `<button class="btn-del-msg" onclick="delChatMessage('${key}')" title="Hapus">🗑️</button>` : ''}
-                </div>`;
-            container.appendChild(row);
-        });
-
+function toggleChat() {
+    chatOpen = !chatOpen;
+    document.getElementById('chat-panel').classList.toggle('open', chatOpen);
+    if (chatOpen) {
+        unreadCount = 0;
+        const b = document.getElementById('chat-badge');
+        b.textContent = ''; b.classList.remove('show');
+        document.getElementById('btn-chat').classList.remove('pulse');
         scrollToBottom();
+        setTimeout(() => document.getElementById('chat-input').focus(), 80);
+    }
+}
 
-        // Notification logic
-        if (!chatOpen) {
-            const keys = Object.keys(data);
-            const latest = keys[keys.length - 1];
-            if (latest !== lastSeenKey && lastSeenKey !== '') {
-                unreadCount++;
-                const badge = document.getElementById('chat-badge');
-                const btn = document.getElementById('btn-chat');
-                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                badge.classList.add('show');
-                btn.classList.add('pulse');
+// tutup chat saat klik di luar
+document.addEventListener('click', e => {
+    const panel = document.getElementById('chat-panel');
+    const fab   = document.getElementById('btn-chat');
+    if (chatOpen && !panel.contains(e.target) && !fab.contains(e.target)) toggleChat();
+});
 
-                // Visual tab notification
-                document.title = "(*) Pesan Baru!";
-                setTimeout(() => document.title = "TabeL Kalkulasi & Report", 3000);
-                
-                // Sound notification
-                msgSound.play().catch(e => console.log('Audio play blocked by browser'));
+function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    else handleTyping();
+}
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+function scrollToBottom() {
+    const el = document.getElementById('chat-messages');
+    el.scrollTop = el.scrollHeight;
+}
+
+function replyToMessage(name, text) {
+    replyData = { name, text };
+    document.getElementById('reply-to-info').textContent = 'Membalas ' + name;
+    document.getElementById('reply-to-text').textContent = text;
+    document.getElementById('reply-preview').classList.add('show');
+    document.getElementById('chat-input').focus();
+}
+function cancelReply() {
+    replyData = null;
+    document.getElementById('reply-preview').classList.remove('show');
+}
+function delChatMessage(key) {
+    if (confirm('Hapus pesan ini?')) db.ref('chat_messages/' + key).remove();
+}
+
+// ════════════════════════════════════
+//  KIRIM PESAN
+// ════════════════════════════════════
+function sendMessage() {
+    if (!isConnected) {
+        showError('Tidak terhubung ke database. Periksa koneksi & Firebase Rules.');
+        return;
+    }
+    const input = document.getElementById('chat-input');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    const msg = { name: myName, text, ts: Date.now() };
+    if (replyData) { msg.replyTo = replyData; cancelReply(); }
+
+    db.ref('chat_messages').push(msg)
+        .then(() => { input.value = ''; input.style.height = 'auto'; })
+        .catch(err => {
+            if (err.code === 'PERMISSION_DENIED') {
+                showError('PERMISSION_DENIED — Buka Firebase Console › Realtime Database › Rules › set ke { ".read":true, ".write":true } lalu Publish!');
+            } else {
+                showError('Kirim gagal: ' + err.message);
             }
-            lastSeenKey = latest;
-            localStorage.setItem('lastSeenKey', lastSeenKey);
+        });
+}
+
+// ════════════════════════════════════
+//  RENDER PESAN (REALTIME)
+// ════════════════════════════════════
+const COLORS = ['#1d6fa5','#c0392b','#27ae60','#8e44ad','#d35400','#16a085','#e67e22','#e74c3c'];
+const cmap = {}; let ci = 0;
+function getColor(n) { if (!cmap[n]) cmap[n] = COLORS[ci++ % COLORS.length]; return cmap[n]; }
+function fmt(ts) { return new Date(ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
+
+db.ref('chat_messages').limitToLast(100).on('value', snap => {
+    const data = snap.val();
+    const container = document.getElementById('chat-messages');
+    container.innerHTML = '';
+
+    if (!data) {
+        container.innerHTML = '<div class="chat-divider" style="margin-top:30px">Belum ada pesan 👋</div>';
+        return;
+    }
+
+    let lastDate = '';
+    Object.keys(data).forEach(key => {
+        const m = data[key];
+        const d = new Date(m.ts).toLocaleDateString('id-ID',{day:'numeric',month:'long'});
+        if (d !== lastDate) {
+            lastDate = d;
+            const div = document.createElement('div');
+            div.className = 'chat-divider';
+            div.textContent = '— ' + d + ' —';
+            container.appendChild(div);
         }
+
+        const isMe = m.name === myName;
+        const row  = document.createElement('div');
+        row.className = 'msg-row ' + (isMe ? 'me' : 'them');
+
+        // escape nama untuk inline onclick — hindari single-quote break
+        const safeName = (m.name || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        const safeText = (m.text || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ').substring(0, 80);
+
+        const replyHtml = m.replyTo
+            ? `<div class="reply-quote"><span class="reply-qname">${esc(m.replyTo.name)}</span>${esc(m.replyTo.text)}</div>`
+            : '';
+
+        row.innerHTML = `
+            ${!isMe ? `<div class="msg-sender" style="color:${getColor(m.name)}">${esc(m.name)}</div>` : ''}
+            <div class="msg-bubble">${replyHtml}${esc(m.text)}</div>
+            <div class="msg-footer">
+                <span class="msg-time">${fmt(m.ts)}</span>
+                <button class="btn-act" onclick="replyToMessage('${safeName}','${safeText}')" title="Balas">↩️</button>
+                ${isMe ? `<button class="btn-act" onclick="delChatMessage('${key}')" title="Hapus">🗑️</button>` : ''}
+            </div>`;
+        container.appendChild(row);
     });
 
-    function escapeHtml(t) {
-        return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-    }
+    scrollToBottom();
 
-    // Init name prompt
-    if (myName) {
-        document.getElementById('name-prompt').classList.add('hidden');
-        registerPresence();
+    // Badge notifikasi kalau chat tertutup
+    if (!chatOpen) {
+        const keys   = Object.keys(data);
+        const latest = keys[keys.length - 1];
+        if (latest !== lastSeenKey && lastSeenKey !== '') {
+            unreadCount++;
+            const b = document.getElementById('chat-badge');
+            b.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            b.classList.add('show');
+            document.getElementById('btn-chat').classList.add('pulse');
+            document.title = `(${unreadCount}) Pesan Baru!`;
+            setTimeout(() => document.title = 'TabeL Kalkulasi & Report', 3000);
+        }
+        lastSeenKey = latest;
+        localStorage.setItem('lastSeenKey', lastSeenKey);
     }
+}, err => showError('Chat read error: ' + err.code + ' — ' + err.message));
+
+// ════════════════════════════════════
+//  EMERGENCY BROADCAST
+// ════════════════════════════════════
+function sendBroadcast() {
+    const text = document.getElementById('bc-input').value.trim();
+    if (!text) return;
+    const pin = prompt('Masukkan PIN Admin:');
+    if (pin === '6060') {
+        db.ref('emergency_alert').set({ text, ts: Date.now() })
+          .then(() => { document.getElementById('bc-input').value=''; closeModal(); alert('Broadcast terkirim!'); })
+          .catch(err => showError('Broadcast: ' + err.message));
+    } else { alert('PIN Salah!'); }
+}
+
+db.ref('emergency_alert').on('value', snap => {
+    const d = snap.val();
+    if (d && Date.now() - d.ts < 60000) {
+        document.getElementById('emergency-msg').textContent = d.text;
+        document.getElementById('emergency-overlay').style.display = 'flex';
+    }
+});
+function ackEmergency() {
+    document.getElementById('emergency-overlay').style.display = 'none';
+    db.ref('emergency_alert').remove();
+}
+
+// ════════════════════════════════════
+//  NAV
+// ════════════════════════════════════
+let curFrameIdx = 1;
+function changeIframe(idx, btn) {
+    document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
+    document.getElementById('frame' + idx).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    curFrameIdx = idx;
+}
+function refreshCurrentIframe() {
+    const fr = document.querySelector(`#frame${curFrameIdx} iframe`);
+    if (fr) { const s = fr.src; fr.src = 'about:blank'; setTimeout(() => fr.src = s, 50); }
+}
+function openModal()  { document.getElementById('rt-modal').style.display = 'block'; }
+function closeModal() { document.getElementById('rt-modal').style.display = 'none'; }
+
+// Clock
+setInterval(() => {
+    document.getElementById('digital-clock').textContent = new Date().toLocaleTimeString('en-GB');
+}, 1000);
 </script>
 </body>
 </html>
-
