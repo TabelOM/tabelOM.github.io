@@ -15,7 +15,6 @@
         .nav-btn:hover:not(.active) { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.06); }
         .nav-btn.active { background:var(--gold); color:var(--navy); outline:none; box-shadow:0 2px 10px rgba(252,192,6,0.45); }
 
-        /* Status koneksi - indikator kecil di navbar */
         #conn-status { display:flex; align-items:center; margin-left:4px; }
         #conn-dot { width:8px; height:8px; border-radius:50%; background:#ef4444; transition:background 0.4s; flex-shrink:0; }
         #conn-dot.on { background:#22c55e; box-shadow:0 0 5px #22c55e; }
@@ -34,7 +33,6 @@
         .iframe-layer.active { display:block; }
         iframe { width:100%; height:100%; border:none; }
 
-        /* CHAT FAB */
         #btn-chat { position:fixed; bottom:35px; right:35px; width:60px; height:60px; background:var(--navy); border:3px solid var(--gold); border-radius:50%; color:white; font-size:1.8rem; cursor:pointer; z-index:2500; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
         #btn-chat:hover { transform:scale(1.1) rotate(5deg); background:#0d2540; }
         #btn-chat.pulse { animation:cpulse 2s infinite; }
@@ -42,7 +40,6 @@
         #chat-badge { position:absolute; top:-5px; right:-5px; background:#ef4444; color:white; font-size:0.7rem; font-weight:800; border-radius:50%; width:22px; height:22px; display:none; align-items:center; justify-content:center; border:2px solid white; }
         #chat-badge.show { display:flex; }
 
-        /* CHAT PANEL */
         #chat-panel { display:none; position:fixed; bottom:110px; right:35px; width:420px; height:600px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.3); z-index:3000; flex-direction:column; overflow:hidden; border:1px solid rgba(0,0,0,0.1); }
         #chat-panel.open { display:flex; animation:popIn 0.22s cubic-bezier(0.175,0.885,0.32,1.275); }
         @keyframes popIn { from{transform:scale(0.88) translateY(16px);opacity:0} to{transform:scale(1);opacity:1} }
@@ -56,12 +53,10 @@
         #btn-close-chat { background:rgba(255,255,255,0.1); border:none; color:white; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:0.9rem; }
         #btn-close-chat:hover { background:rgba(255,255,255,0.25); }
 
-        /* name bar */
         #name-bar { display:flex; align-items:center; gap:8px; padding:6px 12px; background:#f5f7fa; border-bottom:1px solid #eee; flex-shrink:0; font-size:0.75rem; color:#666; }
         #name-bar strong { color:var(--navy); }
         #btn-chname { font-size:0.68rem; background:none; border:1px solid #ccc; border-radius:5px; padding:2px 7px; cursor:pointer; color:#555; }
 
-        /* messages */
         #chat-messages { flex-grow:1; overflow-y:auto; padding:10px 8px; display:flex; flex-direction:column; gap:5px; background:#f0f2f5; }
         #chat-messages::-webkit-scrollbar { width:4px; }
         #chat-messages::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
@@ -96,7 +91,6 @@
         #btn-send { width:36px; height:36px; border-radius:50%; background:var(--navy); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:1rem; flex-shrink:0; transition:transform 0.15s; }
         #btn-send:hover { transform:scale(1.08); }
 
-        /* SETTINGS MODAL */
         .rt-modal { display:none; position:fixed; z-index:4000; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(2px); }
         .rt-box { background:white; width:90%; max-width:420px; margin:40px auto; border-radius:15px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
         .rt-header { background:var(--navy); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; }
@@ -116,7 +110,6 @@
         .bc-row input { flex-grow:1; padding:8px 10px; border-radius:8px; border:1px solid #ddd; font-size:0.83rem; }
         .btn-bc { background:#b91c1c; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.82rem; }
 
-        /* EMERGENCY */
         #emergency-overlay { display:none; position:fixed; inset:0; z-index:9999; background:rgba(185,28,28,0.95); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; color:white; text-align:center; }
         .emergency-box { max-width:500px; width:100%; background:#7f1d1d; border:4px solid #fca5a5; padding:30px; border-radius:24px; animation:shake 0.5s infinite; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
@@ -124,12 +117,10 @@
         .emergency-text { font-size:1.2rem; line-height:1.5; margin-bottom:25px; }
         .btn-ack { background:#fca5a5; color:#7f1d1d; border:none; padding:12px 40px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:1.1rem; }
 
-        /* ERROR BANNER */
         #err-banner { display:none; position:fixed; top:46px; left:0; right:0; background:#b91c1c; color:white; padding:8px 16px; font-size:0.82rem; font-weight:600; z-index:5000; text-align:center; }
         #err-banner.show { display:block; }
         #err-banner a { color:#fca5a5; text-decoration:underline; cursor:pointer; margin-left:8px; }
 
-        /* Online users dropdown */
         #online-panel {
             display:none; position:absolute;
             top:100%; left:0; margin-top:4px;
@@ -154,7 +145,6 @@
     <button class="nav-btn active" onclick="changeIframe(1, this)">60NBM.DEV</button>
     <button class="nav-btn" onclick="changeIframe(2, this)">Tabel Kalkulasi</button>
 
-    <!-- Indikator koneksi database -->
     <div id="conn-status">
         <div id="conn-dot"></div>
         <span id="conn-label">Menghubungkan...</span>
@@ -169,7 +159,6 @@
     <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
 </header>
 
-<!-- Error banner (muncul kalau Firebase Rules belum diset) -->
 <div id="err-banner">
     ❌ <span id="err-msg">Database error</span>
     <a onclick="document.getElementById('err-banner').classList.remove('show')">✕ tutup</a>
@@ -182,14 +171,51 @@
 
 <main class="content-area">
     <div id="frame1" class="iframe-layer active">
-        <iframe src="https://60-nbm.vercel.app/"></iframe>
+        <iframe srcdoc="
+            <html>
+            <head>
+                <style>
+                    body { 
+                        background: #f0f2f5; 
+                        display: flex; 
+                        flex-direction: column;
+                        justify-content: center; 
+                        align-items: center; 
+                        height: 100vh; 
+                        margin: 0; 
+                        font-family: 'Segoe UI', Tahoma, sans-serif;
+                        color: #123458;
+                        text-align: center;
+                    }
+                    .loader {
+                        border: 5px solid #f3f3f3;
+                        border-top: 5px solid #fcc006;
+                        border-radius: 50%;
+                        width: 50px;
+                        height: 50px;
+                        animation: spin 1s linear infinite;
+                        margin-bottom: 20px;
+                    }
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                    h1 { margin: 10px 0; font-size: 2.2rem; font-weight: 800; letter-spacing: 1px; }
+                    p { color: #555; font-size: 1rem; line-height: 1.5; }
+                    .tag { background: #123458; color: #fcc006; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; }
+                </style>
+            </head>
+            <body>
+                <div class='tag'>60NBM.DEV</div>
+                <div class='loader'></div>
+                <h1>UNDER MAINTENANCE</h1>
+                <p>Halaman sedang dalam pemeliharaan.<br>Silakan akses menu <b>Tabel Kalkulasi</b> sementara waktu.</p>
+            </body>
+            </html>
+        "></iframe>
     </div>
     <div id="frame2" class="iframe-layer">
         <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
     </div>
 </main>
 
-<!-- CHAT PANEL -->
 <div id="chat-panel">
     <div class="chat-head">
         <div class="chat-head-left">
@@ -231,7 +257,6 @@
     </div>
 </div>
 
-<!-- SETTINGS MODAL -->
 <div id="rt-modal" class="rt-modal" onclick="if(event.target===this)closeModal()">
     <div class="rt-box">
         <div class="rt-header">
@@ -260,7 +285,6 @@
     </div>
 </div>
 
-<!-- EMERGENCY OVERLAY -->
 <div id="emergency-overlay">
     <div class="emergency-box">
         <div class="emergency-title">⚠️ PERINGATAN!</div>
@@ -269,33 +293,11 @@
     </div>
 </div>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
 <script>
-// ════════════════════════════════════
-//  HELPER
-// ════════════════════════════════════
-function showError(msg) {
-    console.error('[FB ERROR]', msg);
-    document.getElementById('err-msg').textContent = msg;
-    document.getElementById('err-banner').classList.add('show');
-}
-function hideError() {
-    document.getElementById('err-banner').classList.remove('show');
-}
-function esc(t) {
-    return (t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
-// Sanitize Firebase key — hapus semua karakter tidak boleh: . # $ [ ] /
-function safeKey(str) {
-    return str.replace(/[.#$\[\]\/]/g, '_').replace(/\s+/g, '_').substring(0, 60);
-}
-
-// ════════════════════════════════════
-//  FIREBASE INIT
-// ════════════════════════════════════
+// Firebase Config
 const firebaseConfig = {
     apiKey:            "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
     authDomain:        "tabelom60.firebaseapp.com",
@@ -309,39 +311,30 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ════════════════════════════════════
-//  STATUS KONEKSI
-// ════════════════════════════════════
+// State & Helper
 let isConnected = false;
+function showError(msg) { document.getElementById('err-msg').textContent = msg; document.getElementById('err-banner').classList.add('show'); }
+function hideError() { document.getElementById('err-banner').classList.remove('show'); }
+function esc(t) { return (t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function safeKey(str) { return str.replace(/[.#$\[\]\/]/g, '_').replace(/\s+/g, '_').substring(0, 60); }
 
+// Connection Status
 db.ref('.info/connected').on('value', snap => {
     isConnected = snap.val() === true;
-    const dot   = document.getElementById('conn-dot');
-    const label = document.getElementById('conn-label');
-    if (isConnected) {
-        dot.classList.add('on');
-        label.textContent = 'Database OK';
-        hideError();
-        registerPresence(); // daftar hadir saat koneksi pulih
-    } else {
-        dot.classList.remove('on');
-        label.textContent = 'Terputus...';
-    }
+    const dot = document.getElementById('conn-dot');
+    if (isConnected) { dot.classList.add('on'); hideError(); registerPresence(); } 
+    else { dot.classList.remove('on'); }
 });
 
-// ════════════════════════════════════
-//  RUNNING TEXT
-// ════════════════════════════════════
+// Running Text Logic
 let rtMsgs = [];
 const rtSpan = document.getElementById('running-content');
-
 db.ref('settings/speed').on('value', s => {
     const v = s.val() || 10;
     document.getElementById('speed-slider').value = v;
     document.getElementById('speed-val').textContent = v;
     rtSpan.style.animationDuration = v + 's';
-}, err => showError('Speed read: ' + err.message));
-
+});
 db.ref('messages').on('value', snap => {
     const data = snap.val() || {};
     const list = document.getElementById('rt-list');
@@ -349,162 +342,79 @@ db.ref('messages').on('value', snap => {
     Object.keys(data).forEach(k => {
         const m = data[k];
         if (m.Status === 'active') rtMsgs.push(m.Text);
-        list.innerHTML += `<li>
-            <span class="item-text ${m.Status==='hidden'?'muted':''}">${esc(m.Text)}</span>
-            <span onclick="toggleRT('${k}','${m.Status}')" style="cursor:pointer">${m.Status==='active'?'👁️':'🚫'}</span>
-            <span onclick="delRT('${k}')" style="cursor:pointer;color:red">🗑️</span>
-        </li>`;
+        list.innerHTML += `<li><span class="item-text ${m.Status==='hidden'?'muted':''}">${esc(m.Text)}</span><span onclick="toggleRT('${k}','${m.Status}')" style="cursor:pointer">${m.Status==='active'?'👁️':'🚫'}</span><span onclick="delRT('${k}')" style="cursor:pointer;color:red">🗑️</span></li>`;
     });
-    // FIX: gunakan > 0 bukan > 1
     if (rtMsgs.length > 0) rtSpan.textContent = rtMsgs[0];
-}, err => showError('Messages read: ' + err.message));
-
+});
 rtSpan.addEventListener('animationiteration', () => {
     if (rtMsgs.length > 1) {
         const i = rtMsgs.indexOf(rtSpan.textContent);
         rtSpan.textContent = rtMsgs[(i + 1) % rtMsgs.length];
     }
 });
-
 function saveMsg() {
     const val = document.getElementById('rt-input').value.trim();
     if (!val) return;
-    db.ref('messages').push({ Text: val, Status: 'active' })
-        .then(() => document.getElementById('rt-input').value = '')
-        .catch(err => showError('Gagal simpan pesan: ' + err.message + ' — Pastikan Firebase Rules sudah diset ke public!'));
+    db.ref('messages').push({ Text: val, Status: 'active' }).then(() => document.getElementById('rt-input').value = '');
 }
-function updateSpeed(v) {
-    document.getElementById('speed-val').textContent = v;
-    db.ref('settings/speed').set(+v).catch(err => showError('Speed: ' + err.message));
-}
+function updateSpeed(v) { db.ref('settings/speed').set(+v); }
 function toggleRT(id, cur) { db.ref('messages/'+id).update({ Status: cur==='active'?'hidden':'active' }); }
 function delRT(id) { if (confirm('Hapus?')) db.ref('messages/'+id).remove(); }
 
-// ════════════════════════════════════
-//  NAMA USER
-// ════════════════════════════════════
+// User Presence & Chat Logic
 const NA = ["Tangki","Pipa","Kilang","Pompa","Solar","Pertalite","Oli","LPG","Aspal","Bensin","Kran","Filter"];
 const NB = ["Terbang","Goyang","Balap","Sakti","Racing","Muter","Nari","Loncat","Kaget","Nyanyi","Miring","Ngantuk"];
-function randName() {
-    return NA[Math.random()*NA.length|0] + ' ' + NB[Math.random()*NB.length|0] + ' ' + (100+Math.random()*900|0);
-}
-
-let myName = localStorage.getItem('chatName') || '';
-if (!myName) { myName = randName(); localStorage.setItem('chatName', myName); }
+let myName = localStorage.getItem('chatName') || (NA[Math.random()*NA.length|0] + ' ' + NB[Math.random()*NB.length|0] + ' ' + (100+Math.random()*900|0));
+localStorage.setItem('chatName', myName);
+function refreshNameUI() { document.getElementById('my-display-name').textContent = myName; document.getElementById('name-bar-label').textContent = myName; }
 refreshNameUI();
 
-function refreshNameUI() {
-    document.getElementById('my-display-name').textContent = myName;
-    document.getElementById('name-bar-label').textContent  = myName;
-}
 function changeName() {
-    const n = prompt('Nama baru (maks 25 karakter):', myName);
+    const n = prompt('Nama baru:', myName);
     if (!n || !n.trim()) return;
     myName = n.trim().substring(0, 25);
     localStorage.setItem('chatName', myName);
     refreshNameUI();
-    if (presRef) { presRef.remove(); presRef = null; }
     registerPresence();
 }
 
-// ════════════════════════════════════
-//  PRESENCE (siapa online)
-// ════════════════════════════════════
 let presRef = null;
 function registerPresence() {
-    if (!isConnected || !myName) return;
-    if (presRef) { presRef.remove(); presRef = null; }
-    // key aman: pakai safeKey + timestamp
-    const key = safeKey(myName) + '_' + Date.now();
-    presRef = db.ref('chat_online/' + key);
-    presRef.set({ name: myName, ts: Date.now() })
-           .catch(err => showError('Presence: ' + err.message));
+    if (!isConnected) return;
+    if (presRef) presRef.remove();
+    presRef = db.ref('chat_online/' + safeKey(myName) + '_' + Date.now());
+    presRef.set({ name: myName, ts: Date.now() });
     presRef.onDisconnect().remove();
 }
 
 db.ref('chat_online').on('value', snap => {
-    const data = snap.val() || {};
-    const users = Object.values(data);
-    const count = users.length;
-    document.getElementById('online-count').textContent = count + ' orang online ▾';
-    // populate panel
-    const list = document.getElementById('online-panel-list');
-    if (list) {
-        list.innerHTML = users.length
-            ? users.map(u => `<div class="online-item${u.name===myName?' me':''}"><span class="odot"></span>${u.name}${u.name===myName?' (Anda)':''}</div>`).join('')
-            : '<div class="online-item" style="color:#aaa">Belum ada yang online</div>';
-    }
-}, err => showError('Online: ' + err.message));
-
-function toggleOnlinePanel(e) {
-    e.stopPropagation();
-    document.getElementById('online-panel').classList.toggle('show');
-}
-// tutup panel saat klik di luar
-document.addEventListener('click', () => {
-    const p = document.getElementById('online-panel');
-    if (p) p.classList.remove('show');
+    const users = Object.values(snap.val() || {});
+    document.getElementById('online-count').textContent = users.length + ' orang online ▾';
+    document.getElementById('online-panel-list').innerHTML = users.map(u => `<div class="online-item${u.name===myName?' me':''}"><span class="odot"></span>${u.name}</div>`).join('');
 });
 
-// ════════════════════════════════════
-//  TYPING INDICATOR
-// ════════════════════════════════════
-let typTmr;
-function handleTyping() {
-    if (!isConnected) return;
-    const key = safeKey(myName);
-    db.ref('chat_typing/' + key).set({ name: myName, ts: Date.now() });
-    clearTimeout(typTmr);
-    typTmr = setTimeout(() => db.ref('chat_typing/' + key).remove(), 3000);
-}
-
-db.ref('chat_typing').on('value', snap => {
-    const data = snap.val() || {};
-    const typers = Object.values(data)
-        .filter(t => t.name !== myName && Date.now() - t.ts < 4000)
-        .map(t => t.name.split(' ')[0]);
-    document.getElementById('typing-status').textContent =
-        typers.length ? typers.join(', ') + ' mengetik...' : '';
-});
-
-// ════════════════════════════════════
-//  CHAT UI
-// ════════════════════════════════════
-let chatOpen = false, unreadCount = 0;
-let lastSeenKey = localStorage.getItem('lastSeenKey') || '';
-let replyData = null;
-
+// Chat UI & Rendering
+let chatOpen = false, replyData = null;
 function toggleChat() {
     chatOpen = !chatOpen;
     document.getElementById('chat-panel').classList.toggle('open', chatOpen);
     if (chatOpen) {
-        unreadCount = 0;
-        const b = document.getElementById('chat-badge');
-        b.textContent = ''; b.classList.remove('show');
+        document.getElementById('chat-badge').classList.remove('show');
         document.getElementById('btn-chat').classList.remove('pulse');
         scrollToBottom();
-        setTimeout(() => document.getElementById('chat-input').focus(), 80);
     }
 }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 110) + 'px'; }
+function scrollToBottom() { const el = document.getElementById('chat-messages'); el.scrollTop = el.scrollHeight; }
 
-// tutup chat saat klik di luar
-document.addEventListener('click', e => {
-    const panel = document.getElementById('chat-panel');
-    const fab   = document.getElementById('btn-chat');
-    if (chatOpen && !panel.contains(e.target) && !fab.contains(e.target)) toggleChat();
-});
-
-function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-    else handleTyping();
-}
-function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 110) + 'px';
-}
-function scrollToBottom() {
-    const el = document.getElementById('chat-messages');
-    el.scrollTop = el.scrollHeight;
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text || !isConnected) return;
+    const msg = { name: myName, text, ts: Date.now() };
+    if (replyData) { msg.replyTo = replyData; cancelReply(); }
+    db.ref('chat_messages').push(msg).then(() => { input.value = ''; input.style.height = 'auto'; });
 }
 
 function replyToMessage(name, text) {
@@ -512,129 +422,38 @@ function replyToMessage(name, text) {
     document.getElementById('reply-to-info').textContent = 'Membalas ' + name;
     document.getElementById('reply-to-text').textContent = text;
     document.getElementById('reply-preview').classList.add('show');
-    document.getElementById('chat-input').focus();
 }
-function cancelReply() {
-    replyData = null;
-    document.getElementById('reply-preview').classList.remove('show');
-}
-function delChatMessage(key) {
-    if (confirm('Hapus pesan ini?')) db.ref('chat_messages/' + key).remove();
-}
-
-// ════════════════════════════════════
-//  KIRIM PESAN
-// ════════════════════════════════════
-function sendMessage() {
-    if (!isConnected) {
-        showError('Tidak terhubung ke database. Periksa koneksi & Firebase Rules.');
-        return;
-    }
-    const input = document.getElementById('chat-input');
-    const text  = input.value.trim();
-    if (!text) return;
-
-    const msg = { name: myName, text, ts: Date.now() };
-    if (replyData) { msg.replyTo = replyData; cancelReply(); }
-
-    db.ref('chat_messages').push(msg)
-        .then(() => { input.value = ''; input.style.height = 'auto'; })
-        .catch(err => {
-            if (err.code === 'PERMISSION_DENIED') {
-                showError('PERMISSION_DENIED — Buka Firebase Console › Realtime Database › Rules › set ke { ".read":true, ".write":true } lalu Publish!');
-            } else {
-                showError('Kirim gagal: ' + err.message);
-            }
-        });
-}
-
-// ════════════════════════════════════
-//  RENDER PESAN (REALTIME)
-// ════════════════════════════════════
-const COLORS = ['#1d6fa5','#c0392b','#27ae60','#8e44ad','#d35400','#16a085','#e67e22','#e74c3c'];
-const cmap = {}; let ci = 0;
-function getColor(n) { if (!cmap[n]) cmap[n] = COLORS[ci++ % COLORS.length]; return cmap[n]; }
-function fmt(ts) { return new Date(ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
+function cancelReply() { replyData = null; document.getElementById('reply-preview').classList.remove('show'); }
+function delChatMessage(key) { if (confirm('Hapus?')) db.ref('chat_messages/' + key).remove(); }
 
 db.ref('chat_messages').limitToLast(100).on('value', snap => {
     const data = snap.val();
     const container = document.getElementById('chat-messages');
     container.innerHTML = '';
-
-    if (!data) {
-        container.innerHTML = '<div class="chat-divider" style="margin-top:30px">Belum ada pesan 👋</div>';
-        return;
-    }
-
-    let lastDate = '';
+    if (!data) return;
     Object.keys(data).forEach(key => {
         const m = data[key];
-        const d = new Date(m.ts).toLocaleDateString('id-ID',{day:'numeric',month:'long'});
-        if (d !== lastDate) {
-            lastDate = d;
-            const div = document.createElement('div');
-            div.className = 'chat-divider';
-            div.textContent = '— ' + d + ' —';
-            container.appendChild(div);
-        }
-
         const isMe = m.name === myName;
-        const row  = document.createElement('div');
+        const row = document.createElement('div');
         row.className = 'msg-row ' + (isMe ? 'me' : 'them');
-
-        // escape nama untuk inline onclick — hindari single-quote break
-        const safeName = (m.name || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        const safeText = (m.text || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ').substring(0, 80);
-
-        const replyHtml = m.replyTo
-            ? `<div class="reply-quote"><span class="reply-qname">${esc(m.replyTo.name)}</span>${esc(m.replyTo.text)}</div>`
-            : '';
-
         row.innerHTML = `
-            ${!isMe ? `<div class="msg-sender" style="color:${getColor(m.name)}">${esc(m.name)}</div>` : ''}
-            <div class="msg-bubble">${replyHtml}${esc(m.text)}</div>
+            ${!isMe ? `<div class="msg-sender">${esc(m.name)}</div>` : ''}
+            <div class="msg-bubble">${m.replyTo ? `<div class="reply-quote"><span class="reply-qname">${esc(m.replyTo.name)}</span>${esc(m.replyTo.text)}</div>` : ''}${esc(m.text)}</div>
             <div class="msg-footer">
-                <span class="msg-time">${fmt(m.ts)}</span>
-                <button class="btn-act" onclick="replyToMessage('${safeName}','${safeText}')" title="Balas">↩️</button>
-                ${isMe ? `<button class="btn-act" onclick="delChatMessage('${key}')" title="Hapus">🗑️</button>` : ''}
+                <span class="msg-time">${new Date(m.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                <button class="btn-act" onclick="replyToMessage('${m.name.replace(/'/g,"\\'")}','${m.text.replace(/'/g,"\\'").substring(0,50)}')">↩️</button>
+                ${isMe ? `<button class="btn-act" onclick="delChatMessage('${key}')">🗑️</button>` : ''}
             </div>`;
         container.appendChild(row);
     });
-
     scrollToBottom();
+});
 
-    // Badge notifikasi kalau chat tertutup
-    if (!chatOpen) {
-        const keys   = Object.keys(data);
-        const latest = keys[keys.length - 1];
-        if (latest !== lastSeenKey && lastSeenKey !== '') {
-            unreadCount++;
-            const b = document.getElementById('chat-badge');
-            b.textContent = unreadCount > 9 ? '9+' : unreadCount;
-            b.classList.add('show');
-            document.getElementById('btn-chat').classList.add('pulse');
-            document.title = `(${unreadCount}) Pesan Baru!`;
-            setTimeout(() => document.title = 'TabeL Kalkulasi & Report', 3000);
-        }
-        lastSeenKey = latest;
-        localStorage.setItem('lastSeenKey', lastSeenKey);
-    }
-}, err => showError('Chat read error: ' + err.code + ' — ' + err.message));
-
-// ════════════════════════════════════
-//  EMERGENCY BROADCAST
-// ════════════════════════════════════
+// Broadcast & Nav
 function sendBroadcast() {
     const text = document.getElementById('bc-input').value.trim();
-    if (!text) return;
-    const pin = prompt('Masukkan PIN Admin:');
-    if (pin === '6060') {
-        db.ref('emergency_alert').set({ text, ts: Date.now() })
-          .then(() => { document.getElementById('bc-input').value=''; closeModal(); alert('Broadcast terkirim!'); })
-          .catch(err => showError('Broadcast: ' + err.message));
-    } else { alert('PIN Salah!'); }
+    if (text && prompt('PIN Admin:') === '6060') db.ref('emergency_alert').set({ text, ts: Date.now() });
 }
-
 db.ref('emergency_alert').on('value', snap => {
     const d = snap.val();
     if (d && Date.now() - d.ts < 60000) {
@@ -642,14 +461,8 @@ db.ref('emergency_alert').on('value', snap => {
         document.getElementById('emergency-overlay').style.display = 'flex';
     }
 });
-function ackEmergency() {
-    document.getElementById('emergency-overlay').style.display = 'none';
-    db.ref('emergency_alert').remove();
-}
+function ackEmergency() { document.getElementById('emergency-overlay').style.display = 'none'; db.ref('emergency_alert').remove(); }
 
-// ════════════════════════════════════
-//  NAV
-// ════════════════════════════════════
 let curFrameIdx = 1;
 function changeIframe(idx, btn) {
     document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
@@ -662,13 +475,15 @@ function refreshCurrentIframe() {
     const fr = document.querySelector(`#frame${curFrameIdx} iframe`);
     if (fr) { const s = fr.src; fr.src = 'about:blank'; setTimeout(() => fr.src = s, 50); }
 }
-function openModal()  { document.getElementById('rt-modal').style.display = 'block'; }
+function openModal() { document.getElementById('rt-modal').style.display = 'block'; }
 function closeModal() { document.getElementById('rt-modal').style.display = 'none'; }
+setInterval(() => { document.getElementById('digital-clock').textContent = new Date().toLocaleTimeString('en-GB'); }, 1000);
 
-// Clock
-setInterval(() => {
-    document.getElementById('digital-clock').textContent = new Date().toLocaleTimeString('en-GB');
-}, 1000);
+// Close panels on click outside
+document.addEventListener('click', e => {
+    if (chatOpen && !document.getElementById('chat-panel').contains(e.target) && !document.getElementById('btn-chat').contains(e.target)) toggleChat();
+    document.getElementById('online-panel').classList.remove('show');
+});
 </script>
 </body>
 </html>
