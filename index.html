@@ -842,7 +842,7 @@
 
     <main class="content-area">
         <div id="frame1" class="iframe-layer active">
-            <iframe src="https://60-nbm.vercel.app/op?auth=op"></iframe>
+            <iframe src="https://60-nbm.vercel.app/"></iframe>
         </div>
         <div id="frame2" class="iframe-layer">
             <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
@@ -926,7 +926,9 @@
         <div class="emergency-box">
             <div class="emergency-title">📢 INFO PENTING!</div>
             <div class="emergency-text" id="emergency-msg">Pesan penting akan muncul di sini...</div>
-            <button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>
+            <div id="emergency-btn-container">
+                <button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>
+            </div>
         </div>
     </div>
 
@@ -1105,6 +1107,7 @@
             const data = snap.val();
             if (data && (Date.now() - data.ts < 60000)) { 
                 document.getElementById('emergency-msg').textContent = data.text;
+                document.getElementById('emergency-btn-container').innerHTML = '<button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>';
                 document.getElementById('emergency-overlay').style.display = 'flex';
                 setTimeout(() => document.getElementById('emergency-overlay').classList.add('show'), 10);
             }
@@ -1118,11 +1121,30 @@
 
         let curFrameIdx = 1;
         function changeIframe(idx, btn) {
+            if (idx === 2) {
+                document.getElementById('emergency-msg').textContent = "Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV";
+                document.getElementById('emergency-btn-container').innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+                        <button class="btn-ack" style="width:100%; border:2px solid var(--navy); background:white; color:var(--navy); padding:10px;" onclick="ackEmergency()">LANJUT DISINI</button>
+                        <button class="btn-ack" style="width:100%; background:var(--navy); color:var(--gold); padding:10px;" onclick="switchTo60NBM()">BUKA 60NBM.DEV</button>
+                    </div>
+                `;
+                document.getElementById('emergency-overlay').style.display = 'flex';
+                setTimeout(() => document.getElementById('emergency-overlay').classList.add('show'), 10);
+            }
             document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
             document.getElementById('frame' + idx).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             curFrameIdx = idx;
+        }
+
+        function switchTo60NBM() {
+            const f1 = document.querySelector('#frame1 iframe');
+            f1.src = "https://60-nbm.vercel.app/op?auth=op";
+            const btn1 = document.querySelectorAll('.nav-btn')[0];
+            changeIframe(1, btn1);
+            ackEmergency();
         }
         function refreshCurrentIframe() {
             const fr = document.querySelector(`#frame${curFrameIdx} iframe`);
