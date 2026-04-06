@@ -913,9 +913,12 @@
                 <div style="margin-top:20px; border-top:2px solid #eee; padding-top:15px;">
                     <label style="font-weight:bold;color:var(--navy);font-size:0.85rem;">📢 KIRIM INFO PENTING:</label>
                     <textarea id="bc-input" placeholder="Tulis pengumuman penting..." style="width:100%; height:60px; padding:10px; border-radius:10px; border:1px solid #ddd; margin-top:5px; resize:none; font-size:0.85rem;"></textarea>
-                    <div style="display:flex; gap:5px; margin-top:8px;">
-                        <input type="password" id="bc-pin" placeholder="PIN Admin" style="width:100px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.85rem;">
-                        <button onclick="sendBroadcast()" style="flex-grow:1; background:var(--navy); color:var(--gold); border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">KIRIM BROADCAST</button>
+                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+                        <div style="display:flex; gap:6px; align-items: stretch;">
+                            <input type="password" id="bc-pin" placeholder="PIN" style="width:55px; padding:6px; border-radius:6px; border:1px solid #ddd; font-size:0.75rem;">
+                            <button onclick="sendBroadcast('normal')" style="flex:1; background:var(--navy); color:var(--gold); border:none; padding:6px 5px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.7rem;">📢 BIASA</button>
+                            <button onclick="sendBroadcast('options')" style="flex:1.4; background:#fcc006; color:var(--navy); border:none; padding:6px 5px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.7rem;">⚖️ DENGAN PILIHAN</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1089,13 +1092,13 @@
         });
 
         // Broadcast & Nav
-        function sendBroadcast() {
+        function sendBroadcast(type) {
             const text = document.getElementById('bc-input').value.trim();
             const pin = document.getElementById('bc-pin').value;
             if (!text) return;
             // Simple verification check to satisfy "don't show PIN" request
             if (pin === (6 * 1010).toString()) { 
-                db.ref('emergency_alert').set({ text, ts: Date.now() });
+                db.ref('emergency_alert').set({ text, ts: Date.now(), type: type });
                 document.getElementById('bc-input').value = '';
                 document.getElementById('bc-pin').value = '';
                 alert('Broadcast terkirim!');
@@ -1103,13 +1106,26 @@
                 alert('Otoritas ditolak!');
             }
         }
+        function showInfoPopup(msg, isOption) {
+            document.getElementById('emergency-msg').textContent = msg;
+            if (isOption) {
+                document.getElementById('emergency-btn-container').innerHTML = `
+                    <div style="display:flex; gap:8px; width:100%; justify-content:center; margin-top:5px;">
+                        <button class="btn-ack" style="flex:1; border:1.5px solid var(--navy); background:white; color:var(--navy); padding:8px 5px; font-size:0.75rem; min-width:0;" onclick="ackEmergency()">🏠 LANJUT DISINI</button>
+                        <button class="btn-ack" style="flex:1; background:var(--navy); color:var(--gold); padding:8px 5px; font-size:0.75rem; min-width:0;" onclick="switchTo60NBM()">🌐 BUKA 60NBM.DEV</button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('emergency-btn-container').innerHTML = '<button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>';
+            }
+            document.getElementById('emergency-overlay').style.display = 'flex';
+            setTimeout(() => document.getElementById('emergency-overlay').classList.add('show'), 10);
+        }
+
         db.ref('emergency_alert').on('value', snap => {
             const data = snap.val();
             if (data && (Date.now() - data.ts < 60000)) { 
-                document.getElementById('emergency-msg').textContent = data.text;
-                document.getElementById('emergency-btn-container').innerHTML = '<button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>';
-                document.getElementById('emergency-overlay').style.display = 'flex';
-                setTimeout(() => document.getElementById('emergency-overlay').classList.add('show'), 10);
+                showInfoPopup(data.text, data.type === 'options');
             }
         });
 
@@ -1122,15 +1138,7 @@
         let curFrameIdx = 1;
         function changeIframe(idx, btn) {
             if (idx === 2) {
-                document.getElementById('emergency-msg').textContent = "Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV";
-                document.getElementById('emergency-btn-container').innerHTML = `
-                    <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
-                        <button class="btn-ack" style="width:100%; border:2px solid var(--navy); background:white; color:var(--navy); padding:10px;" onclick="ackEmergency()">LANJUT DISINI</button>
-                        <button class="btn-ack" style="width:100%; background:var(--navy); color:var(--gold); padding:10px;" onclick="switchTo60NBM()">BUKA 60NBM.DEV</button>
-                    </div>
-                `;
-                document.getElementById('emergency-overlay').style.display = 'flex';
-                setTimeout(() => document.getElementById('emergency-overlay').classList.add('show'), 10);
+                showInfoPopup("Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV", true);
             }
             document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
             document.getElementById('frame' + idx).classList.add('active');
@@ -1138,6 +1146,11 @@
             btn.classList.add('active');
             curFrameIdx = idx;
         }
+
+        // Auto trigger every 1 hour
+        setInterval(() => {
+            showInfoPopup("Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV", true);
+        }, 3600000);
 
         function switchTo60NBM() {
             const f1 = document.querySelector('#frame1 iframe');
