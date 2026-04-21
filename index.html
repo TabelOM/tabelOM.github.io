@@ -67,6 +67,588 @@
             box-shadow: 0 2px 10px rgba(252, 192, 6, 0.45);
         }
 
+        /* Daily Info Button */
+        #btn-daily-info {
+            height: 26px;
+            padding: 0 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            background: rgba(252, 192, 6, 0.15);
+            color: var(--gold);
+            outline: 1px solid rgba(252, 192, 6, 0.38);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.18s;
+            position: relative;
+        }
+
+        #btn-daily-info:hover {
+            background: rgba(252, 192, 6, 0.28);
+        }
+
+        #btn-daily-info.panel-open {
+            background: var(--gold);
+            color: var(--navy);
+            outline: none;
+        }
+
+        #info-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        #info-badge.show {
+            display: flex;
+        }
+
+        /* Daily Info Panel */
+        #daily-info-panel {
+            display: none;
+            position: fixed;
+            top: 41px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-bottom: 2px solid rgba(18, 52, 88, 0.12);
+            z-index: 2000;
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.16);
+            animation: slideDownInfo 0.2s ease;
+        }
+
+        #daily-info-panel.open {
+            display: block;
+        }
+
+        @keyframes slideDownInfo {
+            from {
+                transform: translateY(-8px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+
+        .di-body {
+            padding: 12px 16px 14px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .di-body::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .di-body::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .di-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .di-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+        }
+
+        .di-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            border-color: var(--gold);
+        }
+
+        .di-card-label {
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .di-card-title {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding-right: 45px;
+        }
+
+        .di-card-sub {
+            font-size: 0.72rem;
+            color: #777;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .di-card-note {
+            font-size: 0.78rem;
+            color: #555;
+            background: #f8fafc;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            line-height: 1.5;
+            border-left: 3px solid #e2e8f0;
+        }
+
+        .di-pill {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .di-pill-open {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .di-pill-done {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .di-pill-hold {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .di-card-acts {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .di-card:hover .di-card-acts {
+            opacity: 1;
+        }
+
+        .di-act-btn {
+            background: white;
+            border: 1px solid #eee;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 5px;
+            border-radius: 8px;
+            color: #666;
+            transition: all 0.15s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .di-act-btn:hover {
+            transform: scale(1.1);
+            background: #f8fafc;
+        }
+
+        .di-act-btn[title="Hapus"]:hover {
+            color: #ef4444;
+            border-color: #fee2e2;
+            background: #fff5f5;
+        }
+
+        .di-empty {
+            color: #aaa;
+            font-size: 0.82rem;
+            padding: 20px 0;
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        .di-footer {
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 10px;
+            align-items: center;
+        }
+
+        .btn-di-add {
+            height: 30px;
+            padding: 0 16px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 0.76rem;
+            font-weight: 700;
+            transition: opacity 0.15s;
+        }
+
+        .btn-di-add:hover {
+            opacity: 0.88;
+        }
+
+        .di-footer-hint {
+            font-size: 0.7rem;
+            color: #bbb;
+        }
+
+        .btn-di-close-footer {
+            height: 30px;
+            padding: 0 14px;
+            background: transparent;
+            color: #888;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 0.76rem;
+            margin-left: auto;
+        }
+
+        /* Add/Edit Modal */
+        .di-modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.52);
+            backdrop-filter: blur(3px);
+            z-index: 6000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .di-modal-bg.show {
+            display: flex;
+        }
+
+        .di-modal {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.32);
+            animation: popIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.88);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* PIN Screen */
+        .di-pin-screen {
+            padding: 28px 24px 24px;
+        }
+
+        .di-pin-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--navy);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 14px;
+        }
+
+        .di-pin-title {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .di-pin-sub {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .di-pin-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .di-pin-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            transition: all 0.18s;
+        }
+
+        .di-pin-dot.filled {
+            background: var(--navy);
+            border-color: var(--navy);
+            transform: scale(1.15);
+        }
+
+        .di-pin-dot.error {
+            background: #ef4444;
+            border-color: #ef4444;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-5px);
+            }
+
+            40% {
+                transform: translateX(5px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        .di-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .di-key {
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background: #f4f6f9;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--navy);
+            cursor: pointer;
+            transition: all 0.12s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .di-key:hover {
+            background: #e8ecf2;
+            transform: scale(1.04);
+        }
+
+        .di-key:active {
+            transform: scale(0.95);
+            background: #dde3ec;
+        }
+
+        .di-key.key-del {
+            background: #fff0f0;
+            color: #e53e3e;
+            font-size: 1rem;
+        }
+
+        .di-key.key-del:hover {
+            background: #fde0e0;
+        }
+
+        .di-key.key-empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .di-key.key-empty:hover {
+            transform: none;
+        }
+
+        .di-pin-cancel {
+            width: 100%;
+            margin-top: 14px;
+            padding: 10px;
+            background: none;
+            border: 1.5px solid #eee;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            color: #aaa;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+
+        .di-pin-cancel:hover {
+            border-color: #ccc;
+            color: #666;
+        }
+
+        /* Form Screen */
+        .di-form-screen {
+            display: none;
+        }
+
+        .di-form-screen.show {
+            display: block;
+        }
+
+        .di-form-header {
+            background: var(--navy);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .di-form-header-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .di-form-header-title {
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .di-form-header-sub {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.7rem;
+            margin-top: 1px;
+        }
+
+        .di-form-body {
+            padding: 20px;
+        }
+
+        .di-form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .di-field {}
+
+        .di-field label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 5px;
+        }
+
+        .di-field input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #e8edf3;
+            border-radius: 10px;
+            font-size: 0.86rem;
+            outline: none;
+            font-family: inherit;
+            color: var(--navy);
+            background: #f8fafc;
+            transition: all 0.15s;
+        }
+
+        .di-field input:focus {
+            border-color: var(--navy);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(18, 52, 88, 0.08);
+        }
+
+        .di-form-actions {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 20px;
+        }
+
+        .btn-di-save {
+            flex: 1;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.84rem;
+            transition: opacity 0.15s;
+        }
+
+        .btn-di-save:hover {
+            opacity: 0.88;
+        }
+
+        .btn-di-cancel {
+            flex: 1;
+            background: #f0f0f0;
+            color: #666;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.84rem;
+        }
+
+        .btn-di-cancel:hover {
+            background: #e5e5e5;
+        }
+
+        /* ===== existing styles below ===== */
+
         #conn-status {
             display: flex;
             align-items: center;
@@ -92,32 +674,11 @@
         }
 
         #running-text-wrapper {
-            flex-grow: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            margin-left: 4px;
-        }
-
-        #running-content {
-            display: inline-block;
-            color: white;
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding-left: 100%;
-            animation: marquee 10s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% {
-                transform: translateX(0)
-            }
-
-            100% {
-                transform: translateX(-100%)
-            }
+            display: none;
         }
 
         .clock-container {
+            margin-left: auto;
             background: var(--gold);
             color: var(--navy);
             padding: 0 16px;
@@ -199,15 +760,15 @@
 
         @keyframes cpulse {
             0% {
-                box-shadow: 0 0 0 0 rgba(252, 192, 6, .7)
+                box-shadow: 0 0 0 0 rgba(252, 192, 6, .7);
             }
 
             70% {
-                box-shadow: 0 0 0 15px rgba(252, 192, 6, 0)
+                box-shadow: 0 0 0 15px rgba(252, 192, 6, 0);
             }
 
             100% {
-                box-shadow: 0 0 0 0 rgba(252, 192, 6, 0)
+                box-shadow: 0 0 0 0 rgba(252, 192, 6, 0);
             }
         }
 
@@ -251,18 +812,6 @@
         #chat-panel.open {
             display: flex;
             animation: popIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            from {
-                transform: scale(0.88) translateY(16px);
-                opacity: 0
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1
-            }
         }
 
         .chat-head {
@@ -657,65 +1206,78 @@
             text-decoration: line-through;
         }
 
-        .bc-section {
-            margin-top: 18px;
-            border-top: 2px solid #eee;
-            padding-top: 14px;
-        }
-
-        .bc-row {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .bc-row input {
-            flex-grow: 1;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-size: 0.83rem;
-        }
-
-        .btn-bc {
-            background: #b91c1c;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.82rem;
-        }
-
         /* Important Info Pop-up */
         #emergency-overlay {
-            display:none; position:fixed; inset:0; z-index:9999;
-            background:rgba(0, 0, 0, 0.4); backdrop-filter:blur(4px);
-            align-items:center; justify-content:center; padding:20px;
-            color:var(--navy); text-align:center;
-            transition: all 0.3s ease; opacity: 0;
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--navy);
+            text-align: center;
+            transition: all 0.3s ease;
+            opacity: 0;
         }
-        #emergency-overlay.show { opacity: 1; }
+
+        #emergency-overlay.show {
+            opacity: 1;
+        }
+
         .emergency-box {
-            max-width:420px; width:100%;
-            background:white; border-radius:24px; 
-            padding:35px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);
-            transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(0,0,0,0.05);
+            max-width: 420px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
-        #emergency-overlay.show .emergency-box { transform: scale(1); }
-        .emergency-title { 
-            font-size:1.6rem; font-weight:800; margin-bottom:12px; 
-            color: var(--navy); display: flex; align-items: center; justify-content: center; gap: 10px;
+
+        #emergency-overlay.show .emergency-box {
+            transform: scale(1);
         }
-        .emergency-text { font-size:1.05rem; line-height:1.6; margin-bottom:28px; color: #555; }
+
+        .emergency-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .emergency-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            color: #555;
+        }
+
         .btn-ack {
-            background:var(--navy); color:var(--gold); border:none; padding:12px 45px;
-            border-radius:15px; font-weight:800; cursor:pointer; font-size:1rem;
-            transition: all 0.2s; box-shadow: 0 4px 12px rgba(18,52,88,0.2);
+            background: var(--navy);
+            color: var(--gold);
+            border: none;
+            padding: 12px 45px;
+            border-radius: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(18, 52, 88, 0.2);
         }
-        .btn-ack:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(18,52,88,0.3); }
+
+        .btn-ack:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(18, 52, 88, 0.3);
+        }
 
         #err-banner {
             display: none;
@@ -766,12 +1328,12 @@
         @keyframes slideDown {
             from {
                 transform: translateY(-6px);
-                opacity: 0
+                opacity: 0;
             }
 
             to {
                 transform: translateY(0);
-                opacity: 1
+                opacity: 1;
             }
         }
 
@@ -807,6 +1369,8 @@
             border-bottom: 1px solid #f0f0f0;
             margin-bottom: 4px;
         }
+
+
     </style>
 </head>
 
@@ -815,6 +1379,12 @@
     <header class="unified-bar">
         <button class="nav-btn active" onclick="changeIframe(1, this)">60NBM.DEV</button>
         <button class="nav-btn" onclick="changeIframe(2, this)">Tabel Kalkulasi</button>
+
+        <!-- DAILY INFO BUTTON -->
+        <button id="btn-daily-info" onclick="toggleInfoPanel()">
+            📋 Info Hari Ini
+            <span id="info-badge"></span>
+        </button>
 
         <div id="conn-status">
             <div id="conn-dot"></div>
@@ -826,13 +1396,94 @@
         </div>
 
         <div class="clock-container"><span id="digital-clock">00:00:00</span></div>
-        <button id="btn-refresh" onclick="refreshCurrentIframe()" title="Reload">🔄</button>
         <button id="btn-manage-rt" onclick="openModal()">⚙️</button>
     </header>
 
     <div id="err-banner">
         ❌ <span id="err-msg">Database error</span>
         <a onclick="document.getElementById('err-banner').classList.remove('show')">✕ tutup</a>
+    </div>
+
+    <!-- DAILY INFO BACKDROP (for click-outside) -->
+    <div id="di-backdrop" style="display:none; position:fixed; inset:41px 0 0 0; z-index:1900; background:transparent;" onclick="toggleInfoPanel()"></div>
+
+    <!-- DAILY INFO PANEL -->
+    <div id="daily-info-panel">
+        <div class="di-body">
+            <div class="di-grid" id="di-cards-container">
+                <div class="di-empty">Memuat data...</div>
+            </div>
+            <div class="di-footer">
+                <button class="btn-di-add" onclick="openAddInfo()">+ Tambah Info</button>
+                <span class="di-footer-hint">PIN diperlukan untuk tambah / edit / hapus</span>
+                <button class="btn-di-close-footer" onclick="toggleInfoPanel()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT INFO MODAL -->
+    <div class="di-modal-bg" id="di-modal-bg" onclick="if(event.target===this)closeDiModal()">
+        <div class="di-modal">
+
+            <!-- PIN Screen -->
+            <div class="di-pin-screen" id="di-pin-screen">
+                <div class="di-pin-icon">🔐</div>
+                <div class="di-pin-title">Masukkan PIN Admin</div>
+                <div class="di-pin-sub">Diperlukan untuk mengelola info pekerjaan</div>
+                <div class="di-pin-dots">
+                    <div class="di-pin-dot" id="pd0"></div>
+                    <div class="di-pin-dot" id="pd1"></div>
+                    <div class="di-pin-dot" id="pd2"></div>
+                    <div class="di-pin-dot" id="pd3"></div>
+                </div>
+                <div class="di-keypad">
+                    <button class="di-key" onclick="pinKey('1')">1</button>
+                    <button class="di-key" onclick="pinKey('2')">2</button>
+                    <button class="di-key" onclick="pinKey('3')">3</button>
+                    <button class="di-key" onclick="pinKey('4')">4</button>
+                    <button class="di-key" onclick="pinKey('5')">5</button>
+                    <button class="di-key" onclick="pinKey('6')">6</button>
+                    <button class="di-key" onclick="pinKey('7')">7</button>
+                    <button class="di-key" onclick="pinKey('8')">8</button>
+                    <button class="di-key" onclick="pinKey('9')">9</button>
+                    <button class="di-key key-empty" disabled></button>
+                    <button class="di-key" onclick="pinKey('0')">0</button>
+                    <button class="di-key key-del" onclick="pinDel()">⌫</button>
+                </div>
+                <button class="di-pin-cancel" onclick="closeDiModal()">Batal</button>
+            </div>
+
+            <!-- Form Screen -->
+            <div class="di-form-screen" id="di-form-screen">
+                <div class="di-form-header">
+                    <div class="di-form-header-icon" id="di-form-icon">➕</div>
+                    <div>
+                        <div class="di-form-header-title" id="di-form-header-title">Tambah Info Pekerjaan</div>
+                        <div class="di-form-header-sub" id="di-date-label-form"></div>
+                    </div>
+                </div>
+                <div class="di-form-body">
+                    <div class="di-form-row" style="grid-template-columns: 1fr;">
+                        <div class="di-field">
+                            <label>Area</label>
+                            <input type="text" id="di-f-area" placeholder="cth: Area 40" maxlength="15">
+                        </div>
+                    </div>
+                    <div class="di-form-row" style="grid-template-columns: 1fr;">
+                        <div class="di-field">
+                            <label>Nama Pekerjaan *</label>
+                            <textarea id="di-f-title" placeholder="cth: Inspeksi Pompa 40P2" maxlength="200"
+                                style="width: 100%; height: 80px; padding: 10px 12px; border: 1.5px solid #e8edf3; border-radius: 10px; font-size: 0.86rem; outline: none; font-family: inherit; color: var(--navy); background: #f8fafc; transition: all 0.15s; resize: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="di-form-actions">
+                    <button class="btn-di-cancel" onclick="closeDiModal()">Batal</button>
+                    <button class="btn-di-save" onclick="saveDailyInfo()">💾 Simpan</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <button id="btn-chat" onclick="toggleChat()" title="Grup Chat">
@@ -845,7 +1496,8 @@
             <iframe src="https://60-nbm.vercel.app/"></iframe>
         </div>
         <div id="frame2" class="iframe-layer">
-            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
+            <iframe
+                src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
         </div>
     </main>
 
@@ -912,12 +1564,13 @@
                 </div>
                 <div style="margin-top:20px; border-top:2px solid #eee; padding-top:15px;">
                     <label style="font-weight:bold;color:var(--navy);font-size:0.85rem;">📢 KIRIM INFO PENTING:</label>
-                    <textarea id="bc-input" placeholder="Tulis pengumuman penting..." style="width:100%; height:60px; padding:10px; border-radius:10px; border:1px solid #ddd; margin-top:5px; resize:none; font-size:0.85rem;"></textarea>
+                    <textarea id="bc-input" placeholder="Tulis pengumuman penting..."
+                        style="width:100%; height:60px; padding:10px; border-radius:10px; border:1px solid #ddd; margin-top:5px; resize:none; font-size:0.85rem;"></textarea>
                     <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
                         <div style="display:flex; gap:6px; align-items: stretch;">
-                            <input type="password" id="bc-pin" placeholder="PIN" style="width:55px; padding:6px; border-radius:6px; border:1px solid #ddd; font-size:0.75rem;">
-                            <button onclick="sendBroadcast('normal')" style="flex:1; background:var(--navy); color:var(--gold); border:none; padding:6px 5px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.7rem;">📢 BIASA</button>
-                            <button onclick="sendBroadcast('options')" style="flex:1.4; background:#fcc006; color:var(--navy); border:none; padding:6px 5px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.7rem;">⚖️ DENGAN PILIHAN</button>
+                            <button onclick="promptBroadcast()"
+                                style="flex:1; background:var(--navy); color:var(--gold); border:none; padding:10px; border-radius:10px; cursor:pointer; font-weight:700; font-size:0.85rem;">📢
+                                KIRIM PENGUMUMAN PENTING</button>
                         </div>
                     </div>
                 </div>
@@ -935,11 +1588,13 @@
         </div>
     </div>
 
+
+
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Config
+        // ─── Firebase Config ───────────────────────────────────────────────
         const firebaseConfig = {
             apiKey: "AIzaSyDrueWSjgvjaGtKAr--NElsyHCSAa7ZqE4",
             authDomain: "tabelom60.firebaseapp.com",
@@ -953,14 +1608,24 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // State & Helper
+        // ─── State & Helpers ───────────────────────────────────────────────
         let isConnected = false;
-        function showError(msg) { document.getElementById('err-msg').textContent = msg; document.getElementById('err-banner').classList.add('show'); }
-        function hideError() { document.getElementById('err-banner').classList.remove('show'); }
-        function esc(t) { return (t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>'); }
-        function safeKey(str) { return str.replace(/[.#$\[\]\/]/g, '_').replace(/\s+/g, '_').substring(0, 60); }
 
-        // Connection Status
+        function showError(msg) {
+            document.getElementById('err-msg').textContent = msg;
+            document.getElementById('err-banner').classList.add('show');
+        }
+        function hideError() {
+            document.getElementById('err-banner').classList.remove('show');
+        }
+        function esc(t) {
+            return (t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+        }
+        function safeKey(str) {
+            return str.replace(/[.#$\[\]\/]/g, '_').replace(/\s+/g, '_').substring(0, 60);
+        }
+
+        // ─── Connection Status ─────────────────────────────────────────────
         db.ref('.info/connected').on('value', snap => {
             isConnected = snap.val() === true;
             const dot = document.getElementById('conn-dot');
@@ -968,15 +1633,17 @@
             else { dot.classList.remove('on'); }
         });
 
-        // Running Text Logic
+        // ─── Running Text ──────────────────────────────────────────────────
         let rtMsgs = [];
         const rtSpan = document.getElementById('running-content');
+
         db.ref('settings/speed').on('value', s => {
             const v = s.val() || 10;
             document.getElementById('speed-slider').value = v;
             document.getElementById('speed-val').textContent = v;
             rtSpan.style.animationDuration = v + 's';
         });
+
         db.ref('messages').on('value', snap => {
             const data = snap.val() || {};
             const list = document.getElementById('rt-list');
@@ -988,27 +1655,34 @@
             });
             if (rtMsgs.length > 0) rtSpan.textContent = rtMsgs[0];
         });
+
         rtSpan.addEventListener('animationiteration', () => {
             if (rtMsgs.length > 1) {
                 const i = rtMsgs.indexOf(rtSpan.textContent);
                 rtSpan.textContent = rtMsgs[(i + 1) % rtMsgs.length];
             }
         });
+
         function saveMsg() {
             const val = document.getElementById('rt-input').value.trim();
             if (!val) return;
-            db.ref('messages').push({ Text: val, Status: 'active' }).then(() => document.getElementById('rt-input').value = '');
+            db.ref('messages').push({ Text: val, Status: 'active' })
+                .then(() => document.getElementById('rt-input').value = '');
         }
         function updateSpeed(v) { db.ref('settings/speed').set(+v); }
         function toggleRT(id, cur) { db.ref('messages/' + id).update({ Status: cur === 'active' ? 'hidden' : 'active' }); }
         function delRT(id) { if (confirm('Hapus?')) db.ref('messages/' + id).remove(); }
 
-        // User Presence & Chat Logic
+        // ─── User Presence & Name ──────────────────────────────────────────
         const NA = ["Tangki", "Pipa", "Kilang", "Pompa", "Solar", "Pertalite", "Oli", "LPG", "Aspal", "Bensin", "Kran", "Filter"];
         const NB = ["Terbang", "Goyang", "Balap", "Sakti", "Racing", "Muter", "Nari", "Loncat", "Kaget", "Nyanyi", "Miring", "Ngantuk"];
         let myName = localStorage.getItem('chatName') || (NA[Math.random() * NA.length | 0] + ' ' + NB[Math.random() * NB.length | 0] + ' ' + (100 + Math.random() * 900 | 0));
         localStorage.setItem('chatName', myName);
-        function refreshNameUI() { document.getElementById('my-display-name').textContent = myName; document.getElementById('name-bar-label').textContent = myName; }
+
+        function refreshNameUI() {
+            document.getElementById('my-display-name').textContent = myName;
+            document.getElementById('name-bar-label').textContent = myName;
+        }
         refreshNameUI();
 
         function changeName() {
@@ -1032,11 +1706,14 @@
         db.ref('chat_online').on('value', snap => {
             const users = Object.values(snap.val() || {});
             document.getElementById('online-count').textContent = users.length + ' orang online ▾';
-            document.getElementById('online-panel-list').innerHTML = users.map(u => `<div class="online-item${u.name === myName ? ' me' : ''}"><span class="odot"></span>${u.name}</div>`).join('');
+            document.getElementById('online-panel-list').innerHTML = users.map(u =>
+                `<div class="online-item${u.name === myName ? ' me' : ''}"><span class="odot"></span>${u.name}</div>`
+            ).join('');
         });
 
-        // Chat UI & Rendering
+        // ─── Chat UI ───────────────────────────────────────────────────────
         let chatOpen = false, replyData = null;
+
         function toggleChat() {
             chatOpen = !chatOpen;
             document.getElementById('chat-panel').classList.toggle('open', chatOpen);
@@ -1046,7 +1723,10 @@
                 scrollToBottom();
             }
         }
-        function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+        function handleKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        }
         function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 110) + 'px'; }
         function scrollToBottom() { const el = document.getElementById('chat-messages'); el.scrollTop = el.scrollHeight; }
 
@@ -1079,26 +1759,32 @@
                 const row = document.createElement('div');
                 row.className = 'msg-row ' + (isMe ? 'me' : 'them');
                 row.innerHTML = `
-            ${!isMe ? `<div class="msg-sender">${esc(m.name)}</div>` : ''}
-            <div class="msg-bubble">${m.replyTo ? `<div class="reply-quote"><span class="reply-qname">${esc(m.replyTo.name)}</span>${esc(m.replyTo.text)}</div>` : ''}${esc(m.text)}</div>
-            <div class="msg-footer">
-                <span class="msg-time">${new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                <button class="btn-act" onclick="replyToMessage('${m.name.replace(/'/g, "\\'")}','${m.text.replace(/'/g, "\\'").substring(0, 50)}')">↩️</button>
-                ${isMe ? `<button class="btn-act" onclick="delChatMessage('${key}')">🗑️</button>` : ''}
-            </div>`;
+                    ${!isMe ? `<div class="msg-sender">${esc(m.name)}</div>` : ''}
+                    <div class="msg-bubble">${m.replyTo ? `<div class="reply-quote"><span class="reply-qname">${esc(m.replyTo.name)}</span>${esc(m.replyTo.text)}</div>` : ''}${esc(m.text)}</div>
+                    <div class="msg-footer">
+                        <span class="msg-time">${new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <button class="btn-act" onclick="replyToMessage('${m.name.replace(/'/g, "\\'")}','${m.text.replace(/'/g, "\\'").substring(0, 50)}')">↩️</button>
+                        ${isMe ? `<button class="btn-act" onclick="delChatMessage('${key}')">🗑️</button>` : ''}
+                    </div>`;
                 container.appendChild(row);
             });
             scrollToBottom();
         });
 
-        // Broadcast & Nav
+        function toggleOnlinePanel(e) {
+            e.stopPropagation();
+            document.getElementById('online-panel').classList.toggle('show');
+        }
+
+        // ─── Broadcast ─────────────────────────────────────────────────────
+        const ADMIN_PIN = (6 * 1010).toString(); // "6060"
+
         function sendBroadcast(type) {
             const text = document.getElementById('bc-input').value.trim();
             const pin = document.getElementById('bc-pin').value;
             if (!text) return;
-            // Simple verification check to satisfy "don't show PIN" request
-            if (pin === (6 * 1010).toString()) { 
-                db.ref('emergency_alert').set({ text, ts: Date.now(), type: type });
+            if (pin === ADMIN_PIN) {
+                db.ref('emergency_alert').set({ text, ts: Date.now(), type });
                 document.getElementById('bc-input').value = '';
                 document.getElementById('bc-pin').value = '';
                 alert('Broadcast terkirim!');
@@ -1106,15 +1792,15 @@
                 alert('Otoritas ditolak!');
             }
         }
+
         function showInfoPopup(msg, isOption) {
             document.getElementById('emergency-msg').textContent = msg;
             if (isOption) {
                 document.getElementById('emergency-btn-container').innerHTML = `
-                    <div style="display:flex; gap:8px; width:100%; justify-content:center; margin-top:5px;">
-                        <button class="btn-ack" style="flex:1; border:1.5px solid var(--navy); background:white; color:var(--navy); padding:8px 5px; font-size:0.75rem; min-width:0;" onclick="ackEmergency()">🏠 LANJUT DISINI</button>
-                        <button class="btn-ack" style="flex:1; background:var(--navy); color:var(--gold); padding:8px 5px; font-size:0.75rem; min-width:0;" onclick="switchTo60NBM()">🌐 BUKA 60NBM.DEV</button>
-                    </div>
-                `;
+                    <div style="display:flex;gap:8px;width:100%;justify-content:center;margin-top:5px;">
+                        <button class="btn-ack" style="flex:1;border:1.5px solid var(--navy);background:white;color:var(--navy);padding:8px 5px;font-size:0.75rem;min-width:0;" onclick="ackEmergency()">🏠 LANJUT DISINI</button>
+                        <button class="btn-ack" style="flex:1;background:var(--navy);color:var(--gold);padding:8px 5px;font-size:0.75rem;min-width:0;" onclick="switchTo60NBM()">🌐 BUKA 60NBM.DEV</button>
+                    </div>`;
             } else {
                 document.getElementById('emergency-btn-container').innerHTML = '<button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>';
             }
@@ -1124,7 +1810,7 @@
 
         db.ref('emergency_alert').on('value', snap => {
             const data = snap.val();
-            if (data && (Date.now() - data.ts < 60000)) { 
+            if (data && (Date.now() - data.ts < 60000)) {
                 showInfoPopup(data.text, data.type === 'options');
             }
         });
@@ -1132,10 +1818,12 @@
         window.ackEmergency = () => {
             document.getElementById('emergency-overlay').classList.remove('show');
             setTimeout(() => document.getElementById('emergency-overlay').style.display = 'none', 300);
-            db.ref('emergency_alert').remove(); 
+            db.ref('emergency_alert').remove();
         };
 
+        // ─── Navigation ────────────────────────────────────────────────────
         let curFrameIdx = 1;
+
         function changeIframe(idx, btn) {
             if (idx === 2) {
                 showInfoPopup("Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV", true);
@@ -1147,7 +1835,6 @@
             curFrameIdx = idx;
         }
 
-        // Auto trigger every 1 hour
         setInterval(() => {
             showInfoPopup("Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV", true);
         }, 3600000);
@@ -1159,18 +1846,264 @@
             changeIframe(1, btn1);
             ackEmergency();
         }
+
         function refreshCurrentIframe() {
             const fr = document.querySelector(`#frame${curFrameIdx} iframe`);
             if (fr) { const s = fr.src; fr.src = 'about:blank'; setTimeout(() => fr.src = s, 50); }
         }
+
         function openModal() { document.getElementById('rt-modal').style.display = 'block'; }
         function closeModal() { document.getElementById('rt-modal').style.display = 'none'; }
-        setInterval(() => { document.getElementById('digital-clock').textContent = new Date().toLocaleTimeString('en-GB'); }, 1000);
 
-        // Close panels on click outside
+        setInterval(() => {
+            document.getElementById('digital-clock').textContent = new Date().toLocaleTimeString('en-GB');
+        }, 1000);
+
+        // ─── DAILY INFO MODULE ─────────────────────────────────────────────
+        let infoPanelOpen = false;
+        let diEditKey = null;
+        let pinBuffer = '';
+
+        const todayStr = () => new Date().toISOString().slice(0, 10);
+
+        function toggleInfoPanel() {
+            infoPanelOpen = !infoPanelOpen;
+            const panel = document.getElementById('daily-info-panel');
+            const btn = document.getElementById('btn-daily-info');
+            const backdrop = document.getElementById('di-backdrop');
+
+            if (infoPanelOpen) {
+                panel.classList.add('open');
+                btn.classList.add('panel-open');
+                if (backdrop) backdrop.style.display = 'block';
+            } else {
+                panel.classList.remove('open');
+                btn.classList.remove('panel-open');
+                if (backdrop) backdrop.style.display = 'none';
+            }
+        }
+
+        function renderDailyInfoCards(data) {
+            const today = todayStr();
+            const container = document.getElementById('di-cards-container');
+            const badge = document.getElementById('info-badge');
+
+            const items = Object.entries(data || {})
+                .filter(([, v]) => v.date === today)
+                .sort(([, a], [, b]) => (a.ts || 0) - (b.ts || 0));
+
+            if (items.length > 0) {
+                badge.textContent = items.length;
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+
+            if (items.length === 0) {
+                container.innerHTML = '<div class="di-empty">Belum ada info pekerjaan untuk hari ini.<br>Klik <strong>+ Tambah Info</strong> untuk menambahkan.</div>';
+                return;
+            }
+
+            container.innerHTML = items.map(([key, v]) => {
+                return `
+                <div class="di-card">
+                    <div class="di-card-acts">
+                        <button class="di-act-btn" onclick="openEditInfo('${key}')" title="Edit">✏️</button>
+                        <button class="di-act-btn" onclick="deleteInfo('${key}')" title="Hapus">🗑️</button>
+                    </div>
+                    <div class="di-card-label">${esc(v.area) || 'Pekerjaan'}</div>
+                    <div class="di-card-title">${esc(v.title)}</div>
+                    ${v.time ? `<div class="di-card-sub">⏱ ${esc(v.time)}</div>` : ''}
+                    ${v.note ? `<div class="di-card-note">📝 ${esc(v.note)}</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        // Real-time listener
+        db.ref('daily_info').on('value', snap => {
+            renderDailyInfoCards(snap.val());
+        });
+
+        // ── PIN Keypad Logic ──────────────────────────────────────────────
+        function updatePinDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById('pd' + i);
+                dot.classList.remove('filled', 'error');
+                if (i < pinBuffer.length) dot.classList.add('filled');
+            }
+        }
+
+        function pinKey(digit) {
+            if (pinBuffer.length >= 4) return;
+            pinBuffer += digit;
+            updatePinDots();
+            if (pinBuffer.length === 4) {
+                setTimeout(() => checkPin(), 160);
+            }
+        }
+
+        function pinDel() {
+            if (!pinBuffer.length) return;
+            pinBuffer = pinBuffer.slice(0, -1);
+            updatePinDots();
+        }
+
+
+
+        function openAddInfo() {
+            diEditKey = null;
+            pinBuffer = '';
+            updatePinDots();
+            document.getElementById('di-pin-screen').style.display = '';
+            document.getElementById('di-form-screen').classList.remove('show');
+            document.getElementById('di-form-icon').textContent = '➕';
+            document.getElementById('di-form-header-title').textContent = 'Tambah Info Pekerjaan';
+            document.getElementById('di-f-area').value = '';
+            document.getElementById('di-f-title').value = '';
+            document.getElementById('di-modal-bg').classList.add('show');
+        }
+
+        function openEditInfo(key) {
+            db.ref('daily_info/' + key).once('value', snap => {
+                const v = snap.val();
+                if (!v) return;
+                diEditKey = key;
+                pinBuffer = '';
+                updatePinDots();
+                document.getElementById('di-pin-screen').style.display = '';
+                document.getElementById('di-form-screen').classList.remove('show');
+                document.getElementById('di-form-icon').textContent = '✏️';
+                document.getElementById('di-form-header-title').textContent = 'Edit Info Pekerjaan';
+                document.getElementById('di-f-area').value = v.area || '';
+                document.getElementById('di-f-title').value = v.title || '';
+                document.getElementById('di-modal-bg').classList.add('show');
+            });
+        }
+
+        function closeDiModal() {
+            document.getElementById('di-modal-bg').classList.remove('show');
+            pinBuffer = '';
+        }
+
+        function saveDailyInfo() {
+            const title = document.getElementById('di-f-title').value.trim();
+            if (!title) { alert('Nama pekerjaan wajib diisi!'); return; }
+
+            const payload = {
+                title,
+                date: todayStr(),
+                area: document.getElementById('di-f-area').value.trim(),
+                status: 'open',
+                ts: Date.now()
+            };
+
+            const ref = diEditKey
+                ? db.ref('daily_info/' + diEditKey)
+                : db.ref('daily_info').push();
+
+            const action = diEditKey ? ref.update(payload) : ref.set(payload);
+            action
+                .then(() => {
+                    closeDiModal();
+                    diEditKey = null;
+                })
+                .catch(e => showError('Gagal simpan: ' + e.message));
+        }
+
+        function deleteInfo(key) {
+            // Reuse PIN keypad for delete too
+            diEditKey = key;
+            pinBuffer = '';
+            updatePinDots();
+            document.getElementById('di-pin-screen').style.display = '';
+            document.getElementById('di-form-screen').classList.remove('show');
+            document.getElementById('di-form-icon').textContent = '🗑️';
+            document.getElementById('di-form-header-title').textContent = 'Hapus Info';
+            // Override checkPin temporarily for delete action
+            window._diDeleteMode = true;
+            document.getElementById('di-modal-bg').classList.add('show');
+        }
+
+        function checkPin() {
+            if (pinBuffer === ADMIN_PIN) {
+                if (window._diDeleteMode) {
+                    window._diDeleteMode = false;
+                    closeDiModal();
+                    if (diEditKey) {
+                        db.ref('daily_info/' + diEditKey).remove()
+                            .catch(e => alert('Gagal hapus: ' + e.message));
+                        diEditKey = null;
+                    }
+                    return;
+                }
+                document.getElementById('di-pin-screen').style.display = 'none';
+                const fs = document.getElementById('di-form-screen');
+                fs.classList.add('show');
+                const d = new Date();
+                document.getElementById('di-date-label-form').textContent =
+                    d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                setTimeout(() => document.getElementById('di-f-title').focus(), 80);
+            } else {
+                for (let i = 0; i < 4; i++) {
+                    const dot = document.getElementById('pd' + i);
+                    dot.classList.remove('filled');
+                    dot.classList.add('error');
+                }
+                setTimeout(() => {
+                    pinBuffer = '';
+                    updatePinDots();
+                }, 700);
+            }
+        }
+
+
+        // ─── END DAILY INFO MODULE ─────────────────────────────────────────
+
+        // ─── PIN Prompt for Broadcast ───────────────────────────────────────
+        function promptBroadcast() {
+            const text = document.getElementById('bc-input').value.trim();
+            if (!text) { alert('Tulis pesan dulu!'); return; }
+            const pin = prompt('Masukkan PIN Admin untuk konfirmasi:');
+            if (pin === ADMIN_PIN) {
+                db.ref('emergency_alert').set({ text, ts: Date.now(), type: 'normal' });
+                document.getElementById('bc-input').value = '';
+                alert('Broadcast terkirim!');
+            } else if (pin !== null) {
+                alert('PIN Salah!');
+            }
+        }
+
+        // ─── Global Click Handler ──────────────────────────────────────────
         document.addEventListener('click', e => {
-            if (chatOpen && !document.getElementById('chat-panel').contains(e.target) && !document.getElementById('btn-chat').contains(e.target)) toggleChat();
-            document.getElementById('online-panel').classList.remove('show');
+            // Close chat panel on outside click
+            if (chatOpen &&
+                !document.getElementById('chat-panel').contains(e.target) &&
+                !document.getElementById('btn-chat').contains(e.target)) {
+                toggleChat();
+            }
+
+            // Close daily info panel on outside click
+            const diPanel = document.getElementById('daily-info-panel');
+            const diBtn = document.getElementById('btn-daily-info');
+            const diModal = document.getElementById('di-modal-bg');
+            if (infoPanelOpen &&
+                diPanel && !diPanel.contains(e.target) &&
+                diBtn && !diBtn.contains(e.target) &&
+                diModal && !diModal.contains(e.target)) {
+                toggleInfoPanel();
+            }
+
+            // Close settings modal on outside click
+            const rtModal = document.getElementById('rt-modal');
+            const rtBox = document.querySelector('.rt-box');
+            if (rtModal.style.display === 'block' && !rtBox.contains(e.target) && !document.getElementById('btn-manage-rt').contains(e.target)) {
+                closeModal();
+            }
+
+            // Close online panel on outside click
+            if (!document.getElementById('online-count').contains(e.target)) {
+                document.getElementById('online-panel').classList.remove('show');
+            }
         });
     </script>
 </body>
