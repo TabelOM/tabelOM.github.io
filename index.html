@@ -67,7 +67,6 @@
             box-shadow: 0 2px 10px rgba(252, 192, 6, 0.45);
         }
 
-        /* Daily Info Button */
         #btn-daily-info {
             height: 26px;
             padding: 0 12px;
@@ -89,15 +88,8 @@
             position: relative;
         }
 
-        #btn-daily-info:hover {
-            background: rgba(252, 192, 6, 0.28);
-        }
-
-        #btn-daily-info.panel-open {
-            background: var(--gold);
-            color: var(--navy);
-            outline: none;
-        }
+        #btn-daily-info:hover { background: rgba(252, 192, 6, 0.28); }
+        #btn-daily-info.panel-open { background: var(--gold); color: var(--navy); outline: none; }
 
         #info-badge {
             background: #ef4444;
@@ -113,11 +105,8 @@
             flex-shrink: 0;
         }
 
-        #info-badge.show {
-            display: flex;
-        }
+        #info-badge.show { display: flex; }
 
-        /* Daily Info Panel */
         #daily-info-panel {
             display: none;
             position: fixed;
@@ -131,22 +120,12 @@
             animation: slideDownInfo 0.2s ease;
         }
 
-        #daily-info-panel.open {
-            display: block;
-        }
+        #daily-info-panel.open { display: block; }
 
         @keyframes slideDownInfo {
-            from {
-                transform: translateY(-8px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(-8px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-
 
         .di-body {
             padding: 12px 16px 14px;
@@ -154,14 +133,8 @@
             overflow-y: auto;
         }
 
-        .di-body::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .di-body::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
+        .di-body::-webkit-scrollbar { width: 4px; }
+        .di-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
         .di-grid {
             display: grid;
@@ -173,7 +146,7 @@
         .di-card {
             background: white;
             border-radius: 12px;
-            padding: 18px;
+            padding: 18px 18px 42px 18px;
             border: 1px solid rgba(0, 0, 0, 0.05);
             position: relative;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
@@ -200,7 +173,7 @@
             font-weight: 500;
             color: #333;
             line-height: 1.6;
-            margin-bottom: 12px;
+            margin-bottom: 4px;
             padding-right: 45px;
         }
 
@@ -224,29 +197,6 @@
             border-left: 3px solid #e2e8f0;
         }
 
-        .di-pill {
-            display: inline-block;
-            padding: 2px 9px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-weight: 700;
-        }
-
-        .di-pill-open {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .di-pill-done {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .di-pill-hold {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
         .di-card-acts {
             position: absolute;
             top: 8px;
@@ -257,9 +207,7 @@
             transition: opacity 0.15s;
         }
 
-        .di-card:hover .di-card-acts {
-            opacity: 1;
-        }
+        .di-card:hover .di-card-acts { opacity: 1; }
 
         .di-act-btn {
             background: white;
@@ -273,16 +221,31 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .di-act-btn:hover {
-            transform: scale(1.1);
-            background: #f8fafc;
+        .di-act-btn:hover { transform: scale(1.1); background: #f8fafc; }
+        .di-act-btn[title="Hapus"]:hover { color: #ef4444; border-color: #fee2e2; background: #fff5f5; }
+
+        /* Copy button - always visible at bottom right of card */
+        .di-copy-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #f0f4f8;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 4px 9px;
+            border-radius: 7px;
+            color: #555;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: 600;
+            font-family: inherit;
         }
 
-        .di-act-btn[title="Hapus"]:hover {
-            color: #ef4444;
-            border-color: #fee2e2;
-            background: #fff5f5;
-        }
+        .di-copy-btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
+        .di-copy-btn.copied { background: #22c55e; color: white; border-color: #22c55e; }
 
         .di-empty {
             color: #aaa;
@@ -298,6 +261,7 @@
             border-top: 1px solid #f0f0f0;
             padding-top: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn-di-add {
@@ -313,14 +277,24 @@
             transition: opacity 0.15s;
         }
 
-        .btn-di-add:hover {
-            opacity: 0.88;
+        .btn-di-add:hover { opacity: 0.88; }
+
+        .btn-di-import {
+            height: 30px;
+            padding: 0 16px;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 0.76rem;
+            font-weight: 700;
+            transition: all 0.15s;
         }
 
-        .di-footer-hint {
-            font-size: 0.7rem;
-            color: #bbb;
-        }
+        .btn-di-import:hover { background: #d97706; }
+
+        .di-footer-hint { font-size: 0.7rem; color: #bbb; }
 
         .btn-di-close-footer {
             height: 30px;
@@ -334,7 +308,7 @@
             margin-left: auto;
         }
 
-        /* Add/Edit Modal */
+        /* Modal */
         .di-modal-bg {
             display: none;
             position: fixed;
@@ -346,9 +320,7 @@
             justify-content: center;
         }
 
-        .di-modal-bg.show {
-            display: flex;
-        }
+        .di-modal-bg.show { display: flex; }
 
         .di-modal {
             background: white;
@@ -358,24 +330,17 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.32);
             animation: popIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
+            transition: max-width 0.2s ease;
         }
+
+        .di-modal.wide { max-width: 540px; }
 
         @keyframes popIn {
-            from {
-                transform: scale(0.88);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0.88); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        /* PIN Screen */
-        .di-pin-screen {
-            padding: 28px 24px 24px;
-        }
+        .di-pin-screen { padding: 28px 24px 24px; }
 
         .di-pin-icon {
             width: 56px;
@@ -389,27 +354,10 @@
             margin: 0 auto 14px;
         }
 
-        .di-pin-title {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 4px;
-        }
+        .di-pin-title { text-align: center; font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+        .di-pin-sub { text-align: center; font-size: 0.75rem; color: #aaa; margin-bottom: 20px; }
 
-        .di-pin-sub {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #aaa;
-            margin-bottom: 20px;
-        }
-
-        .di-pin-dots {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 22px;
-        }
+        .di-pin-dots { display: flex; justify-content: center; gap: 12px; margin-bottom: 22px; }
 
         .di-pin-dot {
             width: 14px;
@@ -420,47 +368,18 @@
             transition: all 0.18s;
         }
 
-        .di-pin-dot.filled {
-            background: var(--navy);
-            border-color: var(--navy);
-            transform: scale(1.15);
-        }
-
-        .di-pin-dot.error {
-            background: #ef4444;
-            border-color: #ef4444;
-            animation: shake 0.4s ease;
-        }
+        .di-pin-dot.filled { background: var(--navy); border-color: var(--navy); transform: scale(1.15); }
+        .di-pin-dot.error { background: #ef4444; border-color: #ef4444; animation: shake 0.4s ease; }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            20% {
-                transform: translateX(-5px);
-            }
-
-            40% {
-                transform: translateX(5px);
-            }
-
-            60% {
-                transform: translateX(-4px);
-            }
-
-            80% {
-                transform: translateX(4px);
-            }
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
         }
 
-        .di-keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
+        .di-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
         .di-key {
             height: 52px;
@@ -477,34 +396,12 @@
             justify-content: center;
         }
 
-        .di-key:hover {
-            background: #e8ecf2;
-            transform: scale(1.04);
-        }
-
-        .di-key:active {
-            transform: scale(0.95);
-            background: #dde3ec;
-        }
-
-        .di-key.key-del {
-            background: #fff0f0;
-            color: #e53e3e;
-            font-size: 1rem;
-        }
-
-        .di-key.key-del:hover {
-            background: #fde0e0;
-        }
-
-        .di-key.key-empty {
-            background: transparent;
-            cursor: default;
-        }
-
-        .di-key.key-empty:hover {
-            transform: none;
-        }
+        .di-key:hover { background: #e8ecf2; transform: scale(1.04); }
+        .di-key:active { transform: scale(0.95); background: #dde3ec; }
+        .di-key.key-del { background: #fff0f0; color: #e53e3e; font-size: 1rem; }
+        .di-key.key-del:hover { background: #fde0e0; }
+        .di-key.key-empty { background: transparent; cursor: default; }
+        .di-key.key-empty:hover { transform: none; }
 
         .di-pin-cancel {
             width: 100%;
@@ -520,19 +417,10 @@
             transition: all 0.15s;
         }
 
-        .di-pin-cancel:hover {
-            border-color: #ccc;
-            color: #666;
-        }
+        .di-pin-cancel:hover { border-color: #ccc; color: #666; }
 
-        /* Form Screen */
-        .di-form-screen {
-            display: none;
-        }
-
-        .di-form-screen.show {
-            display: block;
-        }
+        .di-form-screen { display: none; }
+        .di-form-screen.show { display: block; }
 
         .di-form-header {
             background: var(--navy);
@@ -554,30 +442,12 @@
             flex-shrink: 0;
         }
 
-        .di-form-header-title {
-            color: white;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
+        .di-form-header-title { color: white; font-weight: 700; font-size: 0.9rem; }
+        .di-form-header-sub { color: rgba(255, 255, 255, 0.5); font-size: 0.7rem; margin-top: 1px; }
 
-        .di-form-header-sub {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.7rem;
-            margin-top: 1px;
-        }
+        .di-form-body { padding: 20px; }
 
-        .di-form-body {
-            padding: 20px;
-        }
-
-        .di-form-row {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .di-field {}
+        .di-form-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 14px; }
 
         .di-field label {
             display: block;
@@ -589,7 +459,7 @@
             margin-bottom: 5px;
         }
 
-        .di-field input {
+        .di-field input, .di-field textarea {
             width: 100%;
             padding: 10px 12px;
             border: 1.5px solid #e8edf3;
@@ -602,17 +472,13 @@
             transition: all 0.15s;
         }
 
-        .di-field input:focus {
+        .di-field input:focus, .di-field textarea:focus {
             border-color: var(--navy);
             background: white;
             box-shadow: 0 0 0 3px rgba(18, 52, 88, 0.08);
         }
 
-        .di-form-actions {
-            display: flex;
-            gap: 8px;
-            padding: 0 20px 20px;
-        }
+        .di-form-actions { display: flex; gap: 8px; padding: 0 20px 20px; }
 
         .btn-di-save {
             flex: 1;
@@ -627,9 +493,8 @@
             transition: opacity 0.15s;
         }
 
-        .btn-di-save:hover {
-            opacity: 0.88;
-        }
+        .btn-di-save:hover { opacity: 0.88; }
+        .btn-di-save:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .btn-di-cancel {
             flex: 1;
@@ -643,17 +508,88 @@
             font-size: 0.84rem;
         }
 
-        .btn-di-cancel:hover {
-            background: #e5e5e5;
+        .btn-di-cancel:hover { background: #e5e5e5; }
+
+        /* Import Screen */
+        .di-import-screen { display: none; }
+        .di-import-screen.show { display: block; }
+
+        .di-import-body { padding: 16px 20px 4px; }
+
+        .di-import-body label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
         }
 
-        /* ===== existing styles below ===== */
+        #di-import-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px 12px;
+            border: 1.5px solid #e8edf3;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            outline: none;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #333;
+            background: #f8fafc;
+            resize: vertical;
+            line-height: 1.5;
+            transition: border-color 0.15s;
+        }
 
-        #conn-status {
+        #di-import-textarea:focus {
+            border-color: var(--navy);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(18, 52, 88, 0.08);
+        }
+
+        .di-import-hint {
+            font-size: 0.69rem;
+            color: #aaa;
+            margin-top: 6px;
+            line-height: 1.55;
+        }
+
+        #di-import-preview {
+            margin-top: 10px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        #di-import-preview::-webkit-scrollbar { width: 3px; }
+        #di-import-preview::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+        .di-preview-item {
             display: flex;
-            align-items: center;
-            margin-left: 4px;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.76rem;
+            border-left: 3px solid var(--navy);
         }
+
+        .di-preview-item-area {
+            font-weight: 800;
+            color: var(--navy);
+            white-space: nowrap;
+            min-width: 55px;
+        }
+
+        .di-preview-item-tasks { color: #555; line-height: 1.4; }
+
+        .di-preview-empty { text-align: center; color: #bbb; font-size: 0.78rem; padding: 8px 0; }
+
+        /* ─── existing styles ─── */
+
+        #conn-status { display: flex; align-items: center; margin-left: 4px; }
 
         #conn-dot {
             width: 8px;
@@ -664,18 +600,9 @@
             flex-shrink: 0;
         }
 
-        #conn-dot.on {
-            background: #22c55e;
-            box-shadow: 0 0 5px #22c55e;
-        }
-
-        #conn-label {
-            display: none;
-        }
-
-        #running-text-wrapper {
-            display: none;
-        }
+        #conn-dot.on { background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+        #conn-label { display: none; }
+        #running-text-wrapper { display: none; }
 
         .clock-container {
             margin-left: auto;
@@ -690,162 +617,157 @@
             letter-spacing: 1px;
         }
 
-        #btn-manage-rt {
-            background: none;
-            border: none;
+        #btn-manage-rt { background: none; border: none; color: white; font-size: 1.1rem; cursor: pointer; padding: 0 12px; }
+        #btn-refresh { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; padding: 0 8px; }
+
+        .content-area { height: calc(100vh - 41px); position: relative; }
+        .iframe-layer { position: absolute; inset: 0; display: none; }
+        .iframe-layer.active { display: block; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        #btn-chat {
+            position: fixed;
+            bottom: 35px;
+            right: 35px;
+            width: 60px;
+            height: 60px;
+            background: var(--navy);
+            border: 3px solid var(--gold);
+            border-radius: 50%;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1.8rem;
             cursor: pointer;
-            padding: 0 12px;
+            z-index: 2500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #btn-refresh {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 0 8px;
+        #btn-chat:hover { transform: scale(1.1) rotate(5deg); background: #0d2540; }
+        #btn-chat.pulse { animation: cpulse 2s infinite; }
+
+        @keyframes cpulse {
+            0% { box-shadow: 0 0 0 0 rgba(252, 192, 6, .7); }
+            70% { box-shadow: 0 0 0 15px rgba(252, 192, 6, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(252, 192, 6, 0); }
         }
 
-        .content-area {
-            height: calc(100vh - 41px);
-            position: relative;
-        }
-
-        .iframe-layer {
+        #chat-badge {
             position: absolute;
-            inset: 0;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
             display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
         }
 
-        .iframe-layer.active {
-            display: block;
-        }
+        #chat-badge.show { display: flex; }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-
-
-        .rt-modal {
+        #chat-panel {
             display: none;
             position: fixed;
-            z-index: 4000;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(2px);
-        }
-
-        .rt-box {
+            bottom: 110px;
+            right: 35px;
+            width: 420px;
+            height: 600px;
             background: white;
-            width: 90%;
-            max-width: 420px;
-            margin: 40px auto;
-            border-radius: 15px;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .rt-header {
-            background: var(--navy);
-            color: white;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        #chat-panel.open { display: flex; animation: popIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .rt-body {
-            padding: 20px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+        .chat-head { background: var(--navy); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .chat-head-left { display: flex; align-items: center; gap: 10px; }
+        .ch-online-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+        .chat-title { color: white; font-weight: 700; font-size: 0.88rem; }
+        .chat-sub { color: rgba(255, 255, 255, 0.55); font-size: 0.72rem; margin-top: 1px; }
+        #typing-status { color: #86efac; font-size: 0.67rem; min-height: 11px; }
 
-        #rt-input {
-            width: 100%;
-            height: 70px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            resize: none;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-        }
+        #btn-close-chat { background: rgba(255, 255, 255, 0.1); border: none; color: white; width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        #btn-close-chat:hover { background: rgba(255, 255, 255, 0.25); }
 
-        .btn-save {
-            background: var(--navy);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-bottom: 15px;
-        }
+        #name-bar { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: #f5f7fa; border-bottom: 1px solid #eee; flex-shrink: 0; font-size: 0.75rem; color: #666; }
+        #name-bar strong { color: var(--navy); }
+        #btn-chname { font-size: 0.68rem; background: none; border: 1px solid #ccc; border-radius: 5px; padding: 2px 7px; cursor: pointer; color: #555; }
 
-        .speed-control {
-            margin-bottom: 18px;
-            border-top: 1px solid #eee;
-            padding-top: 14px;
-        }
+        #chat-messages { flex-grow: 1; overflow-y: auto; padding: 10px 8px; display: flex; flex-direction: column; gap: 5px; background: #f0f2f5; }
+        #chat-messages::-webkit-scrollbar { width: 4px; }
+        #chat-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
-        .speed-label {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: var(--navy);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 8px;
-        }
+        .msg-row { display: flex; flex-direction: column; max-width: 82%; }
+        .msg-row.me { align-self: flex-end; align-items: flex-end; }
+        .msg-row.them { align-self: flex-start; align-items: flex-start; }
+        .msg-sender { font-size: 0.67rem; font-weight: 700; margin-bottom: 2px; padding: 0 4px; }
 
-        #speed-slider {
-            width: 100%;
-            cursor: pointer;
-            accent-color: var(--navy);
-        }
+        .msg-bubble { padding: 9px 13px; border-radius: 16px; font-size: 0.85rem; line-height: 1.4; word-break: break-word; }
+        .msg-row.me .msg-bubble { background: var(--navy); color: white; border-radius: 16px 16px 3px 16px; }
+        .msg-row.them .msg-bubble { background: white; color: #111; border-radius: 16px 16px 16px 3px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
 
-        .list-container {
-            max-height: 180px;
-            overflow-y: auto;
-            margin-top: 8px;
-        }
+        .msg-footer { display: flex; align-items: center; gap: 6px; margin-top: 2px; padding: 0 4px; }
+        .msg-row.me .msg-footer { justify-content: flex-end; }
+        .msg-time { font-size: 0.62rem; color: #aaa; }
 
-        #rt-list {
-            list-style: none;
-        }
+        .btn-act { background: none; border: none; cursor: pointer; font-size: 0.78rem; opacity: 0; transition: opacity 0.15s; padding: 1px 3px; }
+        .msg-row:hover .btn-act { opacity: 0.6; }
+        .btn-act:hover { opacity: 1 !important; }
 
-        #rt-list li {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 0;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 0.82rem;
-        }
+        .reply-quote { background: rgba(0,0,0,0.05); border-left: 3px solid var(--navy); padding: 5px 9px; margin-bottom: 5px; border-radius: 5px; font-size: 0.76rem; color: #555; overflow: hidden; max-height: 52px; }
+        .msg-row.me .reply-quote { background: rgba(255,255,255,0.14); border-left-color: var(--gold); color: rgba(255,255,255,0.85); }
+        .reply-qname { font-weight: 800; font-size: 0.67rem; display: block; margin-bottom: 1px; }
 
-        .item-text {
-            flex-grow: 1;
-            color: #333;
-        }
+        #reply-preview { display: none; padding: 8px 36px 8px 14px; background: #fdfdfd; border-top: 1px solid #eee; border-left: 4px solid var(--navy); font-size: 0.8rem; position: relative; flex-shrink: 0; }
+        #reply-preview.show { display: block; }
+        #btn-cancel-reply { position: absolute; right: 10px; top: 8px; background: none; border: none; cursor: pointer; color: #bbb; font-size: 1rem; }
 
-        .muted {
-            opacity: 0.3;
-            text-decoration: line-through;
-        }
+        .chat-divider { text-align: center; font-size: 0.66rem; color: #bbb; margin: 3px 0; }
 
-        /* Important Info Pop-up */
+        .chat-input-area { display: flex; gap: 8px; padding: 9px; background: white; border-top: 1px solid #eee; flex-shrink: 0; }
+
+        #chat-input { flex-grow: 1; padding: 8px 13px; border: 1.5px solid #ddd; border-radius: 20px; font-size: 0.84rem; outline: none; resize: none; line-height: 1.3; max-height: 80px; overflow-y: auto; }
+        #chat-input:focus { border-color: var(--navy); }
+
+        #btn-send { width: 36px; height: 36px; border-radius: 50%; background: var(--navy); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1rem; flex-shrink: 0; transition: transform 0.15s; }
+        #btn-send:hover { transform: scale(1.08); }
+
+        .rt-modal { display: none; position: fixed; z-index: 4000; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+
+        .rt-box { background: white; width: 90%; max-width: 420px; margin: 40px auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .rt-header { background: var(--navy); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .rt-body { padding: 20px; max-height: 80vh; overflow-y: auto; }
+
+        #rt-input { width: 100%; height: 70px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; resize: none; margin-bottom: 10px; font-size: 0.85rem; }
+
+        .btn-save { background: var(--navy); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 15px; }
+        .speed-control { margin-bottom: 18px; border-top: 1px solid #eee; padding-top: 14px; }
+        .speed-label { font-size: 0.85rem; font-weight: bold; color: var(--navy); display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+        #speed-slider { width: 100%; cursor: pointer; accent-color: var(--navy); }
+        .list-container { max-height: 180px; overflow-y: auto; margin-top: 8px; }
+        #rt-list { list-style: none; }
+        #rt-list li { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.82rem; }
+        .item-text { flex-grow: 1; color: #333; }
+        .muted { opacity: 0.3; text-decoration: line-through; }
+
         #emergency-overlay {
             display: none;
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             backdrop-filter: blur(4px);
             align-items: center;
             justify-content: center;
@@ -856,9 +778,7 @@
             opacity: 0;
         }
 
-        #emergency-overlay.show {
-            opacity: 1;
-        }
+        #emergency-overlay.show { opacity: 1; }
 
         .emergency-box {
             max-width: 420px;
@@ -866,129 +786,51 @@
             background: white;
             border-radius: 24px;
             padding: 35px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             transform: scale(0.9);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        #emergency-overlay.show .emergency-box {
-            transform: scale(1);
-        }
+        #emergency-overlay.show .emergency-box { transform: scale(1); }
 
-        .emergency-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--navy);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .emergency-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; color: var(--navy); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .emergency-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 28px; color: #555; }
 
-        .emergency-text {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin-bottom: 28px;
-            color: #555;
-        }
+        .btn-ack { background: var(--navy); color: var(--gold); border: none; padding: 12px 45px; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1rem; transition: all 0.2s; box-shadow: 0 4px 12px rgba(18,52,88,0.2); }
+        .btn-ack:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(18,52,88,0.3); }
 
-        .btn-ack {
-            background: var(--navy);
-            color: var(--gold);
-            border: none;
-            padding: 12px 45px;
-            border-radius: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(18, 52, 88, 0.2);
-        }
+        #err-banner { display: none; position: fixed; top: 46px; left: 0; right: 0; background: #b91c1c; color: white; padding: 8px 16px; font-size: 0.82rem; font-weight: 600; z-index: 5000; text-align: center; }
+        #err-banner.show { display: block; }
+        #err-banner a { color: #fca5a5; text-decoration: underline; cursor: pointer; margin-left: 8px; }
 
-        .btn-ack:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(18, 52, 88, 0.3);
-        }
-
-        #err-banner {
+        #online-panel {
             display: none;
-            position: fixed;
-            top: 46px;
+            position: absolute;
+            top: 100%;
             left: 0;
-            right: 0;
-            background: #b91c1c;
-            color: white;
-            padding: 8px 16px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            z-index: 5000;
-            text-align: center;
-        }
-
-        #err-banner.show {
-            display: block;
-        }
-
-        #err-banner a {
-            color: #fca5a5;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-left: 8px;
-        }
-
-
-        /* Maintenance View Style */
-        .maintenance-view {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f1f5f9;
-        }
-
-        .maintenance-content {
-            text-align: center;
-            padding: 45px 30px;
-            max-width: 420px;
+            margin-top: 4px;
             background: white;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e2e8f0;
-            margin: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            z-index: 4000;
+            padding: 10px 0;
+            min-width: 200px;
+            border: 0.5px solid #eee;
+            animation: slideDown 0.15s ease;
         }
 
-        .maintenance-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: pulse-icon 2s infinite;
-            display: inline-block;
+        #online-panel.show { display: block; }
+
+        @keyframes slideDown {
+            from { transform: translateY(-6px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        @keyframes pulse-icon {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .maintenance-content h1 {
-            color: var(--navy);
-            margin-bottom: 15px;
-            font-size: 1.25rem;
-            font-weight: 800;
-            line-height: 1.4;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .maintenance-content p {
-            color: #64748b;
-            font-size: 0.88rem;
-            margin-bottom: 28px;
-            line-height: 1.6;
-        }
+        .online-item { display: flex; align-items: center; gap: 8px; padding: 7px 14px; font-size: 0.82rem; color: #333; }
+        .online-item .odot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+        .online-item.me { color: #888; font-style: italic; }
+        #online-panel-title { font-size: 0.72rem; font-weight: 700; color: #aaa; letter-spacing: 1px; text-transform: uppercase; padding: 4px 14px 8px; border-bottom: 1px solid #f0f0f0; margin-bottom: 4px; }
     </style>
 </head>
 
@@ -998,7 +840,6 @@
         <button class="nav-btn active" onclick="changeIframe(1, this)">60NBM.DEV</button>
         <button class="nav-btn" onclick="changeIframe(2, this)">Tabel Kalkulasi</button>
 
-        <!-- DAILY INFO BUTTON -->
         <button id="btn-daily-info" onclick="toggleInfoPanel()">
             📋 Info Hari Ini
             <span id="info-badge"></span>
@@ -1022,9 +863,7 @@
         <a onclick="document.getElementById('err-banner').classList.remove('show')">✕ tutup</a>
     </div>
 
-    <!-- DAILY INFO BACKDROP (for click-outside) -->
-    <div id="di-backdrop" style="display:none; position:fixed; inset:41px 0 0 0; z-index:1900; background:transparent;"
-        onclick="toggleInfoPanel()"></div>
+    <div id="di-backdrop" style="display:none; position:fixed; inset:41px 0 0 0; z-index:1900; background:transparent;" onclick="toggleInfoPanel()"></div>
 
     <!-- DAILY INFO PANEL -->
     <div id="daily-info-panel">
@@ -1033,16 +872,17 @@
                 <div class="di-empty">Memuat data...</div>
             </div>
             <div class="di-footer">
-                <button class="btn-di-add" onclick="openAddInfo()">+ Tambah Info</button>
+                <button class="btn-di-add" onclick="openAddInfo()">✏️ Tambah Manual</button>
+                <button class="btn-di-import" onclick="openImportInfo()">📥 Import Rangkuman</button>
                 <span class="di-footer-hint">PIN diperlukan untuk tambah / edit / hapus</span>
                 <button class="btn-di-close-footer" onclick="toggleInfoPanel()">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- ADD / EDIT INFO MODAL -->
+    <!-- ADD / EDIT / IMPORT INFO MODAL -->
     <div class="di-modal-bg" id="di-modal-bg" onclick="if(event.target===this)closeDiModal()">
-        <div class="di-modal">
+        <div class="di-modal" id="di-modal-inner">
 
             <!-- PIN Screen -->
             <div class="di-pin-screen" id="di-pin-screen">
@@ -1072,7 +912,7 @@
                 <button class="di-pin-cancel" onclick="closeDiModal()">Batal</button>
             </div>
 
-            <!-- Form Screen -->
+            <!-- Manual Form Screen -->
             <div class="di-form-screen" id="di-form-screen">
                 <div class="di-form-header">
                     <div class="di-form-header-icon" id="di-form-icon">➕</div>
@@ -1085,14 +925,14 @@
                     <div class="di-form-row" style="grid-template-columns: 1fr;">
                         <div class="di-field">
                             <label>Area</label>
-                            <input type="text" id="di-f-area" placeholder="cth: Area 40" maxlength="15">
+                            <input type="text" id="di-f-area" placeholder="cth: 37T102" maxlength="20">
                         </div>
                     </div>
                     <div class="di-form-row" style="grid-template-columns: 1fr;">
                         <div class="di-field">
-                            <label>Nama Pekerjaan *</label>
-                            <textarea id="di-f-title" placeholder="cth: Inspeksi Pompa 40P2" maxlength="200"
-                                style="width: 100%; height: 80px; padding: 10px 12px; border: 1.5px solid #e8edf3; border-radius: 10px; font-size: 0.86rem; outline: none; font-family: inherit; color: var(--navy); background: #f8fafc; transition: all 0.15s; resize: none;"></textarea>
+                            <label>Rincian Pekerjaan *</label>
+                            <textarea id="di-f-title" placeholder="cth: Lanjut pengecatan logo tangki" maxlength="1000"
+                                style="width:100%;height:90px;padding:10px 12px;border:1.5px solid #e8edf3;border-radius:10px;font-size:0.86rem;outline:none;font-family:inherit;color:var(--navy);background:#f8fafc;transition:all 0.15s;resize:none;"></textarea>
                         </div>
                     </div>
                 </div>
@@ -1102,35 +942,97 @@
                 </div>
             </div>
 
+            <!-- Import Rangkuman Screen -->
+            <div class="di-import-screen" id="di-import-screen">
+                <div class="di-form-header">
+                    <div class="di-form-header-icon">📥</div>
+                    <div>
+                        <div class="di-form-header-title">Import Rangkuman</div>
+                        <div class="di-form-header-sub">Paste teks rencana kerja, sistem akan parsing otomatis</div>
+                    </div>
+                </div>
+                <div class="di-import-body">
+                    <label>Teks Rangkuman Rencana Kerja</label>
+                    <textarea id="di-import-textarea"
+                        placeholder="Paste teks rangkuman di sini...&#10;&#10;Contoh:&#10;1.	37T102&#10;* Lanjut pengecatan logo tangki&#10;2.	38T106&#10;* Pembongkaran roof, pondasi & bottom plate&#10;* Fabrikasi bottom plate"
+                        oninput="previewImport()"></textarea>
+                    <div class="di-import-hint">
+                        💡 Format yang didukung: nomor item diikuti nama tangki/area, lalu sub-pekerjaan dengan tanda <strong>*</strong> atau <strong>-</strong><br>
+                        Setiap tangki akan menjadi satu card terpisah.
+                    </div>
+                    <div id="di-import-preview"></div>
+                </div>
+                <div class="di-form-actions" style="margin-top: 10px;">
+                    <button class="btn-di-cancel" onclick="closeDiModal()">Batal</button>
+                    <button class="btn-di-save" id="btn-do-import" onclick="executeImport()" disabled
+                        style="background:#f59e0b;">📥 Import Semua</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-
+    <button id="btn-chat" onclick="toggleChat()" title="Grup Chat">
+        💬
+        <span id="chat-badge"></span>
+    </button>
 
     <main class="content-area">
         <div id="frame1" class="iframe-layer active">
             <iframe src="https://60-nbm.vercel.app/"></iframe>
         </div>
         <div id="frame2" class="iframe-layer">
-            <div class="maintenance-view">
-                <div class="maintenance-content">
-                    <div class="maintenance-icon">🛠️</div>
-                    <h1>LAYANAN SEDANG<br>DALAM PEMELIHARAAN</h1>
-                    <p>Mohon maaf atas ketidaknyamanannya. Untuk saat ini, silahkan gunakan layanan melalui <strong>60NBM.DEV</strong></p>
-
-                </div>
-            </div>
+            <iframe src="https://www.appsheet.com/start/1474754a-c8a9-4660-aeef-d197abcbdf76?platform=mobile#appName=TabelKalkulasiV1-761441667&vss=H4sIAAAAAAAAA6WOvRLCIBCE32VrnoBWLRxHGx0bsSDhMjIScAJRMwzvLiT-1Gq5e_vtbcRV020bZH0GP8SPWtEAjiiwGy4kwAVmzobOGQEmsJHtZM6lP1VOdkogIR3ZqyCQB49f8vzP_wxakQ260dSVsoLmkieYzwXLxhtCYmj7ICtD4-YRKmoK2t6YlHKmcXXvSe3zuF9G-aVd3C_SqrVTubaRxlN6AFxxLcV6AQAA&view=Dashboard"></iframe>
         </div>
     </main>
 
+    <div id="chat-panel">
+        <div class="chat-head">
+            <div class="chat-head-left">
+                <div class="ch-online-dot"></div>
+                <div>
+                    <div class="chat-title">💬 <span id="my-display-name">...</span></div>
+                    <div style="position:relative;">
+                        <div class="chat-sub" id="online-count" onclick="toggleOnlinePanel(event)"
+                            style="cursor:pointer;user-select:none;">...</div>
+                        <div id="online-panel">
+                            <div id="online-panel-title">Sedang Online</div>
+                            <div id="online-panel-list"></div>
+                        </div>
+                    </div>
+                    <div id="typing-status"></div>
+                </div>
+            </div>
+            <button id="btn-close-chat" onclick="toggleChat()">✕</button>
+        </div>
 
+        <div id="name-bar">
+            <span>Nama: <strong id="name-bar-label">-</strong></span>
+            <button id="btn-chname" onclick="changeName()">✏️ Ganti</button>
+        </div>
+
+        <div id="chat-messages">
+            <div class="chat-divider">Memuat pesan...</div>
+        </div>
+
+        <div id="reply-preview">
+            <div id="reply-to-info" style="font-weight:800;font-size:0.73rem;color:var(--navy)"></div>
+            <div id="reply-to-text" style="color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+            <button id="btn-cancel-reply" onclick="cancelReply()">✕</button>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea id="chat-input" placeholder="Tulis pesan..." rows="1" onkeydown="handleKey(event)"
+                oninput="autoResize(this)"></textarea>
+            <button id="btn-send" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
 
     <div id="rt-modal" class="rt-modal" onclick="if(event.target===this)closeModal()">
         <div class="rt-box">
             <div class="rt-header">
                 <h3>⚙️ Pengaturan</h3>
-                <button onclick="closeModal()"
-                    style="background:none;border:none;color:white;font-size:1.4rem;cursor:pointer;">×</button>
+                <button onclick="closeModal()" style="background:none;border:none;color:white;font-size:1.4rem;cursor:pointer;">×</button>
             </div>
             <div class="rt-body">
                 <label style="font-weight:bold;color:var(--navy);font-size:0.83rem;">Pesan Running Text:</label>
@@ -1151,8 +1053,7 @@
                     <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
                         <div style="display:flex; gap:6px; align-items: stretch;">
                             <button onclick="promptBroadcast()"
-                                style="flex:1; background:var(--navy); color:var(--gold); border:none; padding:10px; border-radius:10px; cursor:pointer; font-weight:700; font-size:0.85rem;">📢
-                                KIRIM PENGUMUMAN PENTING</button>
+                                style="flex:1; background:var(--navy); color:var(--gold); border:none; padding:10px; border-radius:10px; cursor:pointer; font-weight:700; font-size:0.85rem;">📢 KIRIM PENGUMUMAN PENTING</button>
                         </div>
                     </div>
                 </div>
@@ -1169,8 +1070,6 @@
             </div>
         </div>
     </div>
-
-
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -1190,16 +1089,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ─── State & Helpers ───────────────────────────────────────────────
         let isConnected = false;
 
         function showError(msg) {
             document.getElementById('err-msg').textContent = msg;
             document.getElementById('err-banner').classList.add('show');
         }
-        function hideError() {
-            document.getElementById('err-banner').classList.remove('show');
-        }
+        function hideError() { document.getElementById('err-banner').classList.remove('show'); }
         function esc(t) {
             return (t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
         }
@@ -1207,7 +1103,6 @@
             return str.replace(/[.#$\[\]\/]/g, '_').replace(/\s+/g, '_').substring(0, 60);
         }
 
-        // ─── Connection Status ─────────────────────────────────────────────
         db.ref('.info/connected').on('value', snap => {
             isConnected = snap.val() === true;
             const dot = document.getElementById('conn-dot');
@@ -1215,7 +1110,6 @@
             else { dot.classList.remove('on'); }
         });
 
-        // ─── Running Text ──────────────────────────────────────────────────
         let rtMsgs = [];
         const rtSpan = document.getElementById('running-content');
 
@@ -1255,35 +1149,116 @@
         function toggleRT(id, cur) { db.ref('messages/' + id).update({ Status: cur === 'active' ? 'hidden' : 'active' }); }
         function delRT(id) { if (confirm('Hapus?')) db.ref('messages/' + id).remove(); }
 
+        const NA = ["Tangki", "Pipa", "Kilang", "Pompa", "Solar", "Pertalite", "Oli", "LPG", "Aspal", "Bensin", "Kran", "Filter"];
+        const NB = ["Terbang", "Goyang", "Balap", "Sakti", "Racing", "Muter", "Nari", "Loncat", "Kaget", "Nyanyi", "Miring", "Ngantuk"];
+        let myName = localStorage.getItem('chatName') || (NA[Math.random() * NA.length | 0] + ' ' + NB[Math.random() * NB.length | 0] + ' ' + (100 + Math.random() * 900 | 0));
+        localStorage.setItem('chatName', myName);
 
+        function refreshNameUI() {
+            document.getElementById('my-display-name').textContent = myName;
+            document.getElementById('name-bar-label').textContent = myName;
+        }
+        refreshNameUI();
 
+        function changeName() {
+            const n = prompt('Nama baru:', myName);
+            if (!n || !n.trim()) return;
+            myName = n.trim().substring(0, 25);
+            localStorage.setItem('chatName', myName);
+            refreshNameUI();
+            registerPresence();
+        }
 
+        let presRef = null;
+        function registerPresence() {
+            if (!isConnected) return;
+            if (presRef) presRef.remove();
+            presRef = db.ref('chat_online/' + safeKey(myName) + '_' + Date.now());
+            presRef.set({ name: myName, ts: Date.now() });
+            presRef.onDisconnect().remove();
+        }
 
+        db.ref('chat_online').on('value', snap => {
+            const users = Object.values(snap.val() || {});
+            document.getElementById('online-count').textContent = users.length + ' orang online ▾';
+            document.getElementById('online-panel-list').innerHTML = users.map(u =>
+                `<div class="online-item${u.name === myName ? ' me' : ''}"><span class="odot"></span>${u.name}</div>`
+            ).join('');
+        });
 
+        let chatOpen = false, replyData = null;
 
-        // ─── Broadcast ─────────────────────────────────────────────────────
-        const ADMIN_PIN = (6 * 1010).toString(); // "6060"
-
-        function sendBroadcast(type) {
-            const text = document.getElementById('bc-input').value.trim();
-            const pin = document.getElementById('bc-pin').value;
-            if (!text) return;
-            if (pin === ADMIN_PIN) {
-                db.ref('emergency_alert').set({ text, ts: Date.now(), type });
-                document.getElementById('bc-input').value = '';
-                document.getElementById('bc-pin').value = '';
-                alert('Broadcast terkirim!');
-            } else {
-                alert('Otoritas ditolak!');
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            document.getElementById('chat-panel').classList.toggle('open', chatOpen);
+            if (chatOpen) {
+                document.getElementById('chat-badge').classList.remove('show');
+                document.getElementById('btn-chat').classList.remove('pulse');
+                scrollToBottom();
             }
         }
+
+        function handleKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        }
+        function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 110) + 'px'; }
+        function scrollToBottom() { const el = document.getElementById('chat-messages'); el.scrollTop = el.scrollHeight; }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || !isConnected) return;
+            const msg = { name: myName, text, ts: Date.now() };
+            if (replyData) { msg.replyTo = replyData; cancelReply(); }
+            db.ref('chat_messages').push(msg).then(() => { input.value = ''; input.style.height = 'auto'; });
+        }
+
+        function replyToMessage(name, text) {
+            replyData = { name, text };
+            document.getElementById('reply-to-info').textContent = 'Membalas ' + name;
+            document.getElementById('reply-to-text').textContent = text;
+            document.getElementById('reply-preview').classList.add('show');
+        }
+        function cancelReply() { replyData = null; document.getElementById('reply-preview').classList.remove('show'); }
+        function delChatMessage(key) { if (confirm('Hapus?')) db.ref('chat_messages/' + key).remove(); }
+
+        db.ref('chat_messages').limitToLast(100).on('value', snap => {
+            const data = snap.val();
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            if (!data) return;
+            Object.keys(data).forEach(key => {
+                const m = data[key];
+                const isMe = m.name === myName;
+                const row = document.createElement('div');
+                row.className = 'msg-row ' + (isMe ? 'me' : 'them');
+                row.innerHTML = `
+                    ${!isMe ? `<div class="msg-sender">${esc(m.name)}</div>` : ''}
+                    <div class="msg-bubble">${m.replyTo ? `<div class="reply-quote"><span class="reply-qname">${esc(m.replyTo.name)}</span>${esc(m.replyTo.text)}</div>` : ''}${esc(m.text)}</div>
+                    <div class="msg-footer">
+                        <span class="msg-time">${new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <button class="btn-act" onclick="replyToMessage('${m.name.replace(/'/g, "\\'")}','${m.text.replace(/'/g, "\\'").substring(0, 50)}')">↩️</button>
+                        ${isMe ? `<button class="btn-act" onclick="delChatMessage('${key}')">🗑️</button>` : ''}
+                    </div>`;
+                container.appendChild(row);
+            });
+            scrollToBottom();
+        });
+
+        function toggleOnlinePanel(e) {
+            e.stopPropagation();
+            document.getElementById('online-panel').classList.toggle('show');
+        }
+
+        const ADMIN_PIN = (6 * 1010).toString(); // "6060"
 
         function showInfoPopup(msg, isOption) {
             document.getElementById('emergency-msg').textContent = msg;
             if (isOption) {
                 document.getElementById('emergency-btn-container').innerHTML = `
                     <div style="display:flex;gap:8px;width:100%;justify-content:center;margin-top:5px;">
-                        <button class="btn-ack" style="flex:1;background:var(--navy);color:var(--gold);padding:10px 20px;" onclick="ackEmergency()">SAYA MENGERTI</button>
+                        <button class="btn-ack" style="flex:1;border:1.5px solid var(--navy);background:white;color:var(--navy);padding:8px 5px;font-size:0.75rem;min-width:0;" onclick="ackEmergency()">🏠 LANJUT DISINI</button>
+                        <button class="btn-ack" style="flex:1;background:var(--navy);color:var(--gold);padding:8px 5px;font-size:0.75rem;min-width:0;" onclick="switchTo60NBM()">🌐 BUKA 60NBM.DEV</button>
                     </div>`;
             } else {
                 document.getElementById('emergency-btn-container').innerHTML = '<button class="btn-ack" onclick="ackEmergency()">SAYA MENGERTI</button>';
@@ -1305,10 +1280,12 @@
             db.ref('emergency_alert').remove();
         };
 
-        // ─── Navigation ────────────────────────────────────────────────────
         let curFrameIdx = 1;
 
         function changeIframe(idx, btn) {
+            if (idx === 2) {
+                showInfoPopup("Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV", true);
+            }
             document.querySelectorAll('.iframe-layer').forEach(f => f.classList.remove('active'));
             document.getElementById('frame' + idx).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1316,7 +1293,9 @@
             curFrameIdx = idx;
         }
 
-
+        setInterval(() => {
+            showInfoPopup("Tabel Kalkulasi Dapat Di Akses Via 60NBM.DEV", true);
+        }, 3600000);
 
         function switchTo60NBM() {
             const f1 = document.querySelector('#frame1 iframe');
@@ -1324,11 +1303,6 @@
             const btn1 = document.querySelectorAll('.nav-btn')[0];
             changeIframe(1, btn1);
             ackEmergency();
-        }
-
-        function refreshCurrentIframe() {
-            const fr = document.querySelector(`#frame${curFrameIdx} iframe`);
-            if (fr) { const s = fr.src; fr.src = 'about:blank'; setTimeout(() => fr.src = s, 50); }
         }
 
         function openModal() { document.getElementById('rt-modal').style.display = 'block'; }
@@ -1342,6 +1316,7 @@
         let infoPanelOpen = false;
         let diEditKey = null;
         let pinBuffer = '';
+        let _diMode = 'add'; // 'add' | 'edit' | 'delete' | 'import'
 
         const todayStr = () => new Date().toISOString().slice(0, 10);
 
@@ -1350,7 +1325,6 @@
             const panel = document.getElementById('daily-info-panel');
             const btn = document.getElementById('btn-daily-info');
             const backdrop = document.getElementById('di-backdrop');
-
             if (infoPanelOpen) {
                 panel.classList.add('open');
                 btn.classList.add('panel-open');
@@ -1360,6 +1334,43 @@
                 btn.classList.remove('panel-open');
                 if (backdrop) backdrop.style.display = 'none';
             }
+        }
+
+        // ── Copy card content to clipboard ────────────────────────────────
+        function copyCard(btn, area, rawTitle) {
+            // rawTitle uses \n for newlines (encoded in the HTML attribute)
+            const titleClean = rawTitle
+                .replace(/\\n/g, '\n')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>');
+            const areaClean = area.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+            const text = (areaClean ? areaClean + '\n' : '') + titleClean;
+
+            const doFeedback = () => {
+                btn.textContent = '✅ Disalin!';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = '📋 Salin'; btn.classList.remove('copied'); }, 1800);
+            };
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(doFeedback).catch(() => {
+                    legacyCopy(text); doFeedback();
+                });
+            } else {
+                legacyCopy(text); doFeedback();
+            }
+        }
+
+        function legacyCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.focus(); ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
         }
 
         function renderDailyInfoCards(data) {
@@ -1379,31 +1390,36 @@
             }
 
             if (items.length === 0) {
-                container.innerHTML = '<div class="di-empty">Belum ada info pekerjaan untuk hari ini.<br>Klik <strong>+ Tambah Info</strong> untuk menambahkan.</div>';
+                container.innerHTML = '<div class="di-empty">Belum ada info pekerjaan untuk hari ini.<br>Klik <strong>✏️ Tambah Manual</strong> atau <strong>📥 Import Rangkuman</strong>.</div>';
                 return;
             }
 
             container.innerHTML = items.map(([key, v]) => {
+                const areaEsc = (v.area || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                const titleEsc = (v.title || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+                // For copy: encode newlines as \n in the attribute, escape quotes
+                const areaAttr = (v.area || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+                const titleAttr = (v.title || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
                 return `
                 <div class="di-card">
                     <div class="di-card-acts">
                         <button class="di-act-btn" onclick="openEditInfo('${key}')" title="Edit">✏️</button>
                         <button class="di-act-btn" onclick="deleteInfo('${key}')" title="Hapus">🗑️</button>
                     </div>
-                    <div class="di-card-label">${esc(v.area) || 'Pekerjaan'}</div>
-                    <div class="di-card-title">${esc(v.title)}</div>
+                    <div class="di-card-label">${areaEsc || 'Pekerjaan'}</div>
+                    <div class="di-card-title">${titleEsc}</div>
                     ${v.time ? `<div class="di-card-sub">⏱ ${esc(v.time)}</div>` : ''}
                     ${v.note ? `<div class="di-card-note">📝 ${esc(v.note)}</div>` : ''}
+                    <button class="di-copy-btn" onclick="copyCard(this,'${areaAttr}','${titleAttr}')">📋 Salin</button>
                 </div>`;
             }).join('');
         }
 
-        // Real-time listener
         db.ref('daily_info').on('value', snap => {
             renderDailyInfoCards(snap.val());
         });
 
-        // ── PIN Keypad Logic ──────────────────────────────────────────────
+        // ── PIN Logic ──────────────────────────────────────────────────────
         function updatePinDots() {
             for (let i = 0; i < 4; i++) {
                 const dot = document.getElementById('pd' + i);
@@ -1416,9 +1432,7 @@
             if (pinBuffer.length >= 4) return;
             pinBuffer += digit;
             updatePinDots();
-            if (pinBuffer.length === 4) {
-                setTimeout(() => checkPin(), 160);
-            }
+            if (pinBuffer.length === 4) setTimeout(() => checkPin(), 160);
         }
 
         function pinDel() {
@@ -1427,14 +1441,19 @@
             updatePinDots();
         }
 
-
-
-        function openAddInfo() {
-            diEditKey = null;
-            pinBuffer = '';
-            updatePinDots();
+        function _resetModal() {
             document.getElementById('di-pin-screen').style.display = '';
             document.getElementById('di-form-screen').classList.remove('show');
+            document.getElementById('di-import-screen').classList.remove('show');
+            document.getElementById('di-modal-inner').classList.remove('wide');
+            pinBuffer = '';
+            updatePinDots();
+        }
+
+        function openAddInfo() {
+            _diMode = 'add';
+            diEditKey = null;
+            _resetModal();
             document.getElementById('di-form-icon').textContent = '➕';
             document.getElementById('di-form-header-title').textContent = 'Tambah Info Pekerjaan';
             document.getElementById('di-f-area').value = '';
@@ -1446,11 +1465,9 @@
             db.ref('daily_info/' + key).once('value', snap => {
                 const v = snap.val();
                 if (!v) return;
+                _diMode = 'edit';
                 diEditKey = key;
-                pinBuffer = '';
-                updatePinDots();
-                document.getElementById('di-pin-screen').style.display = '';
-                document.getElementById('di-form-screen').classList.remove('show');
+                _resetModal();
                 document.getElementById('di-form-icon').textContent = '✏️';
                 document.getElementById('di-form-header-title').textContent = 'Edit Info Pekerjaan';
                 document.getElementById('di-f-area').value = v.area || '';
@@ -1459,15 +1476,26 @@
             });
         }
 
+        function openImportInfo() {
+            _diMode = 'import';
+            diEditKey = null;
+            _resetModal();
+            document.getElementById('di-import-textarea').value = '';
+            document.getElementById('di-import-preview').innerHTML = '';
+            document.getElementById('btn-do-import').disabled = true;
+            document.getElementById('di-modal-inner').classList.add('wide');
+            document.getElementById('di-modal-bg').classList.add('show');
+        }
+
         function closeDiModal() {
             document.getElementById('di-modal-bg').classList.remove('show');
+            document.getElementById('di-modal-inner').classList.remove('wide');
             pinBuffer = '';
         }
 
         function saveDailyInfo() {
             const title = document.getElementById('di-f-title').value.trim();
-            if (!title) { alert('Nama pekerjaan wajib diisi!'); return; }
-
+            if (!title) { alert('Rincian pekerjaan wajib diisi!'); return; }
             const payload = {
                 title,
                 date: todayStr(),
@@ -1475,49 +1503,40 @@
                 status: 'open',
                 ts: Date.now()
             };
-
-            const ref = diEditKey
-                ? db.ref('daily_info/' + diEditKey)
-                : db.ref('daily_info').push();
-
+            const ref = diEditKey ? db.ref('daily_info/' + diEditKey) : db.ref('daily_info').push();
             const action = diEditKey ? ref.update(payload) : ref.set(payload);
-            action
-                .then(() => {
-                    closeDiModal();
-                    diEditKey = null;
-                })
+            action.then(() => { closeDiModal(); diEditKey = null; })
                 .catch(e => showError('Gagal simpan: ' + e.message));
         }
 
         function deleteInfo(key) {
-            // Reuse PIN keypad for delete too
+            _diMode = 'delete';
             diEditKey = key;
-            pinBuffer = '';
-            updatePinDots();
-            document.getElementById('di-pin-screen').style.display = '';
-            document.getElementById('di-form-screen').classList.remove('show');
+            _resetModal();
             document.getElementById('di-form-icon').textContent = '🗑️';
             document.getElementById('di-form-header-title').textContent = 'Hapus Info';
-            // Override checkPin temporarily for delete action
-            window._diDeleteMode = true;
             document.getElementById('di-modal-bg').classList.add('show');
         }
 
         function checkPin() {
             if (pinBuffer === ADMIN_PIN) {
-                if (window._diDeleteMode) {
-                    window._diDeleteMode = false;
+                if (_diMode === 'delete') {
                     closeDiModal();
                     if (diEditKey) {
-                        db.ref('daily_info/' + diEditKey).remove()
-                            .catch(e => alert('Gagal hapus: ' + e.message));
+                        db.ref('daily_info/' + diEditKey).remove().catch(e => alert('Gagal hapus: ' + e.message));
                         diEditKey = null;
                     }
                     return;
                 }
+                if (_diMode === 'import') {
+                    document.getElementById('di-pin-screen').style.display = 'none';
+                    document.getElementById('di-import-screen').classList.add('show');
+                    setTimeout(() => document.getElementById('di-import-textarea').focus(), 80);
+                    return;
+                }
+                // add / edit
                 document.getElementById('di-pin-screen').style.display = 'none';
-                const fs = document.getElementById('di-form-screen');
-                fs.classList.add('show');
+                document.getElementById('di-form-screen').classList.add('show');
                 const d = new Date();
                 document.getElementById('di-date-label-form').textContent =
                     d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -1528,15 +1547,143 @@
                     dot.classList.remove('filled');
                     dot.classList.add('error');
                 }
-                setTimeout(() => {
-                    pinBuffer = '';
-                    updatePinDots();
-                }, 700);
+                setTimeout(() => { pinBuffer = ''; updatePinDots(); }, 700);
             }
         }
 
+        // ── Import Rangkuman Parser ────────────────────────────────────────
+        function parseRangkuman(text) {
+            if (!text.trim()) return [];
 
-        // ─── END DAILY INFO MODULE ─────────────────────────────────────────
+            const results = [];
+            const lines = text.split('\n');
+            let currentArea = null;
+            let currentTasks = [];
+
+            // Matches lines like: "1.   37T102" or "10.  42T9" or just "37T102"
+            // Area identifiers typically contain letters+numbers like 37T102, 32T1, 43T4, 46T2
+            const areaLineRe = /^(?:\d+[\.\)]\s*\t*)?([A-Za-z0-9]{2,}(?:\d|\w)+)[\s]*$/;
+            // Sub-task bullet: *, -, •, –
+            const taskLineRe = /^[\*\-•–]\s+(.+)$/;
+
+            function flush() {
+                if (currentArea) {
+                    const title = currentTasks.length > 0 ? currentTasks.join('\n') : '(Tidak ada keterangan)';
+                    results.push({ area: currentArea, title });
+                }
+                currentArea = null;
+                currentTasks = [];
+            }
+
+            for (let raw of lines) {
+                // Replace tabs with spaces for consistency
+                const line = raw.replace(/\t/g, ' ').trim();
+                if (!line) continue;
+
+                // Skip separator/header lines
+                if (/^[━─=\-]{3,}/.test(line)) continue;
+                if (/^RENCANA\s+KERJA/i.test(line)) continue;
+                if (/^(Senin|Selasa|Rabu|Kamis|Jumat|Sabtu|Minggu)/i.test(line) && /\d{2}\/\d{2}\/\d{4}/.test(line)) continue;
+
+                // Check task bullet first
+                const taskMatch = line.match(taskLineRe);
+                if (taskMatch) {
+                    if (currentArea !== null) currentTasks.push(taskMatch[1].trim());
+                    continue;
+                }
+
+                // Check if line is a numbered area entry, e.g. "1.	37T102"
+                // More specific: starts with number+dot then whitespace then alphanumeric identifier
+                const numberedAreaMatch = line.match(/^(\d+)[\.\)]\s+([A-Za-z0-9]{2,}\w*)$/);
+                if (numberedAreaMatch) {
+                    flush();
+                    currentArea = numberedAreaMatch[2].trim();
+                    continue;
+                }
+
+                // Check bare area line (no number prefix) - must look like a tank/area ID
+                // Tank IDs: digits+T+digits pattern, or similar
+                const bareAreaMatch = line.match(/^([A-Za-z0-9]{2,}\d+[A-Za-z0-9]*)$/);
+                if (bareAreaMatch && !taskLineRe.test(line)) {
+                    flush();
+                    currentArea = bareAreaMatch[1].trim();
+                    continue;
+                }
+
+                // If currently in an area block and line has useful info without bullet
+                if (currentArea && line && !/^[\d]+[\.\)]/.test(line)) {
+                    // It's some text without a bullet under an area - treat as task
+                    if (currentTasks.length === 0 || line.startsWith('Tidak') || line.startsWith('Man power')) {
+                        currentTasks.push(line);
+                    }
+                }
+            }
+
+            flush();
+            return results;
+        }
+
+        function previewImport() {
+            const text = document.getElementById('di-import-textarea').value;
+            const parsed = parseRangkuman(text);
+            const preview = document.getElementById('di-import-preview');
+            const btn = document.getElementById('btn-do-import');
+
+            if (parsed.length === 0) {
+                preview.innerHTML = '<div class="di-preview-empty">Belum ada item yang terdeteksi. Pastikan format: nomor + nama tangki, diikuti baris dengan tanda *</div>';
+                btn.disabled = true;
+                return;
+            }
+
+            btn.disabled = false;
+            btn.textContent = '📥 Import ' + parsed.length + ' Card';
+            preview.innerHTML = '<div style="font-size:0.7rem;color:#888;margin-bottom:6px;font-weight:600;">PREVIEW (' + parsed.length + ' card terdeteksi):</div>' +
+                parsed.map(p => `
+                <div class="di-preview-item">
+                    <span class="di-preview-item-area">${esc(p.area)}</span>
+                    <span class="di-preview-item-tasks">${p.title.replace(/\n/g, ' • ')}</span>
+                </div>
+            `).join('');
+        }
+
+        function executeImport() {
+            const text = document.getElementById('di-import-textarea').value;
+            const parsed = parseRangkuman(text);
+            if (parsed.length === 0) { alert('Tidak ada data untuk diimport!'); return; }
+
+            const btn = document.getElementById('btn-do-import');
+            btn.disabled = true;
+            btn.textContent = '⏳ Menyimpan...';
+
+            const today = todayStr();
+            const now = Date.now();
+            const promises = parsed.map((p, i) => {
+                return db.ref('daily_info').push().set({
+                    area: p.area,
+                    title: p.title,
+                    date: today,
+                    status: 'open',
+                    ts: now + i
+                });
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    closeDiModal();
+                    // Show success notification via err-banner (repurposed as info)
+                    document.getElementById('err-banner').style.background = '#15803d';
+                    showError('✅ ' + parsed.length + ' card berhasil diimport!');
+                    setTimeout(() => {
+                        hideError();
+                        document.getElementById('err-banner').style.background = '';
+                    }, 3000);
+                })
+                .catch(e => {
+                    btn.disabled = false;
+                    btn.textContent = '📥 Import Semua';
+                    showError('Gagal import: ' + e.message);
+                });
+        }
 
         // ─── PIN Prompt for Broadcast ───────────────────────────────────────
         function promptBroadcast() {
@@ -1552,9 +1699,13 @@
             }
         }
 
-        // ─── Global Click Handler ──────────────────────────────────────────
         document.addEventListener('click', e => {
-            // Close daily info panel on outside click
+            if (chatOpen &&
+                !document.getElementById('chat-panel').contains(e.target) &&
+                !document.getElementById('btn-chat').contains(e.target)) {
+                toggleChat();
+            }
+
             const diPanel = document.getElementById('daily-info-panel');
             const diBtn = document.getElementById('btn-daily-info');
             const diModal = document.getElementById('di-modal-bg');
@@ -1565,14 +1716,12 @@
                 toggleInfoPanel();
             }
 
-            // Close settings modal on outside click
             const rtModal = document.getElementById('rt-modal');
             const rtBox = document.querySelector('.rt-box');
             if (rtModal.style.display === 'block' && !rtBox.contains(e.target) && !document.getElementById('btn-manage-rt').contains(e.target)) {
                 closeModal();
             }
 
-            // Close online panel on outside click
             if (!document.getElementById('online-count').contains(e.target)) {
                 document.getElementById('online-panel').classList.remove('show');
             }
